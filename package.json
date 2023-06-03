@@ -1,5 +1,5 @@
 {
-  "name": "@react/admin dashboard",
+  "name": "material-kit-react",
   "author": "minimals.cc",
   "licence": "MIT",
   "version": "1.7.0",
@@ -8,12 +8,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint --ext .js,.jsx ./src",
-    "lint:fix": "eslint --fix --ext .js,.jsx ./src",
-    "clear-all": "rm -rf build node_modules",
-    "re-start": "rm -rf build node_modules && yarn install && yarn start",
-    "re-build": "rm -rf build node_modules && yarn install && yarn build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
