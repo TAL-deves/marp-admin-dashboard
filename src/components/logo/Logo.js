@@ -26,6 +26,9 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
   //   />
   // );
 
+const accessToken=localStorage.getItem("accessToken");
+
+
   const logo = (
     <Box
       ref={ref}
@@ -77,12 +80,19 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
   if (disabledLink) {
     return <>{logo}</>;
   }
+return(
+<>
 
-  return (
-    <Link to="/" component={RouterLink} sx={{ display: 'contents' }}>
+{accessToken ?
+    <Link to="/dashboard/app" component={RouterLink} sx={{ display: 'contents' }}>
       {logo}
     </Link>
-  );
+:
+  <Link to="/" component={RouterLink} sx={{ display: 'contents' }}> {logo}</Link>
+}
+</>
+);
+
 });
 
 Logo.propTypes = {

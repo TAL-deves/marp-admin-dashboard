@@ -11,11 +11,24 @@ import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import CategoryPage from './_mock/category';
 import DashboardAppPage from './pages/DashboardAppPage';
+// import { useNavigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
+// const AccessToken=localStorage.getItem("accessToken");
+// console.log("accessToken-------", AccessToken
+// );
+// const navigate = useNavigate();
+// if(AccessToken){
+//   navigate("/login")
+// }
+
   const routes = useRoutes([
+    {
+      path: 'login',
+      element: <LoginPage />,
+    },
     {
       path: '/dashboard',
       element: <DashboardLayout />,
@@ -36,7 +49,7 @@ export default function Router() {
     {
       element: <SimpleLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
+        { element: <Navigate to="/login" />, index: true },
         { path: '404', element: <Page404 /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
