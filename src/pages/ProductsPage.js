@@ -57,7 +57,7 @@ export default function ProductsPage() {
         </Stack>
 
         <ProductList products={data} />
-        <ProductCartWidget />
+        {/* <ProductCartWidget /> */}
       </Container>
     </>
   );
