@@ -30,7 +30,9 @@ const userAccount = () => (
                     >
                         <Typography variant='h3'>Personal Details </Typography>
                         <Avatar sx={{width:160,height:160, marginTop:3}} alt="Travis Howard" src="../../assets/images/avatars/tree-736885_1280.jpg" />
-                        <Button variant="contained" sx={{bgcolor:"darkcyan" , marginY:2, width:"72%"}}>Update Your Image</Button>
+                        <Button variant="contained" sx={{bgcolor:"#941DA8",":hover": {
+                                bgcolor: '#A749FF'
+                            } , marginY:2, width:"72%"}}>Update Your Image</Button>
                         <Box
                         //    alignItems="center"
                         //    justifyContent={'center'}
@@ -47,7 +49,9 @@ const userAccount = () => (
                     Email 
                    </Typography>
                    <TextField id="outlined-basic" label="Email" variant="filled" type="email" sx={{width:"100%", marginY:2}}/>
-                   <Button variant="contained" sx={{bgcolor:"darkcyan" , marginY:2, width:"100%"}}>Update</Button>
+                   <Button variant="contained" sx={{bgcolor:"#941DA8",":hover": {
+                                bgcolor: '#A749FF'
+                            } , marginY:2, width:"100%"}}>Update</Button>
                         </Box>
                     </Box>
                 </Grid>
@@ -83,7 +87,9 @@ const userAccount = () => (
                     Confirm Password
                    </Typography>
                    <TextField id="outlined-basic" label="Confirm Password" variant="filled" type="number" sx={{width:"100%", marginY:2}}/>
-                   <Button variant="contained" sx={{bgcolor:"darkcyan" , marginY:2, width:"100%"}}>Set Password</Button>
+                   <Button variant="contained" sx={{bgcolor:"#941DA8",":hover": {
+                                bgcolor: '#A749FF'
+                            } , marginY:2, width:"100%"}}>Set Password</Button>
                         </Box>
                     </Box>
 
