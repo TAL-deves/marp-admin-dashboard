@@ -41,6 +41,7 @@ const StyledContent = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function LoginPage() {
+  // const AccessToken=localStorage.getItem("accessToken")
   const mdUp = useResponsive('up', 'md');
 
   return (
