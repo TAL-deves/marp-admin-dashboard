@@ -8,7 +8,9 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 // eslint-disable-next-line import/no-unresolved
 import { getRequestHandler } from "src/apiHandler/customApiHandler";
-import { useState, useEffect } from 'react';
+import CardMedia from '@mui/material/CardMedia';
+// import picture from "../../assets/transparent.png"
+import { useState, useEffect } from "react";
 
 
 // const bull = (
@@ -36,7 +38,6 @@ useEffect(() => {
     setData(categoriesData.data.categoryList)
   
     console.log("categoriesData -----",typeof(categoriesData.data.categoryList[0]), categoriesData.data.categoryList[0]
-  
     );
   }
   
@@ -58,8 +59,9 @@ useEffect(() => {
 
 
     return (
-
     <Box sx={{marginX:5}}> 
+
+
        <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={7}>
@@ -67,9 +69,27 @@ useEffect(() => {
         {
 data.map((item)=>(
   <>
-  <h1>{item.name}</h1>
-  {/* <h1>{item.subcategories}</h1> */}
- {/* console.log(item) */}
+     <Card sx={{ maxWidth: 360 }}>
+      {/* <CardMedia
+        component="img"
+        alt="green iguana"
+        height="200"
+        image="./../../assets/electronicesProduct.jpeg"
+      /> */}
+      <CardContent>
+        <Typography gutterBottom variant="h5" component="div">
+         {item.name}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Lizards are a widespread group of squamate reptiles, with over 6,000
+          species, ranging across all continents except Antarctica
+        </Typography>
+      </CardContent>
+      <CardActions>
+        {/* <Button size="small">Share</Button> */}
+        <Button size="small" variant="contained" sx={{width:'100%'}}>Learn More</Button>
+      </CardActions>
+    </Card>
   </>
 ))
 }
