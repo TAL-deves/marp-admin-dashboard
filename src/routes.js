@@ -11,6 +11,8 @@ import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import CategoryPage from './_mock/category';
 import DashboardAppPage from './pages/DashboardAppPage';
+import AddProduct from './pages/AddProduct';
+import ProductReview from './pages/ProductReview';
 // import { useNavigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
@@ -40,6 +42,8 @@ export default function Router() {
         { path: 'category', element: <CategoryPage /> },
         { path: 'blog', element: <BlogPage /> },
         { path: 'profile', element: <UserProfile />, },
+        { path: 'product', element: <AddProduct />, },
+        { path: 'add-product-review', element: <ProductReview />, },
       ],
     },
     {
