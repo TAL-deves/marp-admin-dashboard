@@ -198,7 +198,9 @@ export default function UserPage() {
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleClickedUser}>
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleClickedUser} sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                                bgcolor: '#6EAB49'
+                            }}}>
             New User
           </Button>
         </Stack>

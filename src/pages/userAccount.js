@@ -35,9 +35,9 @@ const userAccount = () => (
                     >
                         <Typography variant='h3'>Personal Details </Typography>
                         <Avatar sx={{width:160,height:160, marginTop:3}} alt="Travis Howard" src="../../assets/images/avatars/tree-736885_1280.jpg" />
-                        <Button variant="contained" sx={{bgcolor:"#A084DD",":hover": {
-                                bgcolor: '#A749FF'
-                            } , marginY:2, width:"72%"}}>UPDATE YOUR IMAGE</Button>
+                        <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                                bgcolor: '#6EAB49'
+                            }, marginY:2, width:"72%"}}>UPDATE YOUR IMAGE</Button>
                         <Box
                         //    alignItems="center"
                         //    justifyContent={'center'}
@@ -54,9 +54,9 @@ const userAccount = () => (
                     Email 
                    </Typography>
                    <TextField id="outlined-basic" label="Email" variant="filled" type="email" sx={{width:"100%", marginY:2}}/>
-                   <Button variant="contained" sx={{bgcolor:"#A084DD",":hover": {
-                                bgcolor: '#A749FF'
-                            } , marginY:2, width:"100%"}}>UPDATE</Button>
+                   <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                                bgcolor: '#6EAB49'
+                            }, marginY:2, width:"100%"}}>UPDATE</Button>
                         </Box>
                     </Box>
                 </Grid>
@@ -92,11 +92,9 @@ const userAccount = () => (
                     Confirm Password
                    </Typography>
                    <TextField id="outlined-basic" label="Confirm Password" variant="filled" type="number" sx={{width:"100%", marginY:2}}/>
-                   <Button variant="contained" sx={{bgcolor:"#A084DD",":hover": {
-                                bgcolor: '#A749FF'
-                            } , marginY:2, width:"100%",
-                            
-                            }}>SET PASSWORD</Button>
+                   <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                                bgcolor: '#6EAB49'
+                            }, marginY:2, width:"100%"}}>SET PASSWORD</Button>
                         </Box>
                     </Box>
                 </Grid>

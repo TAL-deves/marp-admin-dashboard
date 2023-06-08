@@ -23,6 +23,22 @@ import TextField from '@mui/material/TextField';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Backdrop from "@mui/material/Backdrop";
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+
+import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+// import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+// import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import PersonAdd from '@mui/icons-material/PersonAdd';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
 
 
 
@@ -69,6 +85,12 @@ const handleClickCreate=()=>{
 }
 const handleSubcategory = () => setOpen(false);
 
+// select menu item start from here
+const [age, setAge] = React.useState('');
+const handleChange = (event) => {
+  setAge(event.target.value);
+};
+
 useEffect(() => {
   async function getData(){
     const categoriesData= await getRequestHandler("https://marpapi.techanalyticaltd.com/category/");
@@ -93,11 +115,139 @@ const handleClickedSubmenu=()=>{
 }
 
 
+// subcategory item start from here
+
+const [anchorEl, setAnchorEl] = React.useState(null);
+const openSubCategory = Boolean(anchorEl);
+const handleClickSC = (event) => {
+  setAnchorEl(event.currentTarget);
+};
+const handleCloseSC = () => {
+  setAnchorEl(null);
+};
+
+
+
+// subCategory item end from here
+
     return (
       <>
       <Helmet>
       <title> Category | admin dashboard </title>
     </Helmet>
+
+
+       {/* subCategory item start from here */}
+       <>
+      {/* <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+        <Tooltip title="Account settings">
+          <IconButton
+            onClick={handleClickSC}
+            size="small"
+            sx={{ ml: 3 }}
+            aria-controls={openSubCategory ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={openSubCategory ? 'true' : undefined}
+          >
+            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+          </IconButton>
+        </Tooltip>
+      </Box> */}
+      
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={openSubCategory}
+        onClose={handleCloseSC}
+        onClick={handleCloseSC}
+        maxWidth={"30%"}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 6,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              left: 20,
+              width: 20,
+              height: 20,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+      >
+            <Box sx={{ flexGrow: 1, margin:2}}>
+      <Grid container spacing={2}>
+        <Grid item xs={8}>
+        <Typography variant='p'>SubCategory</Typography>
+        </Grid>
+        <Grid item xs={4}>
+       <Button><Typography sx={{color:"red"}}>X</Typography></Button>
+        </Grid>
+      </Grid>
+    </Box>
+      
+        {/* <MenuItem onClick={handleClose}>
+          <Avatar /> Profile
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <Avatar /> My account
+        </MenuItem>
+        <Divider /> */}
+        <MenuItem onClick={handleClose}>
+        <CardMedia
+        component="img"
+        alt="green iguana"
+        Width="117px"
+        Height="80px"
+        image="./../../assets/Rectangle 181.png"
+      />
+          Mobile
+          <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
+      <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+        <CardMedia
+        component="img"
+        alt="green iguana"
+        Width="117px"
+        Height="80px"
+        image="./../../assets/Rectangle 181.png"
+      />
+          Television
+          
+          <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
+      <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+        <CardMedia
+        component="img"
+        alt="green iguana"
+        Width="117px"
+        Height="80px"
+        image="./../../assets/Rectangle 181.png"
+      />
+          Computer
+          <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
+      <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
+        </MenuItem>
+      </Menu>
+    </>
+
     <Box sx={{marginX:5}}> 
     <Box sx={{ flexGrow: 1  }}>
       <Grid container spacing={2}>
@@ -149,13 +299,25 @@ data.map((item)=>(
    }}>
        <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
       <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
-      <Button onClick={handleClickedSubmenu}>{ menu ? <ArrowForwardIosIcon sx={{color:"#6610F2"}}/> : <KeyboardArrowDownIcon  sx={{color:"#6610F2"}}/>}</Button>
+
+
+
+      <Button   onClick={handleClickSC}
+            size="small"
+            sx={{ ml: 6 }}
+            aria-controls={openSubCategory ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={openSubCategory ? 'true' : undefined}>{ <KeyboardArrowDownIcon  sx={{color:"#6610F2"}}/>}</Button>
+
+
+
+
       </CardActions>
       </Grid>
       </Grid>
       </Box>
     </Card>
-     <Card sx={{ width: "72%",  marginTop:3}}>
+     {/* <Card sx={{ width: "72%",  marginTop:3}}>
      <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
@@ -191,8 +353,8 @@ data.map((item)=>(
       </Grid>
       </Grid>
       </Box>
-    </Card>
-     <Card sx={{ width: "72%",  marginTop:3}}>
+    </Card> */}
+     {/* <Card sx={{ width: "72%",  marginTop:3}}>
      <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
@@ -228,7 +390,7 @@ data.map((item)=>(
       </Grid>
       </Grid>
       </Box>
-    </Card>
+    </Card> */}
   </>
 ))
 }
@@ -332,14 +494,28 @@ data.map((item)=>(
                         //    alignItems="center"
                         //    justifyContent={'center'}
                           >
-                   <Typography>
+                   <Typography sx={{margin:2}}>
                     Category 
                    </Typography>
-                   <TextField id="outlined-basic" label="Category" variant="outlined" type="text" sx={{width:"100%", marginY:2}}/>
-                   <Typography>
+                   {/* <TextField id="outlined-basic" label="Category" variant="outlined" type="text" sx={{width:"100%", marginY:2}}/> */}
+                    <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Category</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={age}
+          label="Category"
+          onChange={handleChange}
+        >
+          <MenuItem value={10}>Electronics</MenuItem>
+          <MenuItem value={20}>Daily Products</MenuItem>
+          <MenuItem value={30}>ABCDE</MenuItem>
+        </Select>
+      </FormControl>
+                   <Typography sx={{margin:2}}>
                     SubCategory 
                    </Typography>
-                   <TextField id="outlined-basic" label="SubCategory" variant="outlined" type="text" sx={{width:"100%", marginY:2}}/>
+                   <TextField id="outlined-basic" label="SubCategory" variant="outlined" type="text" sx={{width:"100%", marginBottom:2}}/>
                    <Button variant="contained" sx={{bgcolor:"#6610F2",":hover": {
                                 bgcolor: '#6EAB49'
                             } , width:"32%",
@@ -356,6 +532,86 @@ data.map((item)=>(
         </Fade>
       </Modal>
 
+       {/* subCategory item start from here */}
+       {/* <>
+      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+        <Typography sx={{ minWidth: 100 }}>Contact</Typography>
+        <Typography sx={{ minWidth: 100 }}>Profile</Typography>
+        <Tooltip title="Account settings">
+          <IconButton
+            onClick={handleClickSC}
+            size="small"
+            sx={{ ml: 2 }}
+            aria-controls={openSubCategory ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={openSubCategory ? 'true' : undefined}
+          >
+            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+          </IconButton>
+        </Tooltip>
+      </Box>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={openSubCategory}
+        onClose={handleCloseSC}
+        onClick={handleCloseSC}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={handleClose}>
+          <Avatar /> Profile
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <Avatar /> My account
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <PersonAdd fontSize="small" />
+          </ListItemIcon>
+          Add another account
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <Settings fontSize="small" />
+          </ListItemIcon>
+          Settings
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
+    </> */}
 
     </>
     );
