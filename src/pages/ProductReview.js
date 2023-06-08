@@ -19,32 +19,47 @@ function ProductReview() {
     const priCe = location.state.priCe;
     const shortdescription = location.state.shortdescription;
     const fulldescription = location.state.fulldescription;
+  //   const productData= {
+  //     "sku": {sKu},
+  //     "productCode":{code}, 
+  //     "name": {name},
+  //     "price": {priCe},
+  //     "discount": {disCount},
+  //     "newItem": {newitem},
+  //     "saleCount": {salecount},
+  //     "stock": {stoCk},
+  //     "shortDescription": {shortdescription},
+  //     "fullDescription": {fulldescription},
+  //     "productImages": "http://dummyimage.com/133x100.png/cc0000/ffffff",
+  //     "brand": {brandname},
+  //     "categoryName": {cat}, 
+  //     "subcategoryName": {subCat} 
+  // }
 
-    const productData= {
-      "sku": {sKu},
-      "productCode":{code}, 
-      "name": {name},
-      "price": {priCe},
-      "discount": {disCount},
-      "newItem": {newitem},
-      "saleCount": {salecount},
-      "stock": {stoCk},
-      "shortDescription": {shortdescription},
-      "fullDescription": {fulldescription},
-      "productImages": "http://dummyimage.com/133x100.png/cc0000/ffffff",
-      "brand": {brandname},
-      "categoryName": {cat}, 
-      "subcategoryName": {subCat} 
-  }
-   
- 
 
     async function handleAddProducts() {
-      const data = {
-        product: productData
-      };
+      // const product = '{
+      //   product: productData
+      // };
       try {
-        const response = await postRequestHandler('https://marpapi.techanalyticaltd.com/product/',data );
+        const response = await postRequestHandler('https://marpapi.techanalyticaltd.com/product',{
+          product: {
+            sku: `${sKu}`,
+            productCode: `${code}`,
+            name: `${name}`,
+            price: 123,
+            discount: 2,
+            newItem: true,
+            saleCount: 2,
+            stock: 2,
+            shortDescription: `${shortdescription}`,
+            fullDescription: `${fulldescription}`,
+            productImages: 'http://dummyimage.com/133x100.png/cc0000/ffffff',
+            brand: `${brandname}`,
+            categoryName: `${cat}`,
+            subcategoryName: `${subCat}`,
+          },
+        });
         // Handle the response data
         
          console.log("new add product response",response);
