@@ -11,7 +11,7 @@ ProductList.propTypes = {
 
 export default function ProductList({ products, ...other }) {
 
-  console.log("products",products)
+  // console.log("products",products)
   return (
     <>
     {products?

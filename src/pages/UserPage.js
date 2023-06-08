@@ -2,6 +2,12 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState } from 'react';
+import Backdrop from "@mui/material/Backdrop";
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+import TextField from '@mui/material/TextField';
+import CancelIcon from '@mui/icons-material/Cancel';
 // @mui
 import {
   Card,
@@ -26,10 +32,32 @@ import {
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
+
+
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
+// import Backdrop from "@mui/material/Backdrop";
+// import Box from '@mui/material/Box';
+// import Modal from '@mui/material/Modal';
+// import Fade from '@mui/material/Fade';
 // mock
 import USERLIST from '../_mock/user';
+
+// import Button from '@mui/material/Button';
+// import Typography from '@mui/material/Typography';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: "60%",
+  bgcolor: 'background.paper',
+  // border: '2px solid #000',
+  borderRadius:3,
+  boxShadow: 24,
+  p: 4,
+};
 
 // ----------------------------------------------------------------------
 
@@ -87,6 +115,9 @@ export default function UserPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [opens, setOpens] = useState(false);
+  const handleOpen = () => setOpens(true);
+  // const handleClose = () => setOpens(false);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -140,6 +171,17 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
+  const handleClickedUser=()=>{
+    handleOpen();
+  }
+
+  const handleClickUpdate=()=>{
+    setOpens(false)
+  }
+  const handleClickCancel=()=>{
+    setOpens(false)
+  }
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
 
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
@@ -149,15 +191,16 @@ export default function UserPage() {
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> User | admin dashboard </title>
       </Helmet>
-
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleClickedUser} sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                                bgcolor: '#6EAB49'
+                            }}}>
             New User
           </Button>
         </Stack>
@@ -289,6 +332,73 @@ export default function UserPage() {
           Delete
         </MenuItem>
       </Popover>
+       {/* start modal from here */}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={opens}
+        // onClose={handleClose}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={opens}>
+          <Box sx={style}>
+            <Box
+                        display={'flex'}
+                        flexDirection={'column'}
+                        alignItems="center"
+                        justifyContent={'center'}
+                        margin='auto'
+                        maxWidth={540}
+                        // marginTop={5}
+                        //    padding={3}
+                        borderRadius={2}
+                        boxShadow={'5px 5px 10px #ccc'}
+                        sx={{
+                            ":hover": {
+                                boxShadow: '10px 10px 20px #ccc'
+                            }
+                        }}
+                    >
+                        <Typography variant='h3'>Create New User </Typography>
+                        <Avatar sx={{width:100,height:100, marginTop:3}} alt="Travis Howard" src="../../assets/images/avatars/tree-736885_1280.jpg" />
+                        {/* <Button variant="contained" sx={{bgcolor:"#A084DD",":hover": {
+                                bgcolor: '#A749FF'
+                            } , marginY:2, width:"72%"}}>UPDATE YOUR IMAGE</Button> */}
+                        <Box
+                        //    alignItems="center"
+                        //    justifyContent={'center'}
+                          >
+                   {/* <Typography>
+                    Name
+                   </Typography> */}
+                   <TextField id="outlined-basic" label="Name" variant="filled" type="text" sx={{width:"100%", marginY:2}}/>
+                   <TextField id="outlined-basic" label="Company" variant="filled" type="text" sx={{width:"100%", marginY:2}}/>
+               
+                   <TextField id="outlined-basic" label="Role" variant="filled" type="text" sx={{width:"100%", marginY:2}}/>
+                   <TextField id="outlined-basic" label="Verified" variant="filled" type="text" sx={{width:"100%", marginY:2}}/>
+          
+                   <TextField id="outlined-basic" label="Status" variant="filled" type="text" sx={{width:"100%", marginY:2}}/>
+                   {/* <TextField id="outlined-basic" label="Email" variant="filled" type="email" sx={{width:"100%", marginY:2}}/> */}
+                   <Button variant="contained" sx={{bgcolor:"#6610F2",":hover": {
+                                bgcolor: '#6EAB49'
+                            } , marginY:2, width:"96%"}} onClick={handleClickUpdate}>UPDATE</Button>
+                   <Button variant="contained" sx={{bgcolor:"#6610F2",":hover": {
+                                bgcolor: 'red'
+                            } , marginY:2, width:"96%"}} onClick={handleClickCancel}>
+                              {/* <CancelIcon/> */}
+                              CANCEL
+                              </Button>
+                        </Box>
+                    </Box>
+          </Box>
+        </Fade>
+      </Modal>
     </>
   );
 }

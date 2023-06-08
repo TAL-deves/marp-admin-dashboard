@@ -1,4 +1,10 @@
 // component
+import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
+import CategoryIcon from '@mui/icons-material/Category';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import LoginIcon from '@mui/icons-material/Login';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SvgColor from '../../../components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -9,38 +15,38 @@ const navConfig = [
   {
     title: 'dashboard',
     path: '/dashboard/app',
-    icon: icon('ic_analytics'),
+    icon: <HomeOutlinedIcon/>,
+  },
+  {
+    title: 'Order List',
+    path: '/dashboard/orderList',
+    icon: <FormatAlignLeftIcon/>,
   },
   {
     title: 'user',
     path: '/dashboard/user',
-    icon: icon('ic_user'),
+    icon: <PersonAddAltIcon/>,
   },
   {
     title: 'category',
     path: '/dashboard/category',
-    icon: icon('ic_cart'),
+    icon: <CategoryIcon/>,
   },
   {
     title: 'product',
     path: '/dashboard/products',
-    icon: icon('ic_cart'),
-  },
-  {
-    title: 'blog',
-    path: '/dashboard/blog',
-    icon: icon('ic_blog'),
+    icon: <ShoppingCartIcon/>,
   },
   {
     title: 'login',
     path: '/login',
-    icon: icon('ic_lock'),
+    icon: <LoginIcon/>,
   },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: icon('ic_disabled'),
-  },
+  // {
+  //   title: 'Not found',
+  //   path: '/404',
+  //   icon: icon('ic_disabled'),
+  // },
 ];
 
 export default navConfig;
