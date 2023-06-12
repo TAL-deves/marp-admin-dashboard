@@ -10,13 +10,11 @@ import { Helmet } from 'react-helmet-async';
 // eslint-disable-next-line import/no-unresolved
 import { getRequestHandler } from "src/apiHandler/customApiHandler";
 import CardMedia from '@mui/material/CardMedia';
-import ButtonGroup from '@mui/material/ButtonGroup';
 // import picture from "../../assets/transparent.png"
 import { useState, useEffect } from "react";
 // eslint-disable-next-line import/no-unresolved
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import TextField from '@mui/material/TextField';
@@ -27,6 +25,9 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import AddIcon from '@mui/icons-material/Add';
+import CategoryIcon from '@mui/icons-material/Category';
 
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -122,6 +123,7 @@ const openSubCategory = Boolean(anchorEl);
 const handleClickSC = (event) => {
   setAnchorEl(event.currentTarget);
 };
+// console.log("button clicked", menu);
 const handleCloseSC = () => {
   setAnchorEl(null);
 };
@@ -138,8 +140,9 @@ const handleCloseSC = () => {
 
 
        {/* subCategory item start from here */}
-       <>
-      {/* <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+
+       {/* <>
+      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClickSC}
@@ -152,7 +155,7 @@ const handleCloseSC = () => {
             <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
           </IconButton>
         </Tooltip>
-      </Box> */}
+      </Box>
       
       <Menu
         anchorEl={anchorEl}
@@ -200,14 +203,6 @@ const handleCloseSC = () => {
         </Grid>
       </Grid>
     </Box>
-      
-        {/* <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> My account
-        </MenuItem>
-        <Divider /> */}
         <MenuItem onClick={handleClose}>
         <CardMedia
         component="img"
@@ -246,29 +241,37 @@ const handleCloseSC = () => {
       <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
         </MenuItem>
       </Menu>
-    </>
+    </> */}
 
-    <Box sx={{marginX:5}}> 
+    <Box sx={{marginX:2}}> 
     <Box sx={{ flexGrow: 1  }}>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-        <Typography variant='h3' sx={{padding:0}}>Category</Typography>
+        <Grid item xs={12} sm={7}>
+        <Box sx={{display:"flex"}}>
+          <CategoryIcon sx={{height:36}}/>
+          <Typography variant='h4' sx={{padding:0}}>Category</Typography>
+          </Box>
         </Grid>
-        <Grid item xs={12} sm={6} sx={{justifyContent:"end"}}>
+        <Grid item xs={12} sm={5} sx={{textAlign:"end", alignSelf:"end"}}>
         <Button onClick={handleClickedCategory} sx={{bgcolor:"#6610F2", color:"white",":hover": {
                                 bgcolor: '#6EAB49'
-                            }, marginX:2}}>NEW CATEGORY</Button>
+                            }}}><AddIcon/>New Category</Button>
       <Button onClick={handleClickedSubcategory} sx={{bgcolor:"#6610F2", color:"white",":hover": {
                                 bgcolor: '#6EAB49'
-                            }}}>NEW SUBCATEGORY</Button>
+                            }, margin:1}}><AddIcon/>New Subcategory</Button>
         </Grid>
       
       </Grid>
     </Box>
+
+
+    <Box sx={{ flexGrow: 1, padding:3 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={8}>  
         {
 data.map((item)=>(
   <>
-     <Card sx={{ width: "72%",  marginTop:3}}>
+     <Card sx={{ width: "100%",  marginTop:3}}>
      <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
@@ -299,7 +302,6 @@ data.map((item)=>(
    }}>
        <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
       <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
-
 
 
       <Button   onClick={handleClickSC}
@@ -307,17 +309,78 @@ data.map((item)=>(
             sx={{ ml: 6 }}
             aria-controls={openSubCategory ? 'account-menu' : undefined}
             aria-haspopup="true"
-            aria-expanded={openSubCategory ? 'true' : undefined}>{ <KeyboardArrowDownIcon  sx={{color:"#6610F2"}}/>}</Button>
-
-
-
+            aria-expanded={openSubCategory ? 'true' : undefined}>
+              { menu ?
+              <KeyboardArrowRightIcon  sx={{color:"#6610F2"}} onClick={()=>setMenu(!menu)}/>
+              :
+              <KeyboardArrowDownIcon  sx={{color:"#6610F2"}} onClick={()=>setMenu(!menu)}/>
+              }</Button>
+      </CardActions>
+      </Grid>
+      </Grid>
+      </Box>
+    </Card>
+  </>
+))
+}
+        </Grid>
+        <Grid item xs={12} md={4} sx={{marginTop:3}}>
+          <Box 
+                        display={'flex'}
+                        flexDirection={'column'}
+                        alignItems="center"
+                        justifyContent={'center'}
+                        margin='auto'
+                        maxWidth={540}
+                        // marginTop={5}
+                        //    padding={3}
+                        borderRadius={2}
+                        boxShadow={'5px 5px 10px #ccc'}
+                        sx={{
+                            ":hover": {
+                                boxShadow: '10px 10px 20px #ccc'
+                            }
+                        }}
+                    >
+       <Typography variant='h4'>SubCategory</Typography>
+          <Card sx={{ width: "96%",  marginTop:3}}>
+     <Box sx={{ flexGrow: 1 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={3}>
+      <CardMedia
+        component="img"
+        alt="green iguana"
+        height="100%"
+        width="200"
+        image="./../../assets/Rectangle 181.png"
+      />
+        </Grid>
+        <Grid item xs={3}>
+      <CardContent sx={{display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height:'100%',
+   }}>
+        <Typography gutterBottom variant="p" component="div">
+         Name
+        </Typography>
+      </CardContent>
+      </Grid>
+      <Grid item xs={6}>
+      <CardActions sx={{display: 'flex',
+    justifyContent: 'end',
+    alignItems: 'center',
+    height:'100%',
+   }}>
+       <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
+      <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
 
       </CardActions>
       </Grid>
       </Grid>
       </Box>
     </Card>
-     {/* <Card sx={{ width: "72%",  marginTop:3}}>
+          <Card sx={{ width: "96%",  marginTop:3}}>
      <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
@@ -335,8 +398,8 @@ data.map((item)=>(
     alignItems: 'center',
     height:'100%',
    }}>
-        <Typography gutterBottom variant="h5" component="div">
-         {item.name}
+        <Typography gutterBottom variant="p" component="div">
+         Name
         </Typography>
       </CardContent>
       </Grid>
@@ -348,13 +411,21 @@ data.map((item)=>(
    }}>
        <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
       <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
-      <Button onClick={handleClickedSubmenu}>{ menu ? <ArrowForwardIosIcon sx={{color:"#6610F2"}}/> : <KeyboardArrowDownIcon  sx={{color:"#6610F2"}}/>}</Button>
+{/* 
+
+
+      <Button   onClick={handleClickSC}
+            size="small"
+            sx={{ ml: 6 }}
+            aria-controls={openSubCategory ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={openSubCategory ? 'true' : undefined}>{ <KeyboardArrowDownIcon  sx={{color:"#6610F2"}}/>}</Button> */}
       </CardActions>
       </Grid>
       </Grid>
       </Box>
-    </Card> */}
-     {/* <Card sx={{ width: "72%",  marginTop:3}}>
+    </Card>
+          <Card sx={{ width: "96%",  marginTop:3}}>
      <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
@@ -372,8 +443,8 @@ data.map((item)=>(
     alignItems: 'center',
     height:'100%',
    }}>
-        <Typography gutterBottom variant="h5" component="div">
-         {item.name}
+        <Typography gutterBottom variant="p" component="div">
+         Name
         </Typography>
       </CardContent>
       </Grid>
@@ -385,15 +456,24 @@ data.map((item)=>(
    }}>
        <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
       <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
-      <Button onClick={handleClickedSubmenu}>{ menu ? <ArrowForwardIosIcon sx={{color:"#6610F2"}}/> : <KeyboardArrowDownIcon  sx={{color:"#6610F2"}}/>}</Button>
+{/* 
+
+
+      <Button   onClick={handleClickSC}
+            size="small"
+            sx={{ ml: 6 }}
+            aria-controls={openSubCategory ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={openSubCategory ? 'true' : undefined}>{ <KeyboardArrowDownIcon  sx={{color:"#6610F2"}}/>}</Button> */}
       </CardActions>
       </Grid>
       </Grid>
       </Box>
-    </Card> */}
-  </>
-))
-}
+    </Card>
+    </Box>
+        </Grid>
+      </Grid>
+    </Box>
   </Box>
 
   {/* New Category start from here */}
@@ -531,87 +611,6 @@ data.map((item)=>(
           {/* </Box> */}
         </Fade>
       </Modal>
-
-       {/* subCategory item start from here */}
-       {/* <>
-      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-        <Typography sx={{ minWidth: 100 }}>Contact</Typography>
-        <Typography sx={{ minWidth: 100 }}>Profile</Typography>
-        <Tooltip title="Account settings">
-          <IconButton
-            onClick={handleClickSC}
-            size="small"
-            sx={{ ml: 2 }}
-            aria-controls={openSubCategory ? 'account-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={openSubCategory ? 'true' : undefined}
-          >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
-          </IconButton>
-        </Tooltip>
-      </Box>
-      <Menu
-        anchorEl={anchorEl}
-        id="account-menu"
-        open={openSubCategory}
-        onClose={handleCloseSC}
-        onClick={handleCloseSC}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-            mt: 1.5,
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            '&:before': {
-              content: '""',
-              display: 'block',
-              position: 'absolute',
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: 'background.paper',
-              transform: 'translateY(-50%) rotate(45deg)',
-              zIndex: 0,
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      >
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> My account
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
-      </Menu>
-    </> */}
 
     </>
     );

@@ -1,5 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 // @mui
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Container, Stack, Typography, Box } from '@mui/material';
@@ -12,6 +14,7 @@ import { getRequestHandler } from '../apiHandler/customApiHandler';
 import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
 // mock
 import PRODUCTS from '../_mock/products';
+
 
 
 // ----------------------------------------------------------------------
@@ -63,9 +66,13 @@ export default function ProductsPage() {
       </Helmet>
 
       <Container>
-        <Typography variant="h4" sx={{ mb: 5 }}>
+      <Box sx={{display:"flex"}}>
+          <ShoppingCartIcon sx={{height:36}}/>
+          <Typography variant="h4" sx={{ mb: 5 }}>
           Products
         </Typography>
+          </Box>
+        
         
         <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>
           <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
@@ -77,10 +84,13 @@ export default function ProductsPage() {
             <ProductSort />
           </Stack>
         </Stack>
-        <Box sx={{border:"1px solid #6610F2", mr:"2rem", mb:"1rem", width:"120px",height:"34px",  p:".5rem", backgroundColor:"#6610F2"}}>
+        <Box>
           {/* <AddCircleIcon/> */}
           <Link style={{textDecoration:"none"}} to="/dashboard/product">
-          <Typography sx={{color:"white",fontSize:"12px", textDecoration:"none", textAlign:"center"}}>+ Add Product </Typography>
+          <Button  sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                                bgcolor: '#6EAB49'
+                            }, margin:1}}><AddIcon/>Add Product</Button>
+          {/* <Typography sx={{color:"white",fontSize:"12px", textDecoration:"none", textAlign:"center"}}>+ Add Product </Typography> */}
           </Link>
         </Box>
        

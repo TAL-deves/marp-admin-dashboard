@@ -8,6 +8,7 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import TextField from '@mui/material/TextField';
 import CancelIcon from '@mui/icons-material/Cancel';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 // @mui
 import {
   Card,
@@ -195,9 +196,13 @@ export default function UserPage() {
       </Helmet>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Box sx={{display:"flex"}}>
+          <PersonAddAltIcon sx={{height:36}}/>
           <Typography variant="h4" gutterBottom>
-            User
+           User
           </Typography>
+          </Box>
+       
           <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleClickedUser} sx={{bgcolor:"#6610F2", color:"white",":hover": {
                                 bgcolor: '#6EAB49'
                             }}}>
