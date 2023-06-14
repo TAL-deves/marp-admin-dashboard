@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography'
-import { Link, useLocation } from 'react-router-dom';
-import { postRequestHandler } from '../apiHandler/customApiHandler';
- 
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Slider from 'react-slick';
+import { getRequestHandler, postRequestHandler } from '../apiHandler/customApiHandler';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
+
 function ProductReview() {
     const location = useLocation();
     const name = location.state.name;
@@ -19,6 +23,7 @@ function ProductReview() {
     const priCe = location.state.priCe;
     const shortdescription = location.state.shortdescription;
     const fulldescription = location.state.fulldescription;
+    const imagesList =location.state.imagesList;
   //   const productData= {
   //     "sku": {sKu},
   //     "productCode":{code}, 
@@ -47,14 +52,14 @@ function ProductReview() {
             sku: `${sKu}`,
             productCode: `${code}`,
             name: `${name}`,
-            price: 123,
-            discount: 2,
-            newItem: true,
-            saleCount: 2,
-            stock: 2,
+            price: `${priCe}`,
+            discount: `${disCount}`,
+            newItem: `${newitem}`,
+            saleCount: `${salecount}`,
+            stock: `${stoCk}`,
             shortDescription: `${shortdescription}`,
             fullDescription: `${fulldescription}`,
-            productImages: 'http://dummyimage.com/133x100.png/cc0000/ffffff',
+            productImages: `${imagesList}`,
             brand: `${brandname}`,
             categoryName: `${cat}`,
             subcategoryName: `${subCat}`,
@@ -68,11 +73,44 @@ function ProductReview() {
         console.error(error);
       }
     }
+
+    const navigate = useNavigate();
+  async function handleAuthCheck() {
+
+    try {
+      const data = await getRequestHandler('https://marpapi.techanalyticaltd.com/auth/authcheck');
+      // Handle the response data
+      console.log("auth check response", data);
+      if(data.error.code===401){
+        localStorage.removeItem("accessToken")
+      localStorage.removeItem("refreshToken")
+      localStorage.removeItem("user")
+      navigate("/")
+      }
+    } catch (error) {
+      // Handle the error
+      console.error(error);
+    }
+  }
+
+
+
+  useEffect(() => {
+    handleAuthCheck()    
+  }, []);
+   
+    const settings = {
+      dots: true,
+      infinite: true, 
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrow:true
+    };
     
   return (
     <Box>
-     
-     <Box sx={{ display: "flex", justifyContent:"flex-start" }}>
+      <Box sx={{ display: "flex", justifyContent:"flex-start" }}>
         <Typography sx={{  m: "1rem" }}>
           + Add Product
         </Typography>
@@ -80,6 +118,26 @@ function ProductReview() {
           Product Review
         </Typography>
       </Box>
+      <Box sx={{display:"flex", justifyContent:"center"}}>
+      <Box sx={{height:"15rem", width:"15rem", m:"2rem", textAlign:"center"}}>
+      {imagesList[0]?
+
+     <Slider {...settings}>
+      {imagesList.map((image, index) => (
+        // <div key={index}>
+          <img height="auto" width="10rem" src={image} alt="" />
+        // </div>
+      ))}
+    </Slider>
+    
+    :
+    <>
+    <Typography sx={{color:"red"}}>Please upload an image</Typography>
+    </>}
+    </Box>
+    </Box>
+    <Box container sx={{m:"5rem"}}>
+     
       
       <Box>
         <Typography> Product Name:{name}</Typography>
@@ -105,11 +163,12 @@ function ProductReview() {
           
         </Box>
         </Link>
-        <Box onClick={()=>{handleAddProducts()}} sx={{border:"1px solid #6610F2", mb:"1rem", width:"120px",height:"34px",  p:".5rem", backgroundColor:"#6610F2", mt:"3rem"}}>
+        <Box onClick={()=>{handleAddProducts()}} sx={{border:"1px solid #6610F2", mb:"1rem", width:"120px",height:"34px",  p:".5rem", backgroundColor:"#6610F2", mt:"3rem", cursor:"pointer"}}>
           {/* <AddCircleIcon/> */}
        
           <Typography sx={{color:"white",fontSize:"12px", textDecoration:"none", textAlign:"center"}}>Publish</Typography>
           
+        </Box>
         </Box>
         </Box>
     </Box>

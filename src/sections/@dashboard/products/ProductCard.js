@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 // @mui
-import { Box, Card, Link, Typography, Stack } from '@mui/material';
+import { Box, Card,Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { Link } from 'react-router-dom';
 // utils
+import { deleteRequestHandler } from '../../../apiHandler/customApiHandler';
 import { fCurrency } from '../../../utils/formatNumber';
 // components
 import Label from '../../../components/label';
 import { ColorPreview } from '../../../components/color-utils';
-
+// import {delete} from "../../../../public/assets/delete.png"
 // ----------------------------------------------------------------------
 
 const StyledProductImg = styled('img')({
@@ -25,9 +27,20 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { name, productImages, price, status, priceSale } = product;
+  const { id, name, productImages, price, status, priceSale } = product;
   // const { name, cover, price, colors, status, priceSale } = product;
-
+    // delete product
+    async function deleteData() {
+      try {
+        const response = await deleteRequestHandler('https://marpapi.techanalyticaltd.com/product/?page=1&items=10', {id});
+        // Handle the response data      
+        console.log("delete data", response);
+  
+      } catch (error) {
+        // Handle the error
+        console.error(error);
+      }
+    } 
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
@@ -50,11 +63,11 @@ export default function ShopProductCard({ product }) {
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link color="inherit" underline="hover">
-          <Typography variant="subtitle2" noWrap>
+        {/* <Link color="inherit" underline="hover"> */}
+          <Typography sx={{textDecoration:"none"}} variant="subtitle2" noWrap>
             {name}
           </Typography>
-        </Link>
+        {/* </Link> */}
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           {/* <ColorPreview colors={colors} /> */}
@@ -72,6 +85,16 @@ export default function ShopProductCard({ product }) {
             &nbsp;
             {fCurrency(price)}
           </Typography>
+          <Box sx={{display:"flex", alignItems:"center"}}>
+          {/* edit product  */}
+          <Link to={`/dashboard/product/${id}`}>
+            <img src="/assets/Vector.png" alt='' />
+          </Link>
+          {/* delete product */}
+          <Box sx={{cursor:"pointer", ml:"1rem"}} onClick={()=>deleteData()}>
+            <img src="/assets/delete.png" alt='' />
+          </Box>
+          </Box>
         </Stack>
       </Stack>
     </Card>
