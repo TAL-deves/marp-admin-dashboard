@@ -47,10 +47,10 @@ export default function Router() {
         { path: 'add-product-review', element: <ProductReview />, },
       ],
     },
-    {
-      path: 'login',
-      element: <LoginPage />,
-    },
+    // {
+    //   path: 'login',
+    //   element: <LoginPage />,
+    // },
     {
       element: <SimpleLayout />,
       children: [

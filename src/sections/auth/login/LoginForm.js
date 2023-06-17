@@ -29,8 +29,8 @@ export default function LoginForm() {
     setShow(true);
     handleOpen();
    const data=await loginHandler("https://marpapi.techanalyticaltd.com/admin/login",phone, password);
-   console.log("phone ,password", phone, password, data.errMsg
-   );
+  //  console.log("phone ,password", phone, password, data.errMsg
+  //  );
    if(data.success){
      swal("Log in!", "Your are successfully loged in!", "success");
      navigate('/dashboard', { replace: true });

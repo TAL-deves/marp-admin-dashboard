@@ -2,7 +2,7 @@ import axios from "axios";
 import encryptData from "./utils/encryption";
 import decryptData from "./utils/decryption";
 
-const encryption = process.env.NEXT_PUBLIC_ENCRYPTION || "TRUE";
+const encryption = process.env.NEXT_PUBLIC_ENCRYPTION || "FALSE";
 const baseURL = process.env.NEXT_PUBLIC_APIPOINT;
 
 const caxios = axios.create({
@@ -21,9 +21,10 @@ caxios.interceptors.request.use(
       } else {
         config.data = { data: encryptData(config.data) };
       }
-    } else {
-      config.data = { data: config.data };
-    }
+    } 
+    // else {
+    //   config.data = { data: config.data };
+    // }
 
     return config;
   },

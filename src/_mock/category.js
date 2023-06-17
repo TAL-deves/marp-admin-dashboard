@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Helmet } from 'react-helmet-async';
 // eslint-disable-next-line import/no-unresolved
-import { getRequestHandler } from "src/apiHandler/customApiHandler";
+import { getRequestHandler, postRequestHandler } from "src/apiHandler/customApiHandler";
 import CardMedia from '@mui/material/CardMedia';
 // import picture from "../../assets/transparent.png"
 import { useState, useEffect } from "react";
@@ -26,20 +26,22 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import axios from 'axios';
 import AddIcon from '@mui/icons-material/Add';
-import CategoryIcon from '@mui/icons-material/Category';
-
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
+import Accordin from "../components/orderSearch/orderSearch"
+// eslint-disable-next-line import/no-unresolved
+// import CategoryIcon from "../../assets/Category.svg";
+// import Avatar from '@mui/material/Avatar';
+// import Menu from '@mui/material/Menu';
 // import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
+// import ListItemIcon from '@mui/material/ListItemIcon';
+// import Divider from '@mui/material/Divider';
+// import IconButton from '@mui/material/IconButton';
 // import Typography from '@mui/material/Typography';
-import Tooltip from '@mui/material/Tooltip';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
+// import Tooltip from '@mui/material/Tooltip';
+// import PersonAdd from '@mui/icons-material/PersonAdd';
+// import Settings from '@mui/icons-material/Settings';
+// import Logout from '@mui/icons-material/Logout';
 
 
 
@@ -61,11 +63,29 @@ const style = {
 const Category = () => {
   const [data, setData] = useState([]);
   const [menu, setMenu] = useState(false);
+  const [category, setCategory] = useState("");
+
+// button toggle 
+
+
+
   // New category start from here 
   const [opens, setOpens] = useState(false);
   const handleOpen = () => setOpens(true);
-  const handleClickUpdate=()=>{
-    setOpens(false)
+
+  const handleNewCategory=()=>{
+    setOpens(false);
+    console.log(category);
+    async function getData(){
+      // const categoriesData= await getRequestHandler("https://marpapi.techanalyticaltd.com/category/category");
+      // setData(categoriesData.data.categoryList)
+      const data=await postRequestHandler("https://marpapi.techanalyticaltd.com/category" , category);
+      console.log("data ", data);
+    
+      // console.log("categoriesData -----",typeof(categoriesData.data.categoryList[0]), categoriesData.data.categoryList[0]
+      // );
+    }
+    getData();
   }
   // const handleClickCancel=()=>{
   //   setOpens(false)
@@ -92,27 +112,49 @@ const handleChange = (event) => {
   setAge(event.target.value);
 };
 
-useEffect(() => {
-  async function getData(){
-    const categoriesData= await getRequestHandler("https://marpapi.techanalyticaltd.com/category/");
-    setData(categoriesData.data.categoryList)
+// Data coming from backend
+
+// useEffect(() => {
+//   async function getData(){
+//     const categoriesData= await getRequestHandler("https://marpapi.techanalyticaltd.com/category/");
+//     setData(categoriesData.data.categoryList)
   
-    // console.log("categoriesData -----",typeof(categoriesData.data.categoryList[0]), categoriesData.data.categoryList[0]
-    // );
-  }
-  getData();
+//     // console.log("categoriesData -----",typeof(categoriesData.data.categoryList[0]), categoriesData.data.categoryList[0]
+//     // );
+//   }
+//   getData();
+
+// }, []);
+
+// dummy json data testing 
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('https://jsonplaceholder.typicode.com/users');
+      setData(response.data);
+      console.log("data from api", data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  fetchData();
 }, []);
 
 
-const handleClickedEdit=()=>{
-  console.log("edit button");
+const handleClickedEdit=(id)=>{
+  console.log("edit button", id);
 }
-const handleClickedDelete=()=>{
-  console.log("Delete button");
+const handleClickedDelete=(id)=>{
+  console.log("Delete button", id);
 }
-const handleClickedSubmenu=()=>{
-  console.log("Menu button");
+const handleClickedClosed=(id)=>{
   setMenu(!menu);
+  console.log("Menu button handleClickedClosed", id);
+}
+const handleClickedOpen=(id)=>{
+  setMenu(!menu)
+  console.log("Menu button handleClickedOpen", id);
 }
 
 
@@ -121,6 +163,7 @@ const handleClickedSubmenu=()=>{
 const [anchorEl, setAnchorEl] = React.useState(null);
 const openSubCategory = Boolean(anchorEl);
 const handleClickSC = (event) => {
+  console.log("toggle button--");
   setAnchorEl(event.currentTarget);
 };
 // console.log("button clicked", menu);
@@ -141,118 +184,23 @@ const handleCloseSC = () => {
 
        {/* subCategory item start from here */}
 
-       {/* <>
-      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-        <Tooltip title="Account settings">
-          <IconButton
-            onClick={handleClickSC}
-            size="small"
-            sx={{ ml: 3 }}
-            aria-controls={openSubCategory ? 'account-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={openSubCategory ? 'true' : undefined}
-          >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
-          </IconButton>
-        </Tooltip>
-      </Box>
-      
-      <Menu
-        anchorEl={anchorEl}
-        id="account-menu"
-        open={openSubCategory}
-        onClose={handleCloseSC}
-        onClick={handleCloseSC}
-        maxWidth={"30%"}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-            mt: 6,
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            '&:before': {
-              content: '""',
-              display: 'block',
-              position: 'absolute',
-              top: 0,
-              left: 20,
-              width: 20,
-              height: 20,
-              bgcolor: 'background.paper',
-              transform: 'translateY(-50%) rotate(45deg)',
-              zIndex: 0,
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-      >
-            <Box sx={{ flexGrow: 1, margin:2}}>
-      <Grid container spacing={2}>
-        <Grid item xs={8}>
-        <Typography variant='p'>SubCategory</Typography>
-        </Grid>
-        <Grid item xs={4}>
-       <Button><Typography sx={{color:"red"}}>X</Typography></Button>
-        </Grid>
-      </Grid>
-    </Box>
-        <MenuItem onClick={handleClose}>
-        <CardMedia
-        component="img"
-        alt="green iguana"
-        Width="117px"
-        Height="80px"
-        image="./../../assets/Rectangle 181.png"
-      />
-          Mobile
-          <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
-      <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-        <CardMedia
-        component="img"
-        alt="green iguana"
-        Width="117px"
-        Height="80px"
-        image="./../../assets/Rectangle 181.png"
-      />
-          Television
-          
-          <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
-      <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-        <CardMedia
-        component="img"
-        alt="green iguana"
-        Width="117px"
-        Height="80px"
-        image="./../../assets/Rectangle 181.png"
-      />
-          Computer
-          <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
-      <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
-        </MenuItem>
-      </Menu>
-    </> */}
-
     <Box sx={{marginX:2}}> 
     <Box sx={{ flexGrow: 1  }}>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={7}>
+        <Grid item xs={12} md={7}>
         <Box sx={{display:"flex"}}>
-          <CategoryIcon sx={{height:36}}/>
+        {/* <CardMedia
+        component="img"
+        alt="green iguana"
+        height={"100%"}
+        width={24}
+        image="./../../assets/Category.svg"
+      /> */}
+      {/* <CategoryIcon/> */}
           <Typography variant='h4' sx={{padding:0}}>Category</Typography>
           </Box>
         </Grid>
-        <Grid item xs={12} sm={5} sx={{textAlign:"end", alignSelf:"end"}}>
+        <Grid item xs={12} md={5} sx={{textAlign:"end", alignSelf:"end"}}>
         <Button onClick={handleClickedCategory} sx={{bgcolor:"#6610F2", color:"white",":hover": {
                                 bgcolor: '#6EAB49'
                             }}}><AddIcon/>New Category</Button>
@@ -267,19 +215,19 @@ const handleCloseSC = () => {
 
     <Box sx={{ flexGrow: 1, padding:3 }}>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={8}>  
+        <Grid item xs={12} sm={7}>  
         {
 data.map((item)=>(
   <>
-     <Card sx={{ width: "100%",  marginTop:3}}>
+     <Card sx={{ width: "100%", height:{xs:"3%", sm:"4%"}, marginTop:3}}>
      <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
       <CardMedia
         component="img"
         alt="green iguana"
-        height="100%"
-        width="200"
+        height="full"
+        width="full"
         image="./../../assets/Rectangle 181.png"
       />
         </Grid>
@@ -287,33 +235,33 @@ data.map((item)=>(
       <CardContent sx={{display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height:'100%',
+    height:'50%',
    }}>
-        <Typography gutterBottom variant="h5" component="div">
+        <h6>
          {item.name}
-        </Typography>
+        </h6>
       </CardContent>
       </Grid>
       <Grid item xs={6}>
       <CardActions sx={{display: 'flex',
     justifyContent: 'end',
     alignItems: 'center',
-    height:'100%',
+    height:'50%',
    }}>
-       <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
-      <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
+       <Button onClick={()=>handleClickedEdit(item.id)}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
+      <Button onClick={()=>handleClickedDelete(item.id)}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
 
 
-      <Button   onClick={handleClickSC}
+      <Button onClick={handleClickSC}
             size="small"
             sx={{ ml: 6 }}
             aria-controls={openSubCategory ? 'account-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={openSubCategory ? 'true' : undefined}>
               { menu ?
-              <KeyboardArrowRightIcon  sx={{color:"#6610F2"}} onClick={()=>setMenu(!menu)}/>
+              <KeyboardArrowRightIcon  sx={{color:"#6610F2"}} onClick={()=>handleClickedClosed(item.id)}/>
               :
-              <KeyboardArrowDownIcon  sx={{color:"#6610F2"}} onClick={()=>setMenu(!menu)}/>
+              <KeyboardArrowDownIcon  sx={{color:"#6610F2"}} onClick={()=>handleClickedOpen(item.id)}/>
               }</Button>
       </CardActions>
       </Grid>
@@ -323,8 +271,11 @@ data.map((item)=>(
   </>
 ))
 }
+
+{/* <Accordin/> */}
+
         </Grid>
-        <Grid item xs={12} md={4} sx={{marginTop:3}}>
+        <Grid item xs={12} sm={5}>
           <Box 
                         display={'flex'}
                         flexDirection={'column'}
@@ -342,16 +293,16 @@ data.map((item)=>(
                             }
                         }}
                     >
-       <Typography variant='h4'>SubCategory</Typography>
-          <Card sx={{ width: "96%",  marginTop:3}}>
+       <Typography sx={{ marginBottom:3}} variant='h4'>SubCategory</Typography>
+          <Card sx={{ width: "96%", height:{xs:40, marginBottom:8}}}>
      <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
       <CardMedia
         component="img"
         alt="green iguana"
-        height="100%"
-        width="200"
+        height="full"
+        width="full"
         image="./../../assets/Rectangle 181.png"
       />
         </Grid>
@@ -359,18 +310,18 @@ data.map((item)=>(
       <CardContent sx={{display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height:'100%',
+    height:"40%",
    }}>
-        <Typography gutterBottom variant="p" component="div">
+        <h6>
          Name
-        </Typography>
+        </h6>
       </CardContent>
       </Grid>
       <Grid item xs={6}>
       <CardActions sx={{display: 'flex',
     justifyContent: 'end',
     alignItems: 'center',
-    height:'100%',
+    height:"40%",
    }}>
        <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
       <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
@@ -380,15 +331,15 @@ data.map((item)=>(
       </Grid>
       </Box>
     </Card>
-          <Card sx={{ width: "96%",  marginTop:3}}>
+          <Card sx={{ width: "96%", height:{xs:40}, marginBottom:1}}>
      <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
       <CardMedia
         component="img"
         alt="green iguana"
-        height="100%"
-        width="200"
+        height="full"
+        width="full"
         image="./../../assets/Rectangle 181.png"
       />
         </Grid>
@@ -396,44 +347,36 @@ data.map((item)=>(
       <CardContent sx={{display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height:'100%',
+    height:"40%",
    }}>
-        <Typography gutterBottom variant="p" component="div">
+        <h6>
          Name
-        </Typography>
+        </h6>
       </CardContent>
       </Grid>
       <Grid item xs={6}>
       <CardActions sx={{display: 'flex',
     justifyContent: 'end',
     alignItems: 'center',
-    height:'100%',
+    height:"40%",
    }}>
        <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
       <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
-{/* 
 
-
-      <Button   onClick={handleClickSC}
-            size="small"
-            sx={{ ml: 6 }}
-            aria-controls={openSubCategory ? 'account-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={openSubCategory ? 'true' : undefined}>{ <KeyboardArrowDownIcon  sx={{color:"#6610F2"}}/>}</Button> */}
       </CardActions>
       </Grid>
       </Grid>
       </Box>
     </Card>
-          <Card sx={{ width: "96%",  marginTop:3}}>
+          <Card sx={{ width: "96%", height:{xs:40}, marginBottom:1}}>
      <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
       <CardMedia
         component="img"
         alt="green iguana"
-        height="100%"
-        width="200"
+        height="full"
+        width="full"
         image="./../../assets/Rectangle 181.png"
       />
         </Grid>
@@ -441,30 +384,22 @@ data.map((item)=>(
       <CardContent sx={{display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height:'100%',
+    height:"40%",
    }}>
-        <Typography gutterBottom variant="p" component="div">
+        <h6>
          Name
-        </Typography>
+        </h6>
       </CardContent>
       </Grid>
       <Grid item xs={6}>
       <CardActions sx={{display: 'flex',
     justifyContent: 'end',
     alignItems: 'center',
-    height:'100%',
+    height:"40%",
    }}>
        <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
       <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
-{/* 
 
-
-      <Button   onClick={handleClickSC}
-            size="small"
-            sx={{ ml: 6 }}
-            aria-controls={openSubCategory ? 'account-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={openSubCategory ? 'true' : undefined}>{ <KeyboardArrowDownIcon  sx={{color:"#6610F2"}}/>}</Button> */}
       </CardActions>
       </Grid>
       </Grid>
@@ -492,28 +427,6 @@ data.map((item)=>(
       >
         <Fade in={opens}>
           <Box sx={style}>
-            {/* <Box
-                        display={'flex'}
-                        flexDirection={'column'}
-                        alignItems="center"
-                        justifyContent={'center'}
-                        margin='auto'
-                        maxWidth={540}
-                        // marginTop={5}
-                        //    padding={3}
-                        borderRadius={2}
-                        boxShadow={'5px 5px 10px #ccc'}
-                        sx={{
-                            ":hover": {
-                                boxShadow: '10px 10px 20px #ccc'
-                            }
-                        }}
-                    > */}
-                        {/* <Typography variant='h3'> New CATEGORY </Typography> */}
-                        {/* <Avatar sx={{width:100,height:100, marginTop:3}} alt="Travis Howard" src="../../assets/images/avatars/tree-736885_1280.jpg" /> */}
-                        {/* <Button variant="contained" sx={{bgcolor:"#A084DD",":hover": {
-                                bgcolor: '#A749FF'
-                            } , marginY:2, width:"72%"}}>UPDATE YOUR IMAGE</Button> */}
                         <Box
                         //    alignItems="center"
                         //    justifyContent={'center'}
@@ -521,7 +434,7 @@ data.map((item)=>(
                    <Typography>
                     Category 
                    </Typography>
-                   <TextField id="outlined-basic" label="Category" variant="outlined" type="text" sx={{width:"100%", marginY:2}}/>
+                   <TextField id="outlined-basic" label="Category" variant="outlined" type="text" sx={{width:"100%", marginY:2}} onChange={(e)=>setCategory(e.target.value)}/>
                    <Button variant="contained" sx={{bgcolor:"#6610F2",":hover": {
                                 bgcolor: '#6EAB49'
                             } , width:"32%",
@@ -530,7 +443,7 @@ data.map((item)=>(
                             alignItems:"center",
                             justifyContent:'center',
                             margin:'auto'
-                            }} onClick={handleClickUpdate}>CREATE</Button>
+                            }} onClick={handleNewCategory}>CREATE</Button>
                         </Box>
                     </Box>
           {/* </Box> */}
@@ -553,23 +466,6 @@ data.map((item)=>(
       >
         <Fade in={open}>
           <Box sx={style}>
-            {/* <Box
-                        display={'flex'}
-                        flexDirection={'column'}
-                        alignItems="center"
-                        justifyContent={'center'}
-                        margin='auto'
-                        maxWidth={540}
-                        // marginTop={5}
-                        //    padding={3}
-                        borderRadius={2}
-                        boxShadow={'5px 5px 10px #ccc'}
-                        sx={{
-                            ":hover": {
-                                boxShadow: '10px 10px 20px #ccc'
-                            }
-                        }}
-                    > */}
                         <Box
                         //    alignItems="center"
                         //    justifyContent={'center'}

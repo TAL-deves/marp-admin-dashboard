@@ -5,11 +5,14 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import LogoutIcon from '@mui/icons-material/Logout';
 import SvgColor from '../../../components/svg-color';
-
 // ----------------------------------------------------------------------
 
 const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />;
+
+// const accessToken=localStorage.getItem("accessToken");
+// console.log("accessToken", accessToken);
 
 const navConfig = [
   {
@@ -30,18 +33,28 @@ const navConfig = [
   {
     title: 'category',
     path: '/dashboard/category',
-    icon: <CategoryIcon/>,
+    icon: icon('Category'),
   },
   {
     title: 'product',
     path: '/dashboard/products',
     icon: <ShoppingCartIcon/>,
   },
+//   { accessToken ?
+// "hasan"
+//     :
+//  "ar"
+//   },
   {
     title: 'login',
     path: '/login',
     icon: <LoginIcon/>,
   },
+  // {
+  //   title: 'logout',
+  //   path: '/login',
+  //   icon: <LogoutIcon/>,
+  // },
   // {
   //   title: 'Not found',
   //   path: '/404',

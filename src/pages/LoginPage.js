@@ -60,7 +60,7 @@ export default function LoginPage() {
         />
 
         {mdUp && (
-          <StyledSection>
+          <StyledSection sx={{mx:3}}>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
               Hi, Welcome admin dashboard
             </Typography>

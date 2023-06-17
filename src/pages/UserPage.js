@@ -238,7 +238,7 @@ export default function UserPage() {
 
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={avatarUrl} />
+                            {/* <Avatar alt={name} src={avatarUrl} /> */}
                             <Typography variant="subtitle2" noWrap>
                               {name}
                             </Typography>
@@ -262,7 +262,8 @@ export default function UserPage() {
                         </TableCell>
                       </TableRow>
                     );
-                  })}
+                  }
+                  )}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -337,6 +338,7 @@ export default function UserPage() {
           Delete
         </MenuItem>
       </Popover>
+      
        {/* start modal from here */}
       <Modal
         aria-labelledby="transition-modal-title"
