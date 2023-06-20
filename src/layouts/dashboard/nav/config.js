@@ -45,11 +45,11 @@ const navConfig = [
 //     :
 //  "ar"
 //   },
-  {
-    title: 'login',
-    path: '/login',
-    icon: <LoginIcon/>,
-  },
+  // {
+  //   title: 'login',
+  //   path: '/login',
+  //   icon: <LoginIcon/>,
+  // },
   // {
   //   title: 'logout',
   //   path: '/login',

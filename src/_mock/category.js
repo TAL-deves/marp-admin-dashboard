@@ -1,3 +1,4 @@
+/* jshint sub:true */
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -29,6 +30,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import axios from 'axios';
 import AddIcon from '@mui/icons-material/Add';
 import Accordin from "../components/orderSearch/orderSearch"
+import dummyData from "./dummyData";
 // eslint-disable-next-line import/no-unresolved
 // import CategoryIcon from "../../assets/Category.svg";
 // import Avatar from '@mui/material/Avatar';
@@ -62,6 +64,7 @@ const style = {
 
 const Category = () => {
   const [data, setData] = useState([]);
+  const [subCate, setSubCate] = useState([]);
   const [menu, setMenu] = useState(false);
   const [category, setCategory] = useState("");
 
@@ -113,33 +116,40 @@ const handleChange = (event) => {
 };
 
 // Data coming from backend
-
-// useEffect(() => {
-//   async function getData(){
-//     const categoriesData= await getRequestHandler("https://marpapi.techanalyticaltd.com/category/");
-//     setData(categoriesData.data.categoryList)
+useEffect(() => {
+  async function getData(){
+    const categoriesData= await getRequestHandler("https://marpapi.techanalyticaltd.com/category/allcategories");
+    setData(categoriesData.data.categoryList)
   
-//     // console.log("categoriesData -----",typeof(categoriesData.data.categoryList[0]), categoriesData.data.categoryList[0]
-//     // );
-//   }
-//   getData();
+    // console.log("categoriesData -----",typeof(categoriesData.data.categoryList), categoriesData.data.categoryList
+    // );
+  }
+  getData();
 
-// }, []);
+}, []);
 
 // dummy json data testing 
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await axios.get('https://jsonplaceholder.typicode.com/users');
-      setData(response.data);
-      console.log("data from api", data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+// useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       const response = await axios.get('https://jsonplaceholder.typicode.com/users');
 
-  fetchData();
-}, []);
+//       response.data.map((e,i) =>{
+//           console.log( e.id,i);
+         
+
+//          // e["expand"]=false;
+//           return data;
+//       })
+//       setData(response.data);
+//       console.log("data from api", data);
+//     } catch (error) {
+//       console.error('Error fetching data:', error);
+//     }
+//   };
+
+//   fetchData();
+// }, []);
 
 
 const handleClickedEdit=(id)=>{
@@ -148,13 +158,26 @@ const handleClickedEdit=(id)=>{
 const handleClickedDelete=(id)=>{
   console.log("Delete button", id);
 }
-const handleClickedClosed=(id)=>{
+const handleClickedClosed=(Food)=>{
   setMenu(!menu);
-  console.log("Menu button handleClickedClosed", id);
+  // console.log("Menu button handleClickedClosed id", id, data);
+  // const found = data.find(element => element.id === id);
+  // setSubCate(found);
+  // console.log("Menu button handleClickedClosed id and found data", id, found);
+
 }
-const handleClickedOpen=(id)=>{
-  setMenu(!menu)
-  console.log("Menu button handleClickedOpen", id);
+const handleClickedOpen=(name)=>{
+  setMenu(!menu);
+  // console.log("Menu button handleClickedOpen id", name, data);
+  // const found = data.find(element => element.id === id);
+  // setSubCate(found);
+  // console.log("Menu button handleClickedOpen id and found data", id, found);
+  async function getData(){
+    const responseData=await getRequestHandler(`https://marpapi.techanalyticaltd.com/category/subcategories?categoryName=${name}`);
+    setSubCate(responseData.data.categoryList);
+    console.log("responseData ",responseData,  responseData.data.categoryList.name);
+  }
+  getData();
 }
 
 
@@ -172,7 +195,7 @@ const handleCloseSC = () => {
 };
 
 
-
+console.log("subCate-----",typeof(subCate), subCate.length);
 // subCategory item end from here
 
     return (
@@ -216,10 +239,14 @@ const handleCloseSC = () => {
     <Box sx={{ flexGrow: 1, padding:3 }}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={7}>  
+      
+      
+      
         {
 data.map((item)=>(
   <>
-     <Card sx={{ width: "100%", height:{xs:"3%", sm:"4%"}, marginTop:3}}>
+
+     <Card sx={{ width: "100%", height:{xs:"10%", sm:"20%"}, marginTop:3}} key={item.id}>
      <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
@@ -228,6 +255,7 @@ data.map((item)=>(
         alt="green iguana"
         height="full"
         width="full"
+        // image=""
         image="./../../assets/Rectangle 181.png"
       />
         </Grid>
@@ -235,10 +263,11 @@ data.map((item)=>(
       <CardContent sx={{display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height:'50%',
+    height:'70%',
    }}>
         <h6>
          {item.name}
+         {/* Name */}
         </h6>
       </CardContent>
       </Grid>
@@ -246,7 +275,7 @@ data.map((item)=>(
       <CardActions sx={{display: 'flex',
     justifyContent: 'end',
     alignItems: 'center',
-    height:'50%',
+    height:'70%',
    }}>
        <Button onClick={()=>handleClickedEdit(item.id)}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
       <Button onClick={()=>handleClickedDelete(item.id)}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
@@ -258,11 +287,11 @@ data.map((item)=>(
             aria-controls={openSubCategory ? 'account-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={openSubCategory ? 'true' : undefined}>
-              { menu ?
-              <KeyboardArrowRightIcon  sx={{color:"#6610F2"}} onClick={()=>handleClickedClosed(item.id)}/>
-              :
-              <KeyboardArrowDownIcon  sx={{color:"#6610F2"}} onClick={()=>handleClickedOpen(item.id)}/>
-              }</Button>
+              {/* { menu ? */}
+              {/* // <KeyboardArrowRightIcon  sx={{color:"#6610F2"}} onClick={()=>handleClickedClosed(item.id)}/>: */}
+              <KeyboardArrowDownIcon  sx={{color:"#6610F2"}} onClick={()=>handleClickedOpen(item.name)}/>
+              {/* } */}
+              </Button>
       </CardActions>
       </Grid>
       </Grid>
@@ -272,7 +301,7 @@ data.map((item)=>(
 ))
 }
 
-{/* <Accordin/> */}
+{/* <Accordin data={data}/> */}
 
         </Grid>
         <Grid item xs={12} sm={5}>
@@ -293,118 +322,65 @@ data.map((item)=>(
                             }
                         }}
                     >
-       <Typography sx={{ marginBottom:3}} variant='h4'>SubCategory</Typography>
-          <Card sx={{ width: "96%", height:{xs:40, marginBottom:8}}}>
-     <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="full"
-        width="full"
-        image="./../../assets/Rectangle 181.png"
-      />
-        </Grid>
-        <Grid item xs={3}>
-      <CardContent sx={{display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height:"40%",
-   }}>
-        <h6>
-         Name
-        </h6>
-      </CardContent>
-      </Grid>
-      <Grid item xs={6}>
-      <CardActions sx={{display: 'flex',
-    justifyContent: 'end',
-    alignItems: 'center',
-    height:"40%",
-   }}>
-       <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
-      <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
+       <Typography sx={{ marginBottom:3}} variant='h4'>SubCategory {subCate.name}</Typography>
+       
+       {
+         subCate.length === 0 ?
+        <Typography>
+         No Subcategory here
+        </Typography>
+          :
+          <>
+          {
+            subCate.subcategories.map((subItem)=>(
+              <>
+                      <Card sx={{ width: "96%", height:{xs:40, marginBottom:8}}}>
+                 <Box sx={{ flexGrow: 1 }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={3}>
+                  <CardMedia
+                    component="img"
+                    alt="green iguana"
+                    height="full"
+                    width="full"
+                    image="./../../assets/Rectangle 181.png"
+                  />
+                    </Grid>
+                    <Grid item xs={3}>
+                  <CardContent sx={{display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height:"40%",
+               }}>
+                    <h6>
+                  {subItem.name}
+                    </h6>
+                  </CardContent>
+                  </Grid>
+                  <Grid item xs={6}>
+                  <CardActions sx={{display: 'flex',
+                justifyContent: 'end',
+                alignItems: 'center',
+                height:"40%",
+               }}>
+                   <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
+                  <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
+            
+                  </CardActions>
+                  </Grid>
+                  </Grid>
+                  </Box>
+                </Card>
+                </>
+            ))
+            }
+          
+        </>
+       }
 
-      </CardActions>
-      </Grid>
-      </Grid>
-      </Box>
-    </Card>
-          <Card sx={{ width: "96%", height:{xs:40}, marginBottom:1}}>
-     <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="full"
-        width="full"
-        image="./../../assets/Rectangle 181.png"
-      />
-        </Grid>
-        <Grid item xs={3}>
-      <CardContent sx={{display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height:"40%",
-   }}>
-        <h6>
-         Name
-        </h6>
-      </CardContent>
-      </Grid>
-      <Grid item xs={6}>
-      <CardActions sx={{display: 'flex',
-    justifyContent: 'end',
-    alignItems: 'center',
-    height:"40%",
-   }}>
-       <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
-      <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
-
-      </CardActions>
-      </Grid>
-      </Grid>
-      </Box>
-    </Card>
-          <Card sx={{ width: "96%", height:{xs:40}, marginBottom:1}}>
-     <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="full"
-        width="full"
-        image="./../../assets/Rectangle 181.png"
-      />
-        </Grid>
-        <Grid item xs={3}>
-      <CardContent sx={{display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height:"40%",
-   }}>
-        <h6>
-         Name
-        </h6>
-      </CardContent>
-      </Grid>
-      <Grid item xs={6}>
-      <CardActions sx={{display: 'flex',
-    justifyContent: 'end',
-    alignItems: 'center',
-    height:"40%",
-   }}>
-       <Button onClick={handleClickedEdit}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
-      <Button onClick={handleClickedDelete}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
-
-      </CardActions>
-      </Grid>
-      </Grid>
-      </Box>
-    </Card>
+            {/* {subCate.subCategory.map((subItem) => (
+              <li key={subItem.id}>{subItem.name}</li>
+            ))} */}
     </Box>
         </Grid>
       </Grid>
