@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Helmet } from 'react-helmet-async';
 // eslint-disable-next-line import/no-unresolved
-import { getRequestHandler, postRequestHandler } from "src/apiHandler/customApiHandler";
+import { getRequestHandler, postRequestHandler,deleteRequestHandler } from "src/apiHandler/customApiHandler";
 import CardMedia from '@mui/material/CardMedia';
 // import picture from "../../assets/transparent.png"
 import { useState, useEffect } from "react";
@@ -69,7 +69,15 @@ const Category = () => {
   const [category, setCategory] = useState("");
 
 // button toggle 
-
+// Data coming from backend
+useEffect(() => {
+  async function getData(){
+    const categoriesData= await getRequestHandler("https://marpapi.techanalyticaltd.com/category/");
+    setData(categoriesData.data.categoryList);
+    // console.log("categoriesData", categoriesData);
+  }
+  getData();
+}, []);
 
 
   // New category start from here 
@@ -78,21 +86,15 @@ const Category = () => {
 
   const handleNewCategory=()=>{
     setOpens(false);
-    console.log(category);
     async function getData(){
-      // const categoriesData= await getRequestHandler("https://marpapi.techanalyticaltd.com/category/category");
-      // setData(categoriesData.data.categoryList)
-      const data=await postRequestHandler("https://marpapi.techanalyticaltd.com/category" , category);
-      console.log("data ", data);
-    
-      // console.log("categoriesData -----",typeof(categoriesData.data.categoryList[0]), categoriesData.data.categoryList[0]
-      // );
+      const NewResData=await postRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, {category} );
+      console.log("NewResData ", NewResData);
     }
     getData();
+  // handleCommon();
+
   }
-  // const handleClickCancel=()=>{
-  //   setOpens(false)
-  // }
+
   const handleClickedCategory=()=>{
     handleOpen();
   }
@@ -115,19 +117,19 @@ const handleChange = (event) => {
   setAge(event.target.value);
 };
 
-// Data coming from backend
-useEffect(() => {
-  async function getData(){
-    const categoriesData= await getRequestHandler("https://marpapi.techanalyticaltd.com/category/allcategories");
-    setData(categoriesData.data.categoryList)
-  
-    // console.log("categoriesData -----",typeof(categoriesData.data.categoryList), categoriesData.data.categoryList
-    // );
-  }
-  getData();
 
-}, []);
 
+
+
+// const handleCommon=()=>{
+//     async function getData(){
+//       const categoriesData= await getRequestHandler("https://marpapi.techanalyticaltd.com/category/allcategories");
+//       setData(categoriesData.data.categoryList);
+//       // console.log("categoriesData", categoriesData);
+//     }
+//     getData();
+
+// }
 // dummy json data testing 
 // useEffect(() => {
 //   const fetchData = async () => {
@@ -155,27 +157,26 @@ useEffect(() => {
 const handleClickedEdit=(id)=>{
   console.log("edit button", id);
 }
+
+
 const handleClickedDelete=(id)=>{
   console.log("Delete button", id);
+  async function getData(){
+    const responseData=await deleteRequestHandler("https://marpapi.techanalyticaltd.com/category/", {"categoryId":id});
+    console.log("responseData", responseData);
+  }
+  getData();
 }
-const handleClickedClosed=(Food)=>{
-  setMenu(!menu);
-  // console.log("Menu button handleClickedClosed id", id, data);
-  // const found = data.find(element => element.id === id);
-  // setSubCate(found);
-  // console.log("Menu button handleClickedClosed id and found data", id, found);
 
-}
+
+// const handleClickedClosed=()=>{
+//   setMenu(!menu)
+// }
 const handleClickedOpen=(name)=>{
   setMenu(!menu);
-  // console.log("Menu button handleClickedOpen id", name, data);
-  // const found = data.find(element => element.id === id);
-  // setSubCate(found);
-  // console.log("Menu button handleClickedOpen id and found data", id, found);
   async function getData(){
     const responseData=await getRequestHandler(`https://marpapi.techanalyticaltd.com/category/subcategories?categoryName=${name}`);
     setSubCate(responseData.data.categoryList);
-    console.log("responseData ",responseData,  responseData.data.categoryList.name);
   }
   getData();
 }
@@ -195,7 +196,7 @@ const handleCloseSC = () => {
 };
 
 
-console.log("subCate-----",typeof(subCate), subCate.length);
+// console.log("data-----",typeof(data), data);
 // subCategory item end from here
 
     return (
@@ -236,7 +237,7 @@ console.log("subCate-----",typeof(subCate), subCate.length);
     </Box>
 
 
-    <Box sx={{ flexGrow: 1, padding:3 }}>
+    <Box sx={{ flexGrow: 1, padding:2 }}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={7}>  
       
@@ -246,7 +247,7 @@ console.log("subCate-----",typeof(subCate), subCate.length);
 data.map((item)=>(
   <>
 
-     <Card sx={{ width: "100%", height:{xs:"10%", sm:"20%"}, marginTop:3}} key={item.id}>
+     <Card sx={{ width: "100%", marginTop:3}} key={item.id}>
      <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
@@ -263,19 +264,19 @@ data.map((item)=>(
       <CardContent sx={{display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height:'70%',
+    height:'100%',
    }}>
-        <h6>
+        <Typography>
          {item.name}
          {/* Name */}
-        </h6>
+        </Typography>
       </CardContent>
       </Grid>
       <Grid item xs={6}>
       <CardActions sx={{display: 'flex',
     justifyContent: 'end',
     alignItems: 'center',
-    height:'70%',
+    height:'100%',
    }}>
        <Button onClick={()=>handleClickedEdit(item.id)}><ModeEditIcon sx={{color:"#6EAB49"}}/></Button>
       <Button onClick={()=>handleClickedDelete(item.id)}><DeleteIcon sx={{color:"#E53E3E"}}/></Button>
@@ -322,7 +323,7 @@ data.map((item)=>(
                             }
                         }}
                     >
-       <Typography sx={{ marginBottom:3}} variant='h4'>SubCategory {subCate.name}</Typography>
+       <Typography sx={{ my:3}} variant='h4'>SubCategory of {subCate.name}</Typography>
        
        {
          subCate.length === 0 ?
@@ -459,9 +460,16 @@ data.map((item)=>(
           label="Category"
           onChange={handleChange}
         >
-          <MenuItem value={10}>Electronics</MenuItem>
+          {
+            data.map((opItem)=>
+              <>
+              <MenuItem>{opItem.name}</MenuItem>
+              </>
+            )
+          }
+          {/* <MenuItem value={10}>Electronics</MenuItem>
           <MenuItem value={20}>Daily Products</MenuItem>
-          <MenuItem value={30}>ABCDE</MenuItem>
+          <MenuItem value={30}>ABCDE</MenuItem> */}
         </Select>
       </FormControl>
                    <Typography sx={{margin:2}}>

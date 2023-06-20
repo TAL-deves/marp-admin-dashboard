@@ -28,6 +28,7 @@ export default function LoginForm() {
   const handleClick = async() => {
     setShow(true);
     handleOpen();
+    console.log("phone", typeof(phone), phone);
    const data=await loginHandler("https://marpapi.techanalyticaltd.com/admin/login",phone, password);
   //  console.log("phone ,password", phone, password, data.errMsg
   //  );
