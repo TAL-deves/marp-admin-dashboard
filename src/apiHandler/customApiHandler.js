@@ -13,7 +13,7 @@ export const postRequestHandler = async (url, bodyData) => {
   return responseData;
 };
 
-export const patchRequestHandler = async () => {};
+export const patchRequestHandler = async () => { };
 
 export const putRequestHandler = async (formData) => {
   const accessToken = localStorage.getItem("accessToken");
@@ -42,7 +42,20 @@ export const putRequestHandler = async (formData) => {
 };
 
 export const deleteRequestHandler = async (url, bodyData) => {
-  const responseData = await caxios.post(url, { ...bodyData });
+
+  // console.log("inside ---->", url, bodyData);
+
+  // const responseData = await caxios.delete(url,  bodyData);
+
+  const responseData = await axios.delete("https://marpapi.techanalyticaltd.com/category/", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+    },
+    data: {
+      ...bodyData
+    }
+  });
+
   return responseData;
 };
 
@@ -91,6 +104,6 @@ export const logoutHandler = async (url) => {
 export const authGetRequestHandler = async (url) => {
   caxios.defaults.headers.common.Authorization =
     "Bearer fc95e87e0a205c5a77ba8b7b753b91b09e53da13";
-    const responseData = await caxios.get(url);
+  const responseData = await caxios.get(url);
   return responseData;
 };
