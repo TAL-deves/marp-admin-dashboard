@@ -12,7 +12,6 @@ import OrderSearch from "../components/orderSearch/orderSearch";
 
 const handleSearch=()=>{
   console.log("Search button");
-  // <OrderSearch/>
 }
 function MyTable() {
 
@@ -138,6 +137,7 @@ function App() {
       </Grid>
       </Box>
       <MyTable />
+      {/* <OrderSearch /> */}
     </div>
   );
 }

@@ -26,27 +26,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import axios from 'axios';
 import AddIcon from '@mui/icons-material/Add';
-import Accordin from "../components/orderSearch/orderSearch"
-import dummyData from "./dummyData";
-// eslint-disable-next-line import/no-unresolved
-// import CategoryIcon from "../../assets/Category.svg";
-// import Avatar from '@mui/material/Avatar';
-// import Menu from '@mui/material/Menu';
-// import MenuItem from '@mui/material/MenuItem';
-// import ListItemIcon from '@mui/material/ListItemIcon';
-// import Divider from '@mui/material/Divider';
-// import IconButton from '@mui/material/IconButton';
-// import Typography from '@mui/material/Typography';
-// import Tooltip from '@mui/material/Tooltip';
-// import PersonAdd from '@mui/icons-material/PersonAdd';
-// import Settings from '@mui/icons-material/Settings';
-// import Logout from '@mui/icons-material/Logout';
-
-
-
 
 const style = {
   position: 'absolute',
@@ -55,7 +35,6 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: "52%",
   bgcolor: 'background.paper',
-  // border: '2px solid #000',
   borderRadius: 3,
   boxShadow: 24,
   p: 4,
@@ -65,12 +44,11 @@ const style = {
 const Category = () => {
   const [data, setData] = useState([]);
   const [subCate, setSubCate] = useState([]);
-  const [menu, setMenu] = useState(false);
+  // const [menu, setMenu] = useState(false);
   const [category, setCategory] = useState("");
   const [subcategory, setSubcategory] = useState("");
   const [reload, setReload] = useState(false)
 
-  // button toggle 
   // Data coming from backend
   useEffect(() => {
     async function getData() {
@@ -79,6 +57,7 @@ const Category = () => {
       // console.log("categoriesData", categoriesData);
     }
     getData();
+    console.log("useEffect------");
   }, [reload]);
 
 
@@ -107,10 +86,10 @@ const Category = () => {
     setOpen(true);
   }
 
-  const handleClickCreate = () => {
+  const handleSubcategoryCreate = () => {
     setOpen(false);
     async function getData() {
-      const NewResData = await postRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, { category, subcategory });
+      const NewResData = await postRequestHandler('https://marpapi.techanalyticaltd.com/category/', { category, subcategory });
       console.log("NewResData ", NewResData);
       setReload(!reload);
     }
@@ -119,46 +98,11 @@ const Category = () => {
   const handleSubcategory = () => setOpen(false);
 
   // select menu item start from here
-  const [age, setAge] = React.useState('');
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
-
-
-
-
-
-  // const handleCommon=()=>{
-  //     async function getData(){
-  //       const categoriesData= await getRequestHandler("https://marpapi.techanalyticaltd.com/category/allcategories");
-  //       setData(categoriesData.data.categoryList);
-  //       // console.log("categoriesData", categoriesData);
-  //     }
-  //     getData();
-
-  // }
-  // dummy json data testing 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('https://jsonplaceholder.typicode.com/users');
-
-  //       response.data.map((e,i) =>{
-  //           console.log( e.id,i);
-
-
-  //          // e["expand"]=false;
-  //           return data;
-  //       })
-  //       setData(response.data);
-  //       console.log("data from api", data);
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
+  // const [age, setAge] = React.useState('');
+  // const handleChange = (event) => {
+  //   setAge(event.target.value);
+  // };
+  // console.log("age------", age);
 
 
   const handleClickedEdit = (id) => {
@@ -166,47 +110,43 @@ const Category = () => {
   }
 
 
-  const handleClickedDelete = (id) => {
-    console.log("Delete button", id);
-    async function getData(id) {
-      // const categoryId = id;
+  const handleCategoryDelete = (id) => {
+    async function getData() {
       const responseData = await deleteRequestHandler("https://marpapi.techanalyticaltd.com/category/", { categoryId: id });
       console.log("responseData", responseData);
       setReload(!reload)
     }
-    getData(id);
+    getData();
   }
-
-
-  // const handleClickedClosed=()=>{
-  //   setMenu(!menu)
-  // }
-  const handleClickedOpen = (name) => {
-    setMenu(!menu);
+  const handleClickedDeleteSub = (id) => {
+    console.log("clicked handleClickedDeleteSub");
     async function getData() {
-      const responseData = await getRequestHandler(`https://marpapi.techanalyticaltd.com/category/subcategories?categoryName=${name}`);
-      setSubCate(responseData.data.categoryList);
+      const resSubCateData = await deleteRequestHandler("https://marpapi.techanalyticaltd.com/category/", { subcategoryId: id });
+      console.log("resSubCateData", resSubCateData);
+      // setReload(!reload)
     }
     getData();
   }
 
+  // const handleOpenSubCategory = (name) => {
+  //   setMenu(!menu);
+  //   async function getData() {
+  //     const responseData = await getRequestHandler(`https://marpapi.techanalyticaltd.com/category/subcategories?categoryName=${name}`);
+  //     setSubCate(responseData.data.categoryList);
+  //     console.log("subcategory responseData", responseData);
+  //   }
+  //   getData();
+  // }
+
 
   // subcategory item start from here
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const openSubCategory = Boolean(anchorEl);
-  const handleClickSC = (event) => {
-    console.log("toggle button--");
-    setAnchorEl(event.currentTarget);
-  };
-  // console.log("button clicked", menu);
-  const handleCloseSC = () => {
-    setAnchorEl(null);
-  };
-
-
-  // console.log("data-----",typeof(data), data);
-  // subCategory item end from here
+  // const [anchorEl, setAnchorEl] = React.useState(null);
+  // const openSubCategory = Boolean(anchorEl);
+  // const handleClickSC = (event) => {
+  //   console.log("toggle button--");
+  //   setAnchorEl(event.currentTarget);
+  // };
 
   return (
     <>
@@ -222,14 +162,6 @@ const Category = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} md={7}>
               <Box sx={{ display: "flex" }}>
-                {/* <CardMedia
-        component="img"
-        alt="green iguana"
-        height={"100%"}
-        width={24}
-        image="./../../assets/Category.svg"
-      /> */}
-                {/* <CategoryIcon/> */}
                 <Typography variant='h4' sx={{ padding: 0 }}>Category</Typography>
               </Box>
             </Grid>
@@ -245,22 +177,15 @@ const Category = () => {
                 }, margin: 1
               }}><AddIcon />New Subcategory</Button>
             </Grid>
-
           </Grid>
         </Box>
 
-
         <Box sx={{ flexGrow: 1, padding: 2 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={7}>
-
-
-
-              {
+            <Grid item xs={12} sm={7}> {
                 data.map((item) => (
                   <>
-
-                    <Card sx={{ width: "100%", marginTop: 3 }} key={item.id}>
+                  <Card sx={{ width: "100%", marginTop: 3 }} key={item.id}>
                       <Box sx={{ flexGrow: 1 }}>
                         <Grid container spacing={2}>
                           <Grid item xs={3}>
@@ -294,20 +219,23 @@ const Category = () => {
                               height: '100%',
                             }}>
                               <Button onClick={() => handleClickedEdit(item.id)}><ModeEditIcon sx={{ color: "#6EAB49" }} /></Button>
-                              <Button onClick={() => handleClickedDelete(item.id)}><DeleteIcon sx={{ color: "#E53E3E" }} />
+                              <Button onClick={() => handleCategoryDelete(item.id)}><DeleteIcon sx={{ color: "#E53E3E" }} />
                               </Button>
 
 
-                              <Button onClick={handleClickSC}
-                                size="small"
-                                sx={{ ml: 6 }}
-                                aria-controls={openSubCategory ? 'account-menu' : undefined}
-                                aria-haspopup="true"
-                                aria-expanded={openSubCategory ? 'true' : undefined}>
-                                {/* { menu ? */}
-                                {/* // <KeyboardArrowRightIcon  sx={{color:"#6610F2"}} onClick={()=>handleClickedClosed(item.id)}/>: */}
-                                <KeyboardArrowDownIcon sx={{ color: "#6610F2" }} onClick={() => handleClickedOpen(item.name)} />
-                                {/* } */}
+                              <Button 
+                              // onClick={handleClickSC}
+                              //   size="small"
+                              //   sx={{ ml: 6 }}
+                              //   aria-controls={openSubCategory ? 'account-menu' : undefined}
+                              //   aria-haspopup="true"
+                              //   aria-expanded={openSubCategory ? 'true' : undefined}
+                                >
+                                <KeyboardArrowDownIcon sx={{ color: "#6610F2" }} onClick={() => {
+                                  console.log("item ----->", item)
+                                  setSubCate(item.subcategories)
+                                }
+                                } />
                               </Button>
                             </CardActions>
                           </Grid>
@@ -317,10 +245,8 @@ const Category = () => {
                   </>
                 ))
               }
-
-              {/* <Accordin data={data}/> */}
-
             </Grid>
+
             <Grid item xs={12} sm={5}>
               <Box
                 display={'flex'}
@@ -329,8 +255,6 @@ const Category = () => {
                 justifyContent={'center'}
                 margin='auto'
                 maxWidth={540}
-                // marginTop={5}
-                //    padding={3}
                 borderRadius={2}
                 boxShadow={'5px 5px 10px #ccc'}
                 sx={{
@@ -339,7 +263,9 @@ const Category = () => {
                   }
                 }}
               >
-                <Typography sx={{ my: 3 }} variant='h4'>SubCategory of {subCate.name}</Typography>
+                <Typography sx={{ my: 3 }} variant='h4'>SubCategory of {subCate.name}
+                
+                </Typography>
 
                 {
                   subCate.length === 0 ?
@@ -349,7 +275,7 @@ const Category = () => {
                     :
                     <>
                       {
-                        subCate.subcategories.map((subItem) => (
+                        subCate.map((subItem) => (
                           <>
                             <Card sx={{ width: "96%", height: { xs: 40, marginBottom: 8 } }}>
                               <Box sx={{ flexGrow: 1 }}>
@@ -380,11 +306,10 @@ const Category = () => {
                                       display: 'flex',
                                       justifyContent: 'end',
                                       alignItems: 'center',
-                                      height: "40%",
+                                      height: "30%",
                                     }}>
                                       <Button onClick={handleClickedEdit}><ModeEditIcon sx={{ color: "#6EAB49" }} /></Button>
-                                      <Button onClick={handleClickedDelete}><DeleteIcon sx={{ color: "#E53E3E" }} /></Button>
-
+                                      <Button onClick={()=>handleClickedDeleteSub(subItem.id)}><DeleteIcon sx={{ color: "#E53E3E" }} /></Button>
                                     </CardActions>
                                   </Grid>
                                 </Grid>
@@ -393,9 +318,7 @@ const Category = () => {
                           </>
                         ))
                       }
-
-                    </>
-                }
+                    </>}
               </Box>
             </Grid>
           </Grid>
@@ -463,20 +386,18 @@ const Category = () => {
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={age}
+                  // value={age}
                   label="Category"
-                  onChange={(e) => setCategory(e.target.value)}
-                >
+                  onChange={(e) => setCategory(e.target.value)}>
                   {data.map((opItem, index) => (
                     <MenuItem key={index} value={opItem.name}>{opItem.name}</MenuItem>
                   ))}
-                 
                 </Select>
               </FormControl>
               <Typography sx={{ margin: 2 }}>
                 SubCategory
               </Typography>
-              <TextField id="outlined-basic" label="SubCategory" variant="outlined" type="text" sx={{ width: "100%", marginBottom: 2 }} onChange={(e) => setSubcategory(e.target.value)}/>
+              <TextField id="outlined-basic" label="SubCategory" variant="outlined" type="text" sx={{ width: "100%", marginBottom: 2 }} onChange={(e) => setSubcategory(e.target.value)} />
               <Button variant="contained" sx={{
                 bgcolor: "#6610F2", ":hover": {
                   bgcolor: '#6EAB49'
@@ -487,7 +408,7 @@ const Category = () => {
                 justifyContent: 'center',
                 margin: 'auto',
 
-              }} onClick={handleClickCreate}>CREATE</Button>
+              }} onClick={handleSubcategoryCreate}>CREATE</Button>
             </Box>
           </Box>
         </Fade>
