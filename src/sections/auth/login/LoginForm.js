@@ -57,15 +57,7 @@ export default function LoginForm() {
         // eslint-disable-next-line no-restricted-globals
         open={open}
         // eslint-disable-next-line no-undef
-        onClick={handleClose}
-      >
-             {/* <BounceLoader
-color='#c7eed8'
-        load={show}
-        size={50}
-        aria-label="Loading Spinner"
-        data-testid="loader"
-      /> */}
+        onClick={handleClose}>
       <Circles
   height="80"
   width="80"
@@ -74,9 +66,7 @@ color='#c7eed8'
   wrapperStyle={{}}
   wrapperClass=""
   visible={show}
-/>
-         {/* <CircularProgress color="inherit" /> */}
-      </Backdrop>
+/></Backdrop>
       
        :
       <Stack spacing={3}>

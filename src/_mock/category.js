@@ -27,6 +27,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import AddIcon from '@mui/icons-material/Add';
+import { Circles } from 'react-loader-spinner';
 
 const style = {
   position: 'absolute',
@@ -48,13 +49,16 @@ const Category = () => {
   const [category, setCategory] = useState("");
   const [subcategory, setSubcategory] = useState("");
   const [reload, setReload] = useState(false)
+  const [show, setShow] = React.useState(false)
 
   // Data coming from backend
   useEffect(() => {
+    setShow(true);
     async function getData() {
       const categoriesData = await getRequestHandler("https://marpapi.techanalyticaltd.com/category/");
       setData(categoriesData.data.categoryList);
       // console.log("categoriesData", categoriesData);
+      setShow(false)
     }
     getData();
     console.log("useEffect------");
@@ -179,8 +183,29 @@ const Category = () => {
             </Grid>
           </Grid>
         </Box>
+<>
+{
+show=== true ?
 
-        <Box sx={{ flexGrow: 1, padding: 2 }}>
+
+
+<Backdrop
+sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+// eslint-disable-next-line no-restricted-globals
+open={open}
+>
+<Circles
+  height="80"
+  width="80"
+  color="#c7eed8"
+  ariaLabel="circles-loading"
+  wrapperStyle={{}}
+  wrapperClass=""
+  visible={show}
+/>
+</Backdrop>
+        :
+<Box sx={{ flexGrow: 1, padding: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={7}> {
                 data.map((item) => (
@@ -322,7 +347,11 @@ const Category = () => {
               </Box>
             </Grid>
           </Grid>
-        </Box>
+        </Box> 
+}
+</>
+  
+
       </Box>
 
       {/* New Category start from here */}
