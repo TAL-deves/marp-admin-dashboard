@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -6,8 +6,24 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Helmet } from 'react-helmet-async';
+import {getRequestHandler} from "../apiHandler/customApiHandler"
 
-const userAccount = () => (
+
+
+const userAccount = () => {
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [data, setData]=useState([])
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useEffect(() => {
+        async function getData() {
+          const categoriesData = await getRequestHandler("https://marpapi.techanalyticaltd.com/admin/profile");
+          setData(categoriesData.data);
+          console.log("categoriesData", categoriesData.data);
+        }
+        getData();
+      }, []);
+
+  return(
     <>
     <Helmet>
     <title> Profile | admin dashboard </title>
@@ -101,6 +117,6 @@ const userAccount = () => (
             </Grid>
         </Box>
         </>
-    );
-
+        )
+};
 export default userAccount;

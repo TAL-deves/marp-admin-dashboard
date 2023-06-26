@@ -15,6 +15,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Alert from '@mui/material/Alert';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import swal from 'sweetalert';
 import { getRequestHandler } from '../apiHandler/customApiHandler';
 
 
@@ -28,12 +32,10 @@ export default function OrderList() {
 
   async function handleGetAllDataforUpdate() {
     setShow(true)
-    try {
-      // const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/ordermanagement?page=${currentPage}&items=10&deliveryStatus=queued`);
-      const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/useraction?role=${selectedDeliveryStatus}&page=${currentPage}&items=10`);
+    try {const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/useraction?role=${selectedDeliveryStatus}&page=${currentPage}&items=10`);
       // Handle the response data
       setOrderList(response.data.allData)
-      console.log("user response", response.data.allData)
+      // console.log("user response", response.data.allData)
       setTotalPages(response.data.totalPages);
       // setCurrentPage(response.data.currentPage);
       setShow(false)
@@ -50,6 +52,11 @@ export default function OrderList() {
 
   const handleChange = (event, value) => {
     setCurrentPage(value);
+  };
+
+  const handleCreateUser = () => {
+    // console.log("handleCreateUser -----");
+    swal("Coming Soon!!!", "Please Wait!", "success");
   };
 
 // console.log("orderList--------->", orderList.length);
@@ -75,12 +82,25 @@ export default function OrderList() {
           </Backdrop>
         </> :
         <>
-          <Box sx={{ display: "flex", mb: "1rem" }}>
+      <Box sx={{ flexGrow: 1 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={9}>
+        <Box sx={{ display: "flex", mb: "1rem" }}>
             <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setSelectedDeliveryStatus("user") }}>Filter</Box>
             <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setSelectedDeliveryStatus("admin") }}>Admin</Box>
             <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setSelectedDeliveryStatus("user") }}>User</Box>
             <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setSelectedDeliveryStatus("shipper") }}>Shipper</Box>
           </Box>
+        </Grid>
+        <Grid item xs={3}>
+        <Box sx={{ display: "flex", mb: "1rem" }}>
+            {/* <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={{handleCreateUser}}>Create New User</Box> */}
+            <Button variant="contained" onClick={handleCreateUser}>Create New User</Button>
+          </Box>
+      </Grid>
+      </Grid>
+    </Box>
+        
 
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
