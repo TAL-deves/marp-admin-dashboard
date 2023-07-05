@@ -31,8 +31,8 @@ export default function OrderList() {
   const [show, setShow] = React.useState(false)
 
   async function handleGetAllDataforUpdate() {
-    setShow(true)
-    try {const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/useraction?role=${selectedDeliveryStatus}&page=${currentPage}&items=10`);
+    setShow(true);
+    try {const response = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/useraction?role=${selectedDeliveryStatus}&page=${currentPage}&items=10`);
       // Handle the response data
       setOrderList(response.data.allData)
       // console.log("user response", response.data.allData)
@@ -41,7 +41,7 @@ export default function OrderList() {
       setShow(false)
     } catch (error) {
       // Handle the error
-      console.error(error);
+      // console.error(error);
       setShow(false)
     }
   }

@@ -28,6 +28,7 @@ import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import AddIcon from '@mui/icons-material/Add';
 import { Circles } from 'react-loader-spinner';
+import BackDrop from "../backDrop"
 
 const style = {
   position: 'absolute',
@@ -116,7 +117,7 @@ const Category = () => {
 
   const handleCategoryDelete = (id) => {
     async function getData() {
-      const responseData = await deleteRequestHandler("https://marpapi.techanalyticaltd.com/category/", { categoryId: id });
+      const responseData = await deleteRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { categoryId: id });
       console.log("responseData", responseData);
       setReload(!reload)
     }
@@ -125,7 +126,7 @@ const Category = () => {
   const handleClickedDeleteSub = (id) => {
     console.log("clicked handleClickedDeleteSub");
     async function getData() {
-      const resSubCateData = await deleteRequestHandler("https://marpapi.techanalyticaltd.com/category/", { subcategoryId: id });
+      const resSubCateData = await deleteRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { subcategoryId: id });
       console.log("resSubCateData", resSubCateData);
       // setReload(!reload)
     }
@@ -185,25 +186,8 @@ const Category = () => {
         </Box>
 <>
 {
-show=== true ?
-
-
-
-<Backdrop
-sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-// eslint-disable-next-line no-restricted-globals
-open={open}
->
-<Circles
-  height="80"
-  width="80"
-  color="#c7eed8"
-  ariaLabel="circles-loading"
-  wrapperStyle={{}}
-  wrapperClass=""
-  visible={show}
-/>
-</Backdrop>
+                show ?
+<BackDrop show={show}/>
         :
 <Box sx={{ flexGrow: 1, padding: 2 }}>
           <Grid container spacing={2}>
