@@ -56,9 +56,9 @@ const Category = () => {
   useEffect(() => {
     setShow(true);
     async function getData() {
-      const categoriesData = await getRequestHandler("https://marpapi.techanalyticaltd.com/category/");
+      const categoriesData = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`);
       setData(categoriesData.data.categoryList);
-      // console.log("categoriesData", categoriesData);
+      console.log("categoriesData", categoriesData);
       setShow(false)
     }
     getData();
@@ -73,7 +73,7 @@ const Category = () => {
   const handleNewCategory = () => {
     setOpens(false);
     async function getData() {
-      const NewResData = await postRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, { category });
+      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category });
       console.log("NewResData ", NewResData);
       setReload(!reload);
     }
@@ -94,8 +94,8 @@ const Category = () => {
   const handleSubcategoryCreate = () => {
     setOpen(false);
     async function getData() {
-      const NewResData = await postRequestHandler('https://marpapi.techanalyticaltd.com/category/', { category, subcategory });
-      console.log("NewResData ", NewResData);
+      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category, subcategory });
+      console.log("NewResData of subcategory", NewResData);
       setReload(!reload);
     }
     getData();
