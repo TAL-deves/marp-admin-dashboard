@@ -14,6 +14,7 @@ import DashboardAppPage from './pages/DashboardAppPage';
 import AddProduct from './pages/AddProduct';
 import ProductReview from './pages/ProductReview';
 import { getRequestHandler } from './apiHandler/customApiHandler';
+import AddUser from './pages/AddUser';
 // import { useNavigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
@@ -57,6 +58,7 @@ export default function Router() {
         { path: 'category', element: <CategoryPage /> },
         { path: 'profile', element: <UserProfile />, },
         { path: 'product', element: <AddProduct />, },
+        { path: 'add-user', element: <AddUser />, },
         { path: 'product/:id', element: <AddProduct />, },
         { path: 'add-product-review', element: <ProductReview />, },
       ],

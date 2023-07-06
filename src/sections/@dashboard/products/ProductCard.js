@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 // @mui
 import { Box, Card,Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+// import Backdrop from 'src/theme/overrides/Backdrop';
+import Backdrop from '@mui/material/Backdrop';
+import { Circles } from 'react-loader-spinner';
 // utils
 import { deleteRequestHandler } from '../../../apiHandler/customApiHandler';
 import { fCurrency } from '../../../utils/formatNumber';
@@ -27,21 +31,49 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
+  const [show, setShow] = useState(false)
   const { id, name, productImages, price, status, priceSale } = product;
   // const { name, cover, price, colors, status, priceSale } = product;
     // delete product
+    const navigate = useNavigate();
     async function deleteData() {
+      setShow(true)
       try {
-        const response = await deleteRequestHandler('https://marpapi.techanalyticaltd.com/product/?page=1&items=10', {id});
+        const response = await deleteRequestHandler('https://marpapi.techanalyticaltd.com/product/', {id});
         // Handle the response data      
         console.log("delete data", response);
+        console.log("delete id", id);
+        setShow(false)
+        if(response.success){
+          navigate("/dashboard/products")
+        }
   
       } catch (error) {
         // Handle the error
+        setShow(false)
         console.error(error);
       }
     } 
   return (
+    <>{show ?
+      <>
+        <Backdrop
+          sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          // eslint-disable-next-line no-restricted-globals
+          open={open}
+        >
+          <Circles
+            height="80"
+            width="80"
+            color="#c7eed8"
+            ariaLabel="circles-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={show}
+          /> 
+        </Backdrop>
+      </> :
+      <>
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
         {status && (
@@ -98,5 +130,6 @@ export default function ShopProductCard({ product }) {
         </Stack>
       </Stack>
     </Card>
+    </>}</>
   );
 }

@@ -13,7 +13,10 @@ export const postRequestHandler = async (url, bodyData) => {
   return responseData;
 };
 
-export const patchRequestHandler = async () => {};
+export const patchRequestHandler = async (url, bodyData) => {
+  const responseData = await caxios.patch(url, { ...bodyData });
+  return responseData;
+};
 
 export const putRequestHandler = async (formData) => {
   const accessToken = localStorage.getItem("accessToken");

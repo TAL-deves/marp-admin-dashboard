@@ -14,7 +14,7 @@ import {loginHandler} from "../../../apiHandler/customApiHandler"
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  const [phone, setPhone]=useState("");
+  const [phoneNumber, setPhone]=useState("");
   const [password, setPassword]=useState("");
   const [loader, setLoader]=useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -23,8 +23,8 @@ export default function LoginForm() {
   const handleClick = async() => {
     setLoader(true);
     handleOpen();
-   const data=await loginHandler("https://marpapi.techanalyticaltd.com/admin/login",phone, password);
-   console.log("phone ,password", phone, password, data.errMsg
+   const data=await loginHandler("https://marpapi.techanalyticaltd.com/admin/login",phoneNumber, password);
+   console.log("phone ,password", phoneNumber, password, data
    );
    if(data.success){
      swal("Log in!", "Your are successfully loged in!", "success");

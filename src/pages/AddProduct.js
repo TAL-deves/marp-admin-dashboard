@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Backdrop from '@mui/material/Backdrop';
 import { Circles } from 'react-loader-spinner';
-import { getRequestHandler, postRequestHandler, putRequestHandler } from '../apiHandler/customApiHandler';
+import { getRequestHandler, patchRequestHandler, postRequestHandler, putRequestHandler } from '../apiHandler/customApiHandler';
 import ImageDragnDrop from '../components/ImageDragnDrop/ImageDragnDrop';
 
 const Container = styled('div')({
@@ -76,9 +76,11 @@ function AddProduct() {
   // update data 
   async function handleUpdateProduct() {
     setShow(true);
+    handleOpen();
+    
     try {
-      const response = await postRequestHandler('https://marpapi.techanalyticaltd.com/product',{
-        product: {
+      console.log("sku", sku)
+      const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/product/',{
           sku: `${sku}`,
           productCode: `${productCode}`,
           name: `${productName}`,
@@ -88,16 +90,18 @@ function AddProduct() {
           saleCount,
           stock,
           shortDescription: `${shortDescription}`,
-          fullDescription: `${fullDescription}`,
           productImages: `${droppedImages}`,
           brand: `${brand}`,
           categoryName: `${categoryName}`,
           subcategoryName: `${subCategoryName}`,
-        },
+         id:`${id}`,
       });
       // Handle the response data
       setShow(false);
-       console.log("new update product response",response);
+      if(response.success){
+        navigate("/dashboard/products")
+      }
+       console.log("new update sku",response);
     } catch (error) {
       // Handle the error
       console.error(error);
@@ -109,7 +113,7 @@ function AddProduct() {
       const response = await getRequestHandler('https://marpapi.techanalyticaltd.com/category/allcategories');
       // Handle the response data      
       setCategoryList(response.data.categoryList)
-      // console.log("categories", response.data.categoryList);
+       console.log("categories", response.data.categoryList);
 
     } catch (error) {
       // Handle the error
@@ -198,19 +202,13 @@ function AddProduct() {
     {show?
     <>
     <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         // eslint-disable-next-line no-restricted-globals
         open={open}
         // eslint-disable-next-line no-undef
-        onClick={handleClose}
+        // onClick={handleClose}
       >
-             {/* <BounceLoader
-color='#c7eed8'
-        load={show}
-        size={50}
-        aria-label="Loading Spinner"
-        data-testid="loader"
-      /> */}
+           
       <Circles
   height="80"
   width="80"
@@ -224,6 +222,7 @@ color='#c7eed8'
       </Backdrop>
     </>:
     <Box container sx={{ maxWidth: "80rem" }}>
+      
       <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
         <Typography sx={{ borderBottom: "5px solid #6610F2", m: "1rem" }}>
           + Add Product

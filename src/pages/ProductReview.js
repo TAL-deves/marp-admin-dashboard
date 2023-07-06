@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
+import Backdrop from '@mui/material/Backdrop';
+import { Circles } from 'react-loader-spinner';
 import { getRequestHandler, postRequestHandler } from '../apiHandler/customApiHandler';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -43,6 +45,8 @@ function ProductReview() {
 
 
     async function handleAddProducts() {
+      setShow(true);
+    handleOpen();
       // const product = '{
       //   product: productData
       // };
@@ -52,11 +56,11 @@ function ProductReview() {
             sku: `${sKu}`,
             productCode: `${code}`,
             name: `${name}`,
-            price: `${priCe}`,
-            discount: `${disCount}`,
-            newItem: `${newitem}`,
-            saleCount: `${salecount}`,
-            stock: `${stoCk}`,
+            price: priCe,
+            discount: disCount,
+            newItem: newitem,
+            saleCount: salecount,
+            stock: stoCk,
             shortDescription: `${shortdescription}`,
             fullDescription: `${fulldescription}`,
             productImages: `${imagesList}`,
@@ -66,7 +70,10 @@ function ProductReview() {
           },
         });
         // Handle the response data
-        
+        setShow(false);
+      if(response.success){
+        navigate("/dashboard/products")
+      }
          console.log("new add product response",response);
       } catch (error) {
         // Handle the error
@@ -92,7 +99,14 @@ function ProductReview() {
       console.error(error);
     }
   }
-
+  const [show, setShow] = useState(false);
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
 
   useEffect(() => {
@@ -109,6 +123,29 @@ function ProductReview() {
     };
     
   return (
+    <>
+    {show?
+    <>
+    <Backdrop
+        sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        // eslint-disable-next-line no-restricted-globals
+        open={open}
+        // eslint-disable-next-line no-undef
+        // onClick={handleClose}
+      >
+           
+      <Circles
+  height="80"
+  width="80"
+  color="#c7eed8"
+  ariaLabel="circles-loading"
+  wrapperStyle={{}}
+  wrapperClass=""
+  visible={show}
+/>
+         {/* <CircularProgress color="inherit" /> */}
+      </Backdrop>
+    </>:
     <Box>
       <Box sx={{ display: "flex", justifyContent:"flex-start" }}>
         <Typography sx={{  m: "1rem" }}>
@@ -172,6 +209,8 @@ function ProductReview() {
         </Box>
         </Box>
     </Box>
+}
+    </>
   )
 }
 
