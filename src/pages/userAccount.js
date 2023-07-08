@@ -6,7 +6,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Helmet } from 'react-helmet-async';
-import {getRequestHandler} from "../apiHandler/customApiHandler"
+import {getRequestHandler, postRequestHandler} from "../apiHandler/customApiHandler"
 import BackDrop from "../backDrop"
 
 
@@ -32,6 +32,18 @@ const name="Admin dashboard";
 const phoneNumber="01234567891";
 const email="Admin@gmail.com"
 
+
+const handleSetPassword=()=>{
+    const userId=data.id;
+    console.log("Set Password button", userId);
+    async function getData() {
+        const categoriesData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}auth/resetpassword`, {userId});
+        // setData(categoriesData.data);
+        console.log("categoriesData", categoriesData);
+        // setShow(false);
+      }
+      getData();
+}
 
   return(
     <>
@@ -134,7 +146,9 @@ const email="Admin@gmail.com"
                    sx={{width:"80%", marginX:"10%"}}/>
                    <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
                                 bgcolor: '#6EAB49'
-                            }, marginY:2, width:"80%"}}>SET PASSWORD</Button>
+                            }, marginY:2, width:"80%"}} 
+                            onClick={handleSetPassword}
+                            >SET PASSWORD</Button>
                         </Box>
                     {/* </Box> */}
                 </Grid>
