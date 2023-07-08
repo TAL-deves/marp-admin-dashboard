@@ -115,7 +115,7 @@ export default function ProductsPage() {
           onChange={handleSearchChange}
           sx={{mb:"1rem"}}
         />
-        <Box sx={{ border: "1px solid #6610F2", mr: "2rem", mb: "1rem", width: "120px", height: "34px", p: ".5rem", backgroundColor: "#6610F2" }}>
+        <Box sx={{ border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "34px", p: ".5rem", backgroundColor: "#6610F2" }}>
           {/* <AddCircleIcon/> */}
         
           <Link style={{ textDecoration: "none" }} to="/dashboard/product">

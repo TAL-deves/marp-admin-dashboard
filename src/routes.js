@@ -15,6 +15,7 @@ import AddProduct from './pages/AddProduct';
 import ProductReview from './pages/ProductReview';
 import { getRequestHandler } from './apiHandler/customApiHandler';
 import AddUser from './pages/AddUser';
+import Shipper from './_mock/shipper';
 // import { useNavigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
@@ -53,6 +54,7 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'orderList', element: <OrderListPage /> },
+        { path: 'shipper', element: <Shipper /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'category', element: <CategoryPage /> },

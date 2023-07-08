@@ -224,7 +224,7 @@ function AddProduct() {
     <Box container sx={{ maxWidth: "80rem" }}>
       
       <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-        <Typography sx={{ borderBottom: "5px solid #6610F2", m: "1rem" }}>
+        <Typography sx={{margingLeft:".2rem", borderBottom: "5px solid #6610F2", m: "1rem" }}>
           + Add Product
         </Typography>
         <Typography sx={{ m: "1rem" }}>
