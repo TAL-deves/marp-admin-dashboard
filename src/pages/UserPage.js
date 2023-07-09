@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,20 +6,20 @@ import Typography from "@mui/material/Typography";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import MenuItem from '@mui/material/MenuItem';
-import Backdrop from '@mui/material/Backdrop';
-import Select from '@mui/material/Select';
 import TableCell from '@mui/material/TableCell';
-import { Circles } from 'react-loader-spinner';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import swal from 'sweetalert';
+import { Link } from 'react-router-dom';
+import Backdrop from '@mui/material/Backdrop';
+import EditIcon from '@mui/icons-material/Edit';
+import { Circles } from 'react-loader-spinner';
+import Iconify from '../components/iconify';
 import { getRequestHandler } from '../apiHandler/customApiHandler';
-
 
 export default function OrderList() {
 
@@ -32,10 +31,11 @@ export default function OrderList() {
 
   async function handleGetAllDataforUpdate() {
     setShow(true);
-    try {const response = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/useraction?role=${selectedDeliveryStatus}&page=${currentPage}&items=10`);
+    // try {const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/useraction?role=user`);
+    try {const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/useraction?role=${selectedDeliveryStatus}&page=${currentPage}&items=10`);
       // Handle the response data
       setOrderList(response.data.allData)
-      // console.log("user response", response.data.allData)
+       console.log("user response", response.data.allData)
       setTotalPages(response.data.totalPages);
       // setCurrentPage(response.data.currentPage);
       setShow(false)
@@ -55,17 +55,17 @@ export default function OrderList() {
   };
 
   const handleCreateUser = () => {
-    // console.log("handleCreateUser -----");
     swal("Coming Soon!!!", "Please Wait!", "success");
   };
 
-// console.log("orderList--------->", orderList.length);
+// console.log("orderList--------->",orderList, orderList.length);
 
   return (
     <>
       {show ?
         <>
-      <Backdrop
+    <>
+          <Backdrop
             sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
             // eslint-disable-next-line no-restricted-globals
             open={open}
@@ -78,8 +78,9 @@ export default function OrderList() {
               wrapperStyle={{}}
               wrapperClass=""
               visible={show}
-            />
+            /> 
           </Backdrop>
+        </>
         </> :
         <>
       <Box sx={{ flexGrow: 1 }}>
@@ -94,8 +95,13 @@ export default function OrderList() {
         </Grid>
         <Grid item xs={3}>
         <Box sx={{ display: "flex", mb: "1rem" }}>
-            {/* <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={{handleCreateUser}}>Create New User</Box> */}
-            <Button variant="contained" onClick={handleCreateUser}>Create New User</Button>
+            <Link style={{ textDecoration: "none" }} to="/dashboard/add-user">
+           <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                                bgcolor: '#6EAB49'
+            }}}>
+            Create New User
+          </Button>
+          </Link>
           </Box>
       </Grid>
       </Grid>
@@ -108,10 +114,11 @@ export default function OrderList() {
                 <TableRow>
                   <TableCell>Date</TableCell>
                   <TableCell align="left">Name</TableCell>
-                  <TableCell align="left">Phone</TableCell>
-                  <TableCell align="left">Email</TableCell>
-                  <TableCell align="left">Gender</TableCell>
-                  <TableCell align="left">Address</TableCell>
+                  <TableCell align="left">Role</TableCell>
+                  {/* <TableCell align="left">Verified</TableCell> */}
+                  <TableCell align="left">Status</TableCell>
+                  {/* <TableCell align="left">Company</TableCell> */}
+                  <TableCell align="left">Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -133,29 +140,23 @@ export default function OrderList() {
                           {row.createdAt}
                         </TableCell>
                         <TableCell align="left">{row.profile?.fullName}</TableCell>
-                        <TableCell align="left">{row.phoneNumber}</TableCell> 
-                        <TableCell align="left">{row.email}</TableCell>
-                        <TableCell align="left">{row.profile?.gender}</TableCell>
-                        {/* {row.paymentStatus === "pending" ?
-                          <TableCell align="left">
-                            <Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8" }}>
-                              <span style={{ color: 'green', fontSize: "2rem", lineHeight: '0.35' }}>•</span>
-                              {row.paymentStatus}
-                            </Typography>
-                          </TableCell>
-                          :
-                          <TableCell align="left"><Typography sx={{ display: 'inline-block', border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8" }}><span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>{row.paymentStatus}</Typography></TableCell>} */}
-                        {/* {row.deliveryStatus === "queued" ?
+                        <TableCell align="left">{row.role}</TableCell>
+                        {row.locked === true ?
                           <TableCell align="left">
                             <Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8", }}>
-                              <span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>
-                              {row.deliveryStatus}
+                              <span style={{ color: '#6EAB49', fontSize: "2rem", lineHeight: '0.35' }}>•</span>Active
+                              {row.locked}
                             </Typography>
                           </TableCell>
                           :
-                          <TableCell align="left"><Typography sx={{ display: 'inline-block', border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8" }}><span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>{row.deliveryStatus}</Typography></TableCell>
-                        } */}
-                        <TableCell align="left">{row.profile?.address}</TableCell>
+                          <TableCell align="left">
+                          <Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8", }}>
+                            <span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>Locked
+                            {row.locked}
+                          </Typography>
+                        </TableCell>
+                        }
+                        <TableCell align="left"><EditIcon sx={{color:"#6EAB49"}}/></TableCell>
                       </TableRow>
                     ))}
                   </>}
