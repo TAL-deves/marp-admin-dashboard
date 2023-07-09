@@ -16,16 +16,15 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import swal from 'sweetalert';
 import { Link } from 'react-router-dom';
-import Backdrop from '@mui/material/Backdrop';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import EditIcon from '@mui/icons-material/Edit';
-import { Circles } from 'react-loader-spinner';
+import BackDrop from '../backDrop';
 import Iconify from '../components/iconify';
 import { getRequestHandler } from '../apiHandler/customApiHandler';
 
 export default function OrderList() {
-
   const [userList, setUserList] = React.useState([])
-  const [id,setId]= React.useState()
+  // const [id,setId]= React.useState()
   const [roleStatus, setRoleStatus] = React.useState('user');
   const [currentPage, setCurrentPage] = React.useState(1);
   const [totalPages, setTotalPages] = React.useState(0);
@@ -33,9 +32,8 @@ export default function OrderList() {
 
   async function handleGetAllDataforUpdate() {
     setShow(true);
-    try {const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/useraction?role=user`);
-    // try {
-    //   const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/useraction?role=${roleStatus}&page=${currentPage}&items=10`);
+    try {
+      const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/useraction?role=${roleStatus}&page=${currentPage}&items=10`);
       // Handle the response data
       setUserList(response.data.allData)
       
@@ -45,60 +43,36 @@ export default function OrderList() {
       // setCurrentPage(response.data.currentPage);
       setShow(false)
     } catch (error) {
-      // Handle the error
-      // console.error(error);
       setShow(false)
     }
   }
 
   React.useEffect(() => {
     handleGetAllDataforUpdate()
-  }, [currentPage])
+  }, [currentPage, roleStatus])
 
   const handleChange = (event, value) => {
     setCurrentPage(value);
   };
 
-  const handleCreateUser = () => {
-    // console.log("handleCreateUser -----");
-    swal("Coming Soon!!!", "Please Wait!", "success");
-  };
+  // const handleCreateUser = () => {
+  //   swal("Coming Soon!!!", "Please Wait!", "success");
+  // };
 
-
-
-  const isoDate = "2023-05-29T12:22:50.702Z";
-  const d = new Date(isoDate);
-console.log(d.toLocaleDateString('en-GB'));
   // console.log("orderList--------->",orderList, orderList.length);
 
   return (
     <>
       {show ?
-        <>
-          <>
-            <Backdrop
-              sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-              // eslint-disable-next-line no-restricted-globals
-              open={open}
-            >
-              <Circles
-                height="80"
-                width="80"
-                color="#c7eed8"
-                ariaLabel="circles-loading"
-                wrapperStyle={{}}
-                wrapperClass=""
-                visible={show}
-              />
-            </Backdrop>
-          </>
-        </> :
+       <BackDrop show={show}/>
+       :
         <>
           <Box sx={{ flexGrow: 1 }}>
+            <Typography variant='h4' sx={{ml:2}}><PersonAddAltIcon sx={{}}/> All User List</Typography>
             <Grid container spacing={2}>
               <Grid item xs={9}>
                 <Box sx={{ display: "flex", mb: "1rem" }}>
-                  <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setRoleStatus("user") }}>Filter</Box>
+                  {/* <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setRoleStatus("user") }}>Filter</Box> */}
                   <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setRoleStatus("admin") }}>Admin</Box>
                   <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setRoleStatus("user") }}>User</Box>
                   <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setRoleStatus("shipper") }}>Shipper</Box>
@@ -140,11 +114,7 @@ console.log(d.toLocaleDateString('en-GB'));
                   :
                   <>
                     {
-                      userList.filter((row) =>
-                      roleStatus === 'user' ?
-                          true
-                          : row.role === roleStatus)
-                        .map((row) => (
+                      userList.map((row) => (
                           <TableRow
                             key={row.id}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

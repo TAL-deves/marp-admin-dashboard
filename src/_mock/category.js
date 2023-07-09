@@ -11,12 +11,10 @@ import { Helmet } from 'react-helmet-async';
 // eslint-disable-next-line import/no-unresolved
 import { getRequestHandler, postRequestHandler, deleteRequestHandler } from "src/apiHandler/customApiHandler";
 import CardMedia from '@mui/material/CardMedia';
-// import picture from "../../assets/transparent.png"
 import { useState, useEffect } from "react";
 // eslint-disable-next-line import/no-unresolved
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import TextField from '@mui/material/TextField';
 import Modal from '@mui/material/Modal';
@@ -27,7 +25,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import AddIcon from '@mui/icons-material/Add';
-import { Circles } from 'react-loader-spinner';
+import styled from '@emotion/styled';
 import BackDrop from "../backDrop"
 
 const style = {
@@ -42,6 +40,13 @@ const style = {
   p: 4,
 };
 
+const Container = styled('div')({
+  border: '2px dashed #aaa',
+  height: "10rem",
+  width: "10rem",
+  textAlign: 'center',
+  cursor: 'pointer',
+});
 
 const Category = () => {
   const [data, setData] = useState([]);
@@ -52,6 +57,27 @@ const Category = () => {
   const [reload, setReload] = useState(false)
   const [show, setShow] = React.useState(false)
 
+  const [droppedImages, setDroppedImages] = useState([]);
+  const fileInputRef = React.useRef(null);
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+  const handleDrop = (event) => {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+    handleFiles(files);
+  };
+  const handleFileInputChange = (event) => {
+    const files = event.target.files;
+    handleFiles(files);
+  };
+  const handleBrowseClick = () => {
+    fileInputRef.current.click();
+  };
+  const handleFiles = (files) => {
+    const images = Array.from(files).map((file) => URL.createObjectURL(file));
+    setDroppedImages((prevImages) => [...prevImages, ...images]);
+  };
   // Data coming from backend
   useEffect(() => {
     setShow(true);
@@ -65,6 +91,8 @@ const Category = () => {
     console.log("useEffect------");
   }, [reload]);
 
+// console.log("image url", droppedImages);
+
 
   // New category start from here 
   const [opens, setOpens] = useState(false);
@@ -73,8 +101,8 @@ const Category = () => {
   const handleNewCategory = () => {
     setOpens(false);
     async function getData() {
-      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category });
-      console.log("NewResData ", NewResData);
+      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category,categoryImage:droppedImages.toString() });
+      // console.log("NewResData ", NewResData,droppedImages.toString() );
       setReload(!reload);
     }
     getData();
@@ -187,8 +215,8 @@ const Category = () => {
 <>
 {
                 show ?
-<BackDrop show={show}/>
-        :
+       <BackDrop show={show}/>
+          :
 <Box sx={{ flexGrow: 1, padding: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={7}> {
@@ -358,6 +386,37 @@ const Category = () => {
               <Typography>
                 Category
               </Typography>
+              <Box sx={{ display: "" }}>
+                <Box sx={{ display: "flex" }}>
+                  <Grid sx={{ justifyContent: "space-between" }} container spacing={2}>
+                    {droppedImages.map((image, index) => (
+                      <Grid key={index} item xs={4}>
+                        <Container sx={{ mx: ".5rem" }}>
+                          <img src={image} alt={`Dropped ${index}`} style={{ width: "auto", maxHeight: '100%' }} />
+                        </Container>
+                      </Grid>
+                    ))}
+                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOver} onDrop={handleDrop}>
+                      <Box >
+                        <Typography>Drop your images here, or select</Typography>
+                        <div>
+                          <Typography onClick={handleBrowseClick} style={{ color: "#6610F2", cursor: 'pointer' }}>
+                            Browse
+                          </Typography>
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleFileInputChange}
+                            style={{ display: 'none' }}
+                          />
+                        </div>
+                      </Box>
+                    </Container>
+                  </Grid>
+                </Box>
+
               <TextField id="outlined-basic" label="Category" variant="outlined" type="text" sx={{ width: "100%", marginY: 2 }} onChange={(e) => setCategory(e.target.value)} />
               <Button variant="contained" sx={{
                 bgcolor: "#6610F2", ":hover": {
@@ -370,6 +429,7 @@ const Category = () => {
                 margin: 'auto'
               }} onClick={handleNewCategory}>CREATE</Button>
             </Box>
+          </Box>
           </Box>
         </Fade>
       </Modal>

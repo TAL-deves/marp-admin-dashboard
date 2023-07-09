@@ -1,22 +1,34 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box';
 import { Button, TextField } from "@mui/material";
 import Grid from '@mui/material/Grid';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { getRequestHandler } from '../apiHandler/customApiHandler';
+import Backdrop from '@mui/material/Backdrop';
+import { Circles } from 'react-loader-spinner';
+import { getRequestHandler, patchRequestHandler, postRequestHandler, putRequestHandler } from '../apiHandler/customApiHandler';
+// import ImageDragnDrop from '../components/ImageDragnDrop/ImageDragnDrop';
+
+const Container = styled('div')({
+  border: '2px dashed #aaa',
+  height: "10rem",
+  width: "10rem",
+  textAlign: 'center',
+  cursor: 'pointer',
+});
 
 function AddProduct() {
   const [sku, setSku] = useState()
   const [productCode, setProductCode] = useState()
   const [productName, setProductName] = useState()
   const [price, setPrice] = useState()
-  const [discount, setDiscount] = useState(0)
+  const [discount, setDiscount] = useState()
   const [newItem, setNewItem] = useState(false)
-  const [saleCount, setSaleCount] = useState(0)
-  const [stock, setStock] = useState(0)
+  const [saleCount, setSaleCount] = useState()
+  const [stock, setStock] = useState()
   const [shortDescription, setShortDescription] = useState()
   const [fullDescription, setFullDescription] = useState()
   const [productImages, setProductImages] = useState()
@@ -25,14 +37,83 @@ function AddProduct() {
   const [subCategoryName, setSubCategoryName] = useState("Smart Watch")
   const [categoryList, setCategoryList] = useState()
   const [subCategoryList, setSubCategoryList] = useState()
+  const [existingProduct, setExistingProduct]= useState()
+  const [show, setShow] = useState(false);
+
+  const { pathname } = useLocation();
+  const { id } = useParams();
+  // get all data for update
+  async function handleGetAllDataforUpdate() {
+    try {
+      const response = await getRequestHandler('https://marpapi.techanalyticaltd.com/product/', id);
+      // Handle the response data
+      const matchedProduct = response.data.allProducts.find(product => product.id === id);
+      console.log("main data", matchedProduct);
+      setProductName(matchedProduct.name)
+      setCategoryName(matchedProduct.Category.name)
+      setSubCategoryName(matchedProduct.Subcategory.name)
+      setBrand(matchedProduct.brand)
+      setProductCode(matchedProduct.productCode)
+      setSku(matchedProduct.sku)
+      setSaleCount(matchedProduct.saleCount)
+      setNewItem(matchedProduct.newItem)
+      setStock(matchedProduct.stock)
+      setDiscount(matchedProduct.discount)
+      setPrice(matchedProduct.price)
+      setShortDescription(matchedProduct.shortDescription)
+      setFullDescription(matchedProduct.fullDescription)
+      // setDroppedImages(productImages)
+      // productImages.map((img)=>{return droppedImages.push(img)})
+      // setDroppedImages(productImages.map((img) => img))
+      // console.log("images", productImages)
+    } catch (error) {
+      // Handle the error
+      console.error(error);
+    }
+  }
 
 
+  // update data 
+  async function handleUpdateProduct() {
+    setShow(true);
+    handleOpen();
+    
+    try {
+      console.log("sku", sku)
+      const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/product/',{
+          sku: `${sku}`,
+          productCode: `${productCode}`,
+          name: `${productName}`,
+           price,
+          discount,
+          newItem,
+          saleCount,
+          stock,
+          shortDescription: `${shortDescription}`,
+          productImages: `${droppedImages}`,
+          brand: `${brand}`,
+          categoryName: `${categoryName}`,
+          subcategoryName: `${subCategoryName}`,
+         id:`${id}`,
+      });
+      // Handle the response data
+      setShow(false);
+      if(response.success){
+        navigate("/dashboard/products")
+      }
+       console.log("new update sku",response);
+    } catch (error) {
+      // Handle the error
+      console.error(error);
+    }
+  }
+  // get category 
   async function handleGetCategories() {
     try {
       const response = await getRequestHandler('https://marpapi.techanalyticaltd.com/category/allcategories');
       // Handle the response data      
       setCategoryList(response.data.categoryList)
-      console.log("categories", response.data.categoryList);
+       console.log("categories", response.data.categoryList);
 
     } catch (error) {
       // Handle the error
@@ -46,7 +127,7 @@ function AddProduct() {
       const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/category/subcategories?categoryName=${categoryName}`);
       // Handle the response data      
       setSubCategoryList(response.data.categoryList.subcategories)
-      console.log("subcategories", response);
+      // console.log("subcategories", response);
 
     } catch (error) {
       // Handle the error
@@ -54,42 +135,126 @@ function AddProduct() {
     }
   }
 
+  
+  const [droppedImages, setDroppedImages] = useState([]);
+  const fileInputRef = useRef(null);
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+  // console.log("images list", droppedImages)
+  const handleDrop = (event) => {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+    handleFiles(files);
+  };
+
+  const handleFileInputChange = (event) => {
+    const files = event.target.files;
+    handleFiles(files);
+  };
+
+  const handleFiles = (files) => {
+    const images = Array.from(files).map((file) => URL.createObjectURL(file));
+    setDroppedImages((prevImages) => [...prevImages, ...images]);
+  };
+
+  const handleBrowseClick = () => {
+    fileInputRef.current.click();
+  };
+
+  //  console.log("image", droppedImages)
+  const navigate = useNavigate();
+  async function handleAuthCheck() {
+
+    try {
+      const data = await getRequestHandler('https://marpapi.techanalyticaltd.com/auth/authcheck');
+      // Handle the response data
+      console.log("auth check response", data);
+      if(data.error.code===401){
+        localStorage.removeItem("accessToken")
+      localStorage.removeItem("refreshToken")
+      localStorage.removeItem("user")
+      navigate("/")
+      }
+    } catch (error) {
+      // Handle the error
+      console.error(error);
+    }
+  }
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+
   useEffect(() => {
+    handleAuthCheck()
+    handleGetAllDataforUpdate()
     handleGetCategories()
     handleGetSubCategoriesOnCategory()
   }, [categoryName])
 
   return (
-    <Box>
+    <>
+    {show?
+    <>
+    <Backdrop
+        sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        // eslint-disable-next-line no-restricted-globals
+        open={open}
+        // eslint-disable-next-line no-undef
+        // onClick={handleClose}
+      >
+           
+      <Circles
+  height="80"
+  width="80"
+  color="#c7eed8"
+  ariaLabel="circles-loading"
+  wrapperStyle={{}}
+  wrapperClass=""
+  visible={show}
+/>
+         {/* <CircularProgress color="inherit" /> */}
+      </Backdrop>
+    </>:
+    <Box container sx={{ maxWidth: "80rem" }}>
+      
       <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-        <Typography sx={{ borderBottom: "5px solid #6610F2", m: "1rem" }}>
+        <Typography sx={{margingLeft:".2rem", borderBottom: "5px solid #6610F2", m: "1rem" }}>
           + Add Product
         </Typography>
         <Typography sx={{ m: "1rem" }}>
           Product Review
         </Typography>
       </Box>
-      <Box>
+      <Box sx={{ m: "1rem" }}>
         <Grid container spacing={2}>
-          <Grid item xs={5}>
+          <Grid item md={6} lg={5}>
             <Typography sx={{ mt: "1rem" }}>Product Name</Typography>
 
             <TextField
-              sx={{ width: "100%" }}
-
-              label="Product Name"
+              // sx={{ width: "24.5rem" }}
+              sx={{width:{xs:"21rem",sm:"24.5rem",md:"24.5rem"}}}
+              // label="Product Name"
               name="name"
               type="name"
+              value={productName}
+              // focused
               variant="outlined"
               onChange={(e) => setProductName(e.target.value)}
             />
-            <Box sx={{ display: "flex" }}>
-              <Box>
+            <Box sx={{ display: "flex", flexDirection:{xs:"column", sm:"row"} }}>
+              <Box sx={{ mr: ".5rem" }}>
                 <Typography sx={{ mt: "1rem" }}>Category</Typography>
-               
+
                 {categoryList ?
                   <Select
-                    sx={{ width: '100%', mr: '.7rem' }}
+                    // sx={{ width: '12rem' }}
+                    sx={{width:{xs:"21rem",sm:"12rem"}}}
                     labelId="demo-simple-select-helper-label"
                     id="demo-simple-select-helper"
                     value={categoryName}
@@ -104,10 +269,10 @@ function AddProduct() {
                   </Select>
                   :
                   <Select
-                    sx={{ width: '12rem', mr: '.7rem' }}
+                    sx={{ width:{xs:"21rem",sm:"12rem"}, mr: '.7rem' }}
                     labelId="demo-simple-select-helper-label"
                     id="demo-simple-select-helper"
-                    value={"Electronics"}
+                    value={categoryName}
                     onChange={(e) => setCategoryName(e.target.value)}
                   >
                     <MenuItem value="Electronics">Electronics</MenuItem>
@@ -119,7 +284,7 @@ function AddProduct() {
                 <Typography sx={{ mt: "1rem" }}>Subcategory</Typography>
                 {subCategoryList ?
                   <Select
-                    sx={{ width: '100%', mr: '.7rem' }}
+                    sx={{ width:{xs:"21rem",sm:"12rem"} }}
                     labelId="demo-simple-select-helper-label"
                     id="demo-simple-select-helper"
                     value={subCategoryName}
@@ -134,10 +299,10 @@ function AddProduct() {
                   </Select>
                   :
                   <Select
-                    sx={{ width: '13rem', mr: '.7rem' }}
+                    sx={{ width:{xs:"21rem",sm:"12rem"}, mr: '.7rem' }}
                     labelId="demo-simple-select-helper-label"
                     id="demo-simple-select-helper"
-                    value={"Phone"}
+                    value={subCategoryName}
                     onChange={(e) => setSubCategoryName(e.target.value)}
                   >
                     <MenuItem value="Phone">Phone</MenuItem>
@@ -146,13 +311,14 @@ function AddProduct() {
                 }
               </Box>
             </Box>
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", flexDirection:{xs:"column", sm:"row"} }}>
               <Box>
                 <Typography sx={{ mt: "1rem" }}>Brand</Typography>
                 <TextField
-                  sx={{ width: "95%" }}
-
-                  label="Product Name"
+                  sx={{ width:{xs:"21rem",sm:"12rem"}, mr: ".5rem" }}
+                  // focused
+                  value={brand}
+                  // label="Brand"
                   name="name"
                   type="name"
                   variant="outlined"
@@ -162,23 +328,25 @@ function AddProduct() {
               <Box>
                 <Typography sx={{ mt: "1rem" }}>Product Code</Typography>
                 <TextField
-                  sx={{ width: "100%" }}
-
-                  label="Product Name"
+                  sx={{ width:{xs:"21rem",sm:"12rem"} }}
+                  // label="Product Code"
+                  value={productCode}
                   name="name"
+                  // focused
                   type="name"
                   variant="outlined"
                   onChange={(e) => setProductCode(e.target.value)}
                 />
               </Box>
             </Box>
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", flexDirection:{xs:"column", sm:"row"} }}>
               <Box>
                 <Typography sx={{ mt: "1rem" }}>Sku</Typography>
                 <TextField
-                  sx={{ width: "95%" }}
-
-                  label="Product Name"
+                  sx={{ width:{xs:"21rem",sm:"12rem"}, mr: ".5rem" }}
+                  value={sku}
+                  // focused
+                  // label="SKU"
                   name="name"
                   type="name"
                   variant="outlined"
@@ -186,11 +354,12 @@ function AddProduct() {
                 />
               </Box>
               <Box>
-                <Typography sx={{ mt: "1rem" }}>Sale Count</Typography>
+                <Typography sx={{ width:{xs:"21rem",sm:"12rem"}, mt: "1rem" }}>Sale Count</Typography>
                 <TextField
-                  sx={{ width: "100%" }}
-                  
-                  label="Product Name"
+                  sx={{ width:{xs:"21rem",sm:"12rem"} }}
+                  value={saleCount}
+                  // label="Sale Count"
+                  // focused
                   name="name"
                   type="number"
                   variant="outlined"
@@ -198,14 +367,15 @@ function AddProduct() {
                 />
               </Box>
             </Box>
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", flexDirection:{xs:"column", sm:"row"} }}>
               <Box>
                 <Typography sx={{ mt: "1rem" }}>New Item</Typography>
                 <Select
-                  sx={{ width: "12rem", mr: ".7rem" }}
+                  sx={{ width:{xs:"21rem",sm:"12rem"}, mr: ".7rem" }}
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
                   defaultValue={false}
+                  value={newItem}
                   // label="Electronics"
                   onChange={(e) => setNewItem(e.target.value)}
                 >
@@ -214,11 +384,12 @@ function AddProduct() {
                 </Select>
               </Box>
               <Box>
-                <Typography sx={{ mt: "1rem" }}>Stock</Typography>
+                <Typography sx={{ mt: "1rem", width:{xs:"21rem",sm:"12rem"} }}>Stock</Typography>
                 <TextField
                   sx={{ width: "100%" }}
-
-                  label="Stock"
+                  value={stock}
+                  // label="Stock"
+                  // focused
                   name="name"
                   type="number"
                   variant="outlined"
@@ -226,14 +397,15 @@ function AddProduct() {
                 />
               </Box>
             </Box>
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", flexDirection:{xs:"column", sm:"row"} }}>
               <Box>
-                <Typography sx={{ mt: "1rem" }}>Discount</Typography>
+                <Typography sx={{ mt: "1rem", width:{xs:"21rem",sm:"12rem"}, mr: ".7rem" }}>Discount</Typography>
                 <TextField
                   sx={{ width: "95%" }}
-
-                  label="Discount"
+                   value={discount}
+                  // label="Discount"
                   name="name"
+                  // focused
                   type="number"
                   variant="outlined"
                   onChange={(e) => setDiscount(parseInt(e.target.value, 10))}
@@ -242,10 +414,11 @@ function AddProduct() {
               <Box>
                 <Typography sx={{ mt: "1rem" }}>Price</Typography>
                 <TextField
-                  sx={{ width: "100%" }}
-
-                  label="Price"
+                  sx={{ width:{xs:"21rem",sm:"12rem"} }}
+                   value={price}
+                  // label="Price"
                   name="name"
+                  // focused
                   type="number"
                   variant="outlined"
                   onChange={(e) => setPrice(parseInt(e.target.value, 10))}
@@ -254,20 +427,59 @@ function AddProduct() {
             </Box>
 
           </Grid>
-          <Grid item xs={7}>
-            <Typography sx={{ mt: "1rem" }}>imagess</Typography>
+          <Grid item md={6} lg={7} >
+            <Grid container spacing={2} sx={{justifyContent:"center", mt:"2rem"}}>
+              {/* <ImageDragnDrop/> */}
+              <Box sx={{ display: "" }}>
+                <Box sx={{ display: "flex" }}>
+                  <Grid sx={{ justifyContent: "space-between" }} container spacing={2}>
+                    {droppedImages.map((image, index) => (
+                      <Grid key={index} item xs={4}>
+                        <Container sx={{ mx: ".5rem" }}>
+                          <img src={image} alt={`Dropped ${index}`} style={{ width: "auto", maxHeight: '100%' }} />
+                        </Container>
+                      </Grid>
+                    ))}
+                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOver} onDrop={handleDrop}>
+                      <Box >
+                        <Typography>Drop your images here, or select</Typography>
+                        <div>
+                          <Typography onClick={handleBrowseClick} style={{ color: "#6610F2", cursor: 'pointer' }}>
+                            Browse
+                          </Typography>
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleFileInputChange}
+                            style={{ display: 'none' }}
+                          />
+                        </div>
+                      </Box>
+                    </Container>
+                  </Grid>
+                </Box>
+
+
+              </Box>
+
+            </Grid>
+            <Box>
             <Typography sx={{ mt: "1rem" }}>Short Description</Typography>
             <TextField
-              sx={{ width: "100%" }}
+              sx={{ width: {xs:"24rem",sm:"20rem", md:"100%", lg:"100%"}}}
               multiline
               rows={4}
-
-              label="Product Name"
+              // focused
+               value={shortDescription}
+              // label="Short Description"
               name="name"
               type="name"
               variant="outlined"
               onChange={(e) => setShortDescription(e.target.value)}
             />
+            </Box>
           </Grid>
         </Grid>
         <Box sx={{ marginTop: "2rem" }}>
@@ -275,17 +487,19 @@ function AddProduct() {
           <TextField
             multiline
             rows={6}
+            // focused
             sx={{ width: "100%" }}
-
-            label="Product Name"
+            value={fullDescription}
+            // label="Full Description"
             name="name"
             type="name"
             variant="outlined"
             onChange={(e) => setFullDescription(e.target.value)}
           />
         </Box>
+        {!id?
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Link state={{ name: productName, cat: categoryName, subCat: subCategoryName, brandname: brand, code: productCode, sKu: sku, salecount: saleCount, newitem: newItem, stoCk: stock, disCount: discount, priCe: price, shortdescription: shortDescription, fulldescription: fullDescription }} style={{ textDecoration: "none" }} to="/dashboard/add-product-review">
+          <Link state={{ name: productName, cat: categoryName, subCat: subCategoryName, brandname: brand, code: productCode, sKu: sku, salecount: saleCount, newitem: newItem, stoCk: stock, disCount: discount, priCe: price, shortdescription: shortDescription, fulldescription: fullDescription, imagesList: droppedImages }} style={{ textDecoration: "none" }} to="/dashboard/add-product-review">
             <Box sx={{ border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "34px", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
               {/* <AddCircleIcon/> */}
 
@@ -294,11 +508,19 @@ function AddProduct() {
             </Box>
           </Link>
         </Box>
+        :
+        <Box sx={{ display: "flex", justifyContent: "flex-end",  }}>          
+            <Box onClick={()=>{handleUpdateProduct()}} sx={{cursor:"pointer", border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "34px", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
+              <Typography sx={{ color: "white", fontSize: "12px", textDecoration: "none", textAlign: "center" }}>Update</Typography>
+
+            </Box>
+        </Box>}
 
 
 
       </Box>
-    </Box>
+    </Box>}
+    </>
   )
 }
 
