@@ -26,9 +26,14 @@ const navConfig = [
     icon: <FormatAlignLeftIcon/>,
   },
   {
+    title: 'Assign order',
+    path: '/dashboard/assignOrder',
+    icon: icon('Layer2'),
+  },
+  {
     title: 'user',
     path: '/dashboard/user',
-    icon: <PersonAddAltIcon/>,
+    icon: icon('Icon'),
   },
   {
     title: 'category',
@@ -38,28 +43,18 @@ const navConfig = [
   {
     title: 'product',
     path: '/dashboard/products',
-    icon: <ShoppingCartIcon/>,
+    icon: icon('Group246'),
   },
-//   { accessToken ?
-// "hasan"
-//     :
-//  "ar"
-//   },
-  // {
-  //   title: 'login',
-  //   path: '/login',
-  //   icon: <LoginIcon/>,
-  // },
-  // {
-  //   title: 'logout',
-  //   path: '/login',
-  //   icon: <LogoutIcon/>,
-  // },
-  // {
-  //   title: 'Not found',
-  //   path: '/404',
-  //   icon: icon('ic_disabled'),
-  // },
+  {
+    title: 'Vendor',
+    path: '/dashboard/vendor',
+    icon: icon('Layer'),
+  },
+  {
+    title: 'Storage Bucket',
+    path: '/dashboard/bucket',
+    icon: icon('Storage'),
+  },
 ];
 
 export default navConfig;

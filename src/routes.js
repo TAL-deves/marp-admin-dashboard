@@ -2,8 +2,9 @@ import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
-//
-// import BlogPage from './pages/BlogPage';
+import Vendor from './_mock/vendor';
+import AssignOrder from './_mock/assignOrder';
+import StorageBucket from './_mock/storageBucket';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import UserProfile from './pages/userAccount';
@@ -19,14 +20,6 @@ import ProductReview from './pages/ProductReview';
 // ----------------------------------------------------------------------
 
 export default function Router() {
-// const AccessToken=localStorage.getItem("accessToken");
-// console.log("accessToken-------", AccessToken
-// );
-// const navigate = useNavigate();
-// if(AccessToken){
-//   navigate("/login")
-// }
-
   const routes = useRoutes([
     {
       path: 'login',
@@ -39,11 +32,14 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'orderList', element: <OrderListPage /> },
+        { path: 'assignOrder', element: <AssignOrder /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'category', element: <CategoryPage /> },
         { path: 'profile', element: <UserProfile />, },
         { path: 'product', element: <AddProduct />, },
+        { path: 'vendor', element: <Vendor/>, },
+        { path: 'bucket', element: <StorageBucket />, },
         { path: 'add-product-review', element: <ProductReview />, },
       ],
     },

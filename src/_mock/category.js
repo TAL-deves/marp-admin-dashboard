@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Helmet } from 'react-helmet-async';
 // eslint-disable-next-line import/no-unresolved
-import { getRequestHandler, postRequestHandler, deleteRequestHandler } from "src/apiHandler/customApiHandler";
+import { getRequestHandler, putRequestHandler, postRequestHandler, deleteRequestHandler } from "src/apiHandler/customApiHandler";
 import CardMedia from '@mui/material/CardMedia';
 import { useState, useEffect } from "react";
 // eslint-disable-next-line import/no-unresolved
@@ -41,23 +41,28 @@ const style = {
 };
 
 const Container = styled('div')({
-  border: '2px dashed #aaa',
-  height: "10rem",
+  border: '2px dotted #03A550',
+  borderRadius:"10px",
+  height: "6rem",
   width: "10rem",
   textAlign: 'center',
-  cursor: 'pointer',
+  // justifyContent:"center",
+  // alignContent:"center"
+  // cursor: 'pointer',
 });
 
 const Category = () => {
   const [data, setData] = useState([]);
   const [subCate, setSubCate] = useState([]);
-  // const [menu, setMenu] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [category, setCategory] = useState("");
   const [subcategory, setSubcategory] = useState("");
   const [reload, setReload] = useState(false)
   const [show, setShow] = React.useState(false)
 
-  const [droppedImages, setDroppedImages] = useState([]);
+
+  // category image section start from here
+  const [droppedImages, setDroppedImages] = useState("");
   const fileInputRef = React.useRef(null);
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -73,25 +78,81 @@ const Category = () => {
   };
   const handleBrowseClick = () => {
     fileInputRef.current.click();
+    async function getData() {
+      const categoriesData = await putRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`);
+      setData(categoriesData);
+    }
+    getData();
   };
   const handleFiles = (files) => {
     const images = Array.from(files).map((file) => URL.createObjectURL(file));
-    setDroppedImages((prevImages) => [...prevImages, ...images]);
+    setDroppedImages(images);
   };
+
+
+
+
+
+
+
+
+
+
+
+  // subCategory image section start from here
+  const [droppedImagesSub, setDroppedImagesSub] = useState("");
+  const fileInputRefSub = React.useRef(null);
+  const handleDragOverSub = (event) => {
+    event.preventDefault();
+  };
+  const handleDropSub = (event) => {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+    handleFiles(files);
+  };
+  const handleFileInputChangeSub = (event) => {
+    const files = event.target.files;
+    handleFilesSub(files);
+  };
+  const handleBrowseClickSub = () => {
+    console.log("Browser click button");
+    fileInputRefSub.current.click();
+    // async function getData() {
+    //   const categoriesData = await putRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`);
+    //   setData(categoriesData);
+    // }
+    // getData();
+  };
+  const handleFilesSub = (files) => {
+    const imagesSub = Array.from(files).map((file) => URL.createObjectURL(file));
+    setDroppedImagesSub(imagesSub);
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Data coming from backend
   useEffect(() => {
     setShow(true);
     async function getData() {
       const categoriesData = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`);
       setData(categoriesData.data.categoryList);
-      console.log("categoriesData", categoriesData);
       setShow(false)
     }
     getData();
-    console.log("useEffect------");
   }, [reload]);
-
-// console.log("image url", droppedImages);
 
 
   // New category start from here 
@@ -102,8 +163,8 @@ const Category = () => {
     setOpens(false);
     async function getData() {
       const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category,categoryImage:droppedImages.toString() });
-      // console.log("NewResData ", NewResData,droppedImages.toString() );
       setReload(!reload);
+      setDroppedImages(false);
     }
     getData();
   }
@@ -111,7 +172,10 @@ const Category = () => {
   const handleClickedCategory = () => {
     handleOpen();
   }
-  const handleClose = () => setOpens(false);
+  const handleClose = () => {
+    setOpens(false);
+    setDroppedImages(false);
+  }
 
   // New category start from here 
   const [open, setOpen] = useState(false);
@@ -122,21 +186,14 @@ const Category = () => {
   const handleSubcategoryCreate = () => {
     setOpen(false);
     async function getData() {
-      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category, subcategory });
+      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category, subcategory, subcategoryImage:droppedImagesSub.toString() });
       console.log("NewResData of subcategory", NewResData);
       setReload(!reload);
+      setDroppedImagesSub("")
     }
     getData();
   }
   const handleSubcategory = () => setOpen(false);
-
-  // select menu item start from here
-  // const [age, setAge] = React.useState('');
-  // const handleChange = (event) => {
-  //   setAge(event.target.value);
-  // };
-  // console.log("age------", age);
-
 
   const handleClickedEdit = (id) => {
     console.log("edit button", id);
@@ -160,26 +217,6 @@ const Category = () => {
     }
     getData();
   }
-
-  // const handleOpenSubCategory = (name) => {
-  //   setMenu(!menu);
-  //   async function getData() {
-  //     const responseData = await getRequestHandler(`https://marpapi.techanalyticaltd.com/category/subcategories?categoryName=${name}`);
-  //     setSubCate(responseData.data.categoryList);
-  //     console.log("subcategory responseData", responseData);
-  //   }
-  //   getData();
-  // }
-
-
-  // subcategory item start from here
-
-  // const [anchorEl, setAnchorEl] = React.useState(null);
-  // const openSubCategory = Boolean(anchorEl);
-  // const handleClickSC = (event) => {
-  //   console.log("toggle button--");
-  //   setAnchorEl(event.currentTarget);
-  // };
 
   return (
     <>
@@ -258,18 +295,8 @@ const Category = () => {
                               <Button onClick={() => handleClickedEdit(item.id)}><ModeEditIcon sx={{ color: "#6EAB49" }} /></Button>
                               <Button onClick={() => handleCategoryDelete(item.id)}><DeleteIcon sx={{ color: "#E53E3E" }} />
                               </Button>
-
-
-                              <Button 
-                              // onClick={handleClickSC}
-                              //   size="small"
-                              //   sx={{ ml: 6 }}
-                              //   aria-controls={openSubCategory ? 'account-menu' : undefined}
-                              //   aria-haspopup="true"
-                              //   aria-expanded={openSubCategory ? 'true' : undefined}
-                                >
+                              <Button>
                                 <KeyboardArrowDownIcon sx={{ color: "#6610F2" }} onClick={() => {
-                                  console.log("item ----->", item)
                                   setSubCate(item.subcategories)
                                 }
                                 } />
@@ -362,9 +389,7 @@ const Category = () => {
         </Box> 
 }
 </>
-  
-
-      </Box>
+</Box>
 
       {/* New Category start from here */}
       <Modal
@@ -382,42 +407,46 @@ const Category = () => {
       >
         <Fade in={opens}>
           <Box sx={style}>
-            <Box>
-              <Typography>
+              <Box>
+                <Box sx={{display:'flex',
+              justifyContent:'center',
+              alignContent:'center',
+              marginY:5
+              }}>
+                  <Box sx={{ display: "flex" }}> 
+                   {
+                    droppedImages ?
+                    <>
+                    <Container sx={{ mx: ".5rem" }}>
+                    <img src={droppedImages} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
+                  </Container> 
+                    </>
+                  :
+                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOver} onDrop={handleDrop}>
+                    <Box >
+                      <Typography>Select your images or file</Typography>
+                      <div>
+                        <Button variant="contained" onClick={handleBrowseClick} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
+                bgcolor: '#03A550'
+              },}}>Browse</Button>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleFileInputChange}
+                          style={{ display: 'none' }}
+                        />
+                      </div>
+                    </Box>
+                  </Container>
+                   }
+                </Box>
+                </Box>
+                <Typography sx={{ marginY: 2 }}>
                 Category
               </Typography>
-              <Box sx={{ display: "" }}>
-                <Box sx={{ display: "flex" }}>
-                  <Grid sx={{ justifyContent: "space-between" }} container spacing={2}>
-                    {droppedImages.map((image, index) => (
-                      <Grid key={index} item xs={4}>
-                        <Container sx={{ mx: ".5rem" }}>
-                          <img src={image} alt={`Dropped ${index}`} style={{ width: "auto", maxHeight: '100%' }} />
-                        </Container>
-                      </Grid>
-                    ))}
-                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOver} onDrop={handleDrop}>
-                      <Box >
-                        <Typography>Drop your images here, or select</Typography>
-                        <div>
-                          <Typography onClick={handleBrowseClick} style={{ color: "#6610F2", cursor: 'pointer' }}>
-                            Browse
-                          </Typography>
-                          <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleFileInputChange}
-                            style={{ display: 'none' }}
-                          />
-                        </div>
-                      </Box>
-                    </Container>
-                  </Grid>
-                </Box>
-
-              <TextField id="outlined-basic" label="Category" variant="outlined" type="text" sx={{ width: "100%", marginY: 2 }} onChange={(e) => setCategory(e.target.value)} />
+              <TextField id="outlined-basic" label="Category" variant="outlined" type="text" sx={{ width: "100%", marginBottom: 2 }} onChange={(e) => setCategory(e.target.value)} />
               <Button variant="contained" sx={{
                 bgcolor: "#6610F2", ":hover": {
                   bgcolor: '#6EAB49'
@@ -430,9 +459,10 @@ const Category = () => {
               }} onClick={handleNewCategory}>CREATE</Button>
             </Box>
           </Box>
-          </Box>
         </Fade>
       </Modal>
+
+
 
       {/* New SubCategory start from here */}
       <Modal
@@ -451,7 +481,43 @@ const Category = () => {
         <Fade in={open}>
           <Box sx={style}>
             <Box>
-              <Typography sx={{ margin: 2 }}>
+              <Box sx={{display:'flex',
+              justifyContent:'center',
+              alignContent:'center',
+              marginY:5
+              }}>
+                  <Box sx={{ display: "flex" }}> 
+                   {
+                    droppedImagesSub ?
+                    <>
+                    <Container sx={{ mx: ".5rem" }}>
+                    <img src={droppedImagesSub} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
+              
+                  </Container> 
+                    </>
+                  :
+                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem"}} onDragOver={handleDragOverSub} onDrop={handleDropSub}>
+                    <Box >
+                      <Typography>Select your images or file</Typography>
+                      <div>
+                        <Button variant="contained" onClick={handleBrowseClickSub} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
+                bgcolor: '#03A550'
+              },}}>Browse</Button>
+                        <input
+                          ref={fileInputRefSub}
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleFileInputChangeSub}
+                          style={{ display: 'none' }}
+                        />
+                      </div>
+                    </Box>
+                  </Container>
+                   }
+                </Box>
+              </Box>
+              <Typography sx={{ marginY: 2 }}>
                 Category
               </Typography>
               <FormControl fullWidth>
@@ -467,7 +533,7 @@ const Category = () => {
                   ))}
                 </Select>
               </FormControl>
-              <Typography sx={{ margin: 2 }}>
+              <Typography sx={{ marginY: 2 }}>
                 SubCategory
               </Typography>
               <TextField id="outlined-basic" label="SubCategory" variant="outlined" type="text" sx={{ width: "100%", marginBottom: 2 }} onChange={(e) => setSubcategory(e.target.value)} />
