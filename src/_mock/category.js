@@ -19,6 +19,9 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import TextField from '@mui/material/TextField';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import Stack from '@mui/material/Stack';
 import Backdrop from "@mui/material/Backdrop";
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -26,7 +29,10 @@ import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import AddIcon from '@mui/icons-material/Add';
 import styled from '@emotion/styled';
-import BackDrop from "../backDrop"
+import swal from 'sweetalert';
+import BackDrop from "../backDrop";
+import AleartComponent from "../components/aleartComponent/Aleart"
+
 
 const style = {
   position: 'absolute',
@@ -76,27 +82,26 @@ const Category = () => {
     const files = event.target.files;
     handleFiles(files);
   };
-  const handleBrowseClick = () => {
-    fileInputRef.current.click();
+  const handleFiles = (files) => {
+    console.log("response button clicked", files);
+    const images = Array.from(files).map((file) => URL.createObjectURL(file));
+    setDroppedImages(images);
     async function getData() {
-      const categoriesData = await putRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`);
-      setData(categoriesData);
+      const categoriesData = await putRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`,{image:droppedImages});
+      console.log("setData",categoriesData );
     }
     getData();
   };
-  const handleFiles = (files) => {
-    const images = Array.from(files).map((file) => URL.createObjectURL(file));
-    setDroppedImages(images);
+  const handleBrowseClick = () => {
+    fileInputRef.current.click();
+    console.log("Browse Click button");
+    // async function getData() {
+    //   const categoriesData = await putRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`,{image:droppedImages});
+    //   setData(categoriesData);
+    //   console.log("setData",categoriesData );
+    // }
+    // getData();
   };
-
-
-
-
-
-
-
-
-
 
 
   // subCategory image section start from here
@@ -127,21 +132,6 @@ const Category = () => {
     const imagesSub = Array.from(files).map((file) => URL.createObjectURL(file));
     setDroppedImagesSub(imagesSub);
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // Data coming from backend
   useEffect(() => {
@@ -196,11 +186,15 @@ const Category = () => {
   const handleSubcategory = () => setOpen(false);
 
   const handleClickedEdit = (id) => {
+    // <AleartComponent/>,
+    <BackDrop show={show}/>
     console.log("edit button", id);
+    swal("Logged out!", "Your have successfully logged out!", "success");
   }
 
 
   const handleCategoryDelete = (id) => {
+    // <AleartComponent/>
     async function getData() {
       const responseData = await deleteRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { categoryId: id });
       console.log("responseData", responseData);
@@ -209,7 +203,7 @@ const Category = () => {
     getData();
   }
   const handleClickedDeleteSub = (id) => {
-    console.log("clicked handleClickedDeleteSub");
+    // console.log("clicked handleClickedDeleteSub");
     async function getData() {
       const resSubCateData = await deleteRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { subcategoryId: id });
       console.log("resSubCateData", resSubCateData);
@@ -223,10 +217,7 @@ const Category = () => {
       <Helmet>
         <title> Category | admin dashboard </title>
       </Helmet>
-
-
       {/* subCategory item start from here */}
-
       <Box sx={{ marginX: 2 }}>
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
@@ -251,9 +242,10 @@ const Category = () => {
         </Box>
 <>
 {
-                show ?
-       <BackDrop show={show}/>
-          :
+    show ?
+    <BackDrop show={show}/>
+    // <AleartComponent/>
+    :
 <Box sx={{ flexGrow: 1, padding: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={7}> {
@@ -310,7 +302,6 @@ const Category = () => {
                 ))
               }
             </Grid>
-
             <Grid item xs={12} sm={5}>
               <Box
                 display={'flex'}
@@ -390,8 +381,7 @@ const Category = () => {
 }
 </>
 </Box>
-
-      {/* New Category start from here */}
+      {/* New Category create start from here */}
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -463,8 +453,7 @@ const Category = () => {
       </Modal>
 
 
-
-      {/* New SubCategory start from here */}
+      {/* New SubCategory create start from here */}
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -552,7 +541,6 @@ const Category = () => {
           </Box>
         </Fade>
       </Modal>
-
     </>
   );
 };

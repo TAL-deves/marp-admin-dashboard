@@ -25,7 +25,7 @@ export const putRequestHandler = async (formData) => {
   let responseData;
   await axios
     .put(
-      `${process.env.NEXT_PUBLIC_APIPOINT}/user/profile/uploadpicture`,
+      `${process.env.REACT_APP_PUBLIC_APIPOINT}user/profile/uploadpicture`,
       formData,
       {
         headers,
