@@ -58,8 +58,6 @@ export const photoUploadRequestHandler = async (url, bodyData) => {
   };
 
  let responseData;
-
- 
   axios(config)
       .then((response)=> {
         console.log("response data", JSON.stringify(response.data));

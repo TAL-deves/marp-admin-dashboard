@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Backdrop from '@mui/material/Backdrop';
 import { Circles } from 'react-loader-spinner';
-import { getRequestHandler, patchRequestHandler, postRequestHandler, putRequestHandler } from '../apiHandler/customApiHandler';
+import { getRequestHandler, patchRequestHandler, postRequestHandler } from '../apiHandler/customApiHandler';
 // import ImageDragnDrop from '../components/ImageDragnDrop/ImageDragnDrop';
 
 const Container = styled('div')({
