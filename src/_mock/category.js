@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Helmet } from 'react-helmet-async';
 // eslint-disable-next-line import/no-unresolved
-import { getRequestHandler, putRequestHandler, postRequestHandler, deleteRequestHandler } from "src/apiHandler/customApiHandler";
+import { getRequestHandler, putRequestHandler,photoUploadRequestHandler, postRequestHandler, deleteRequestHandler } from "src/apiHandler/customApiHandler";
 import CardMedia from '@mui/material/CardMedia';
 import { useState, useEffect } from "react";
 // eslint-disable-next-line import/no-unresolved
@@ -17,6 +17,7 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import TextField from '@mui/material/TextField';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Alert from '@mui/material/Alert';
@@ -50,7 +51,7 @@ const Container = styled('div')({
   border: '2px dotted #03A550',
   borderRadius:"10px",
   height: "6rem",
-  width: "10rem",
+  width: "100%",
   textAlign: 'center',
   // justifyContent:"center",
   // alignContent:"center"
@@ -69,6 +70,7 @@ const Category = () => {
 
   // category image section start from here
   const [droppedImages, setDroppedImages] = useState("");
+  const [createFile, setCreateFile] = useState("");
   const fileInputRef = React.useRef(null);
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -86,22 +88,68 @@ const Category = () => {
     console.log("response button clicked", files);
     const images = Array.from(files).map((file) => URL.createObjectURL(file));
     setDroppedImages(images);
+// console.log("images -------.", images);
+    const formData= new FormData();
+    formData.append('image', files[0]);
     async function getData() {
-      const categoriesData = await putRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`,{image:droppedImages});
-      console.log("setData",categoriesData );
-    }
+      try {
+        await photoUploadRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`, {formData})
+       .then((res)=>res.json())
+       .then(()=>console.log("res"))
+       setShow(false);
+     } catch (error) {
+       console.error(error);
+     }}
     getData();
   };
+
   const handleBrowseClick = () => {
     fileInputRef.current.click();
-    console.log("Browse Click button");
-    // async function getData() {
-    //   const categoriesData = await putRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`,{image:droppedImages});
-    //   setData(categoriesData);
-    //   console.log("setData",categoriesData );
-    // }
-    // getData();
   };
+
+
+  // const handleFileInputChange = (event) => {
+  //   const files = event.target.files[0];
+  //   setCreateFile(event.target.files[0])
+  //   console.log('Selected File:', event);
+  //   const blobUrl = URL.createObjectURL(files);
+  //   const convertedFile = new File([files], files.name, {
+  //     type: files.type,
+  //   });
+  //   handleFiles(files);
+  //   URL.revokeObjectURL(blobUrl);
+  //   handleAddPhoto(files);
+  //   console.log("files", event.target.files[0]);
+  // };
+
+
+// async function handleAddPhoto(files) {
+//     setShow(true);  
+//     // console.log("files response", createFile);
+//     const formData= new FormData();
+//     formData.append('image', files);
+//     // const image=formData.getAll('image')
+//     try {
+//        await photoUploadRequestHandler('https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=productPhotos', formData)
+//       .then((res)=>{
+//         console.log("formData response", res);
+//       });
+//       setShow(false);
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   }
+
+
+
+
+
+
+
+
+
+
+
 
 
   // subCategory image section start from here
@@ -110,14 +158,16 @@ const Category = () => {
   const handleDragOverSub = (event) => {
     event.preventDefault();
   };
+
   const handleDropSub = (event) => {
     event.preventDefault();
-    const files = event.dataTransfer.files;
-    handleFiles(files);
+    const files1 = event.dataTransfer.files;
+    handleFilesSub(files1);
   };
+
   const handleFileInputChangeSub = (event) => {
-    const files = event.target.files;
-    handleFilesSub(files);
+    const files1 = event.target.files;
+    handleFilesSub(files1);
   };
   const handleBrowseClickSub = () => {
     console.log("Browser click button");
@@ -128,8 +178,8 @@ const Category = () => {
     // }
     // getData();
   };
-  const handleFilesSub = (files) => {
-    const imagesSub = Array.from(files).map((file) => URL.createObjectURL(file));
+  const handleFilesSub = (files1) => {
+    const imagesSub = Array.from(files1).map((file) => URL.createObjectURL(file));
     setDroppedImagesSub(imagesSub);
   };
 
@@ -165,9 +215,10 @@ const Category = () => {
   const handleClose = () => {
     setOpens(false);
     setDroppedImages(false);
+    setDroppedImagesSub(false)
   }
 
-  // New category start from here 
+  // New SubCategory start from here 
   const [open, setOpen] = useState(false);
   const handleClickedSubcategory = () => {
     setOpen(true);
@@ -179,22 +230,24 @@ const Category = () => {
       const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category, subcategory, subcategoryImage:droppedImagesSub.toString() });
       console.log("NewResData of subcategory", NewResData);
       setReload(!reload);
-      setDroppedImagesSub("")
+      setDroppedImagesSub(false)
     }
     getData();
   }
-  const handleSubcategory = () => setOpen(false);
+  const handleSubcategory = () => {
+    setOpen(false);
+    setDroppedImagesSub(false)
+    }
 
+  // eslint-disable-next-line consistent-return
   const handleClickedEdit = (id) => {
-    // <AleartComponent/>,
-    <BackDrop show={show}/>
     console.log("edit button", id);
-    swal("Logged out!", "Your have successfully logged out!", "success");
+      setHidden(true);
+    // swal("Logged out!", "Your have successfully logged out!", "success");
   }
 
 
   const handleCategoryDelete = (id) => {
-    // <AleartComponent/>
     async function getData() {
       const responseData = await deleteRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { categoryId: id });
       console.log("responseData", responseData);
@@ -211,6 +264,12 @@ const Category = () => {
     }
     getData();
   }
+
+  // if(hidden){
+
+  // }
+// console.log("image photo", droppedImages);
+
 
   return (
     <>
@@ -244,7 +303,6 @@ const Category = () => {
 {
     show ?
     <BackDrop show={show}/>
-    // <AleartComponent/>
     :
 <Box sx={{ flexGrow: 1, padding: 2 }}>
           <Grid container spacing={2}>
@@ -287,11 +345,10 @@ const Category = () => {
                               <Button onClick={() => handleClickedEdit(item.id)}><ModeEditIcon sx={{ color: "#6EAB49" }} /></Button>
                               <Button onClick={() => handleCategoryDelete(item.id)}><DeleteIcon sx={{ color: "#E53E3E" }} />
                               </Button>
-                              <Button>
+                              <Button onClick={() => {
+                                  setSubCate(item.subcategories)}}>
                                 <KeyboardArrowDownIcon sx={{ color: "#6610F2" }} onClick={() => {
-                                  setSubCate(item.subcategories)
-                                }
-                                } />
+                                  setSubCate(item.subcategories)}} />
                               </Button>
                             </CardActions>
                           </Grid>
@@ -381,6 +438,13 @@ const Category = () => {
 }
 </>
 </Box>
+
+    {hidden ?
+  <AleartComponent open={hidden}/>
+      :
+      <> </>
+      }
+
       {/* New Category create start from here */}
       <Modal
         aria-labelledby="transition-modal-title"
@@ -414,11 +478,12 @@ const Category = () => {
                   :
                     <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOver} onDrop={handleDrop}>
                     <Box >
-                      <Typography>Select your images or file</Typography>
+                      <FileDownloadIcon/>
+                      <Typography>Drag and drop your file here<br/> or</Typography>
                       <div>
                         <Button variant="contained" onClick={handleBrowseClick} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
                 bgcolor: '#03A550'
-              },}}>Browse</Button>
+              },}}>SELECT FILE</Button>
                         <input
                           ref={fileInputRef}
                           type="file"
@@ -451,7 +516,6 @@ const Category = () => {
           </Box>
         </Fade>
       </Modal>
-
 
       {/* New SubCategory create start from here */}
       <Modal
@@ -487,11 +551,12 @@ const Category = () => {
                   :
                     <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem"}} onDragOver={handleDragOverSub} onDrop={handleDropSub}>
                     <Box >
-                      <Typography>Select your images or file</Typography>
+                    <FileDownloadIcon/>
+                      <Typography>Drag and drop your file here<br/> or</Typography>
                       <div>
                         <Button variant="contained" onClick={handleBrowseClickSub} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
                 bgcolor: '#03A550'
-              },}}>Browse</Button>
+              },}}>SELECT FILE</Button>
                         <input
                           ref={fileInputRefSub}
                           type="file"

@@ -6,41 +6,45 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-const Aleart = () => {
+const Aleart = (p) => {
+// console.log("props ", p);
+// const {open}=p;
+// console.log("opens ", open);
+    const [opens, setOpens] = React.useState(true);
 
-    const [open, setOpen] = React.useState(false);
-
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
+    // const handleClickOpen = () => {
+    //   setOpen(true);
+    // };
   
-    const handleClose = () => {
-      setOpen(false);
+    const handleDisagree = () => {
+      setOpens(false);
+    };
+    const handleAgree = () => {
+      setOpens(false);
     };
 
     return (
         <div>
-              <Button variant="outlined" onClick={handleClickOpen}>
+              {/* <Button variant="outlined" onClick={handleClickOpen}>
         Open alert dialog
-      </Button>
+      </Button> */}
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={opens}
+        onClose={handleDisagree}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
+          {"If you want to delete category?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous
-            location data to Google, even when no apps are running.
+      Then press Agree button other ways Disagree button.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={handleDisagree}>Disagree</Button>
+          <Button onClick={handleAgree} autoFocus>
             Agree
           </Button>
         </DialogActions>

@@ -15,31 +15,61 @@ export const postRequestHandler = async (url, bodyData) => {
 
 export const patchRequestHandler = async () => { };
 
-export const putRequestHandler = async (formData) => {
-  const accessToken = localStorage.getItem("accessToken");
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-    "Content-Type": "multipart/form-data",
+// export const putRequestHandler = async (formData) => {
+//   const accessToken = localStorage.getItem("accessToken");
+//   const headers = {
+//     Authorization: `Bearer ${accessToken}`,
+//     "Content-Type": "multipart/form-data",
+//   };
+
+//   let responseData;
+//   await axios
+//     .put(
+//       `${process.env.REACT_APP_PUBLIC_APIPOINT}user/profile/uploadpicture`,
+//       formData,
+//       {
+//         headers,
+//       }
+//     )
+//     .then((response) => {
+//       responseData = JSON.parse(decryptData(responseData.data.encoded));
+//     })
+//     .catch((error) => {
+//       responseData = JSON.parse(decryptData(error.response.data.encoded));
+//     });
+
+//   return responseData;
+// };
+
+export const photoUploadRequestHandler = async (url, bodyData) => {
+  // const responseData = await caxios.put(url, bodyData );
+  // return responseData;
+
+  const config = {
+    method: 'put',
+  maxBodyLength: Infinity,
+    url,
+    headers: { 
+      Authorization : `Bearer ${localStorage.getItem(
+        "accessToken"
+      )}`
+    },
+    data : bodyData
   };
 
-  let responseData;
-  await axios
-    .put(
-      `${process.env.REACT_APP_PUBLIC_APIPOINT}user/profile/uploadpicture`,
-      formData,
-      {
-        headers,
-      }
-    )
-    .then((response) => {
-      responseData = JSON.parse(decryptData(responseData.data.encoded));
-    })
-    .catch((error) => {
-      responseData = JSON.parse(decryptData(error.response.data.encoded));
-    });
+ let responseData;
 
-  return responseData;
+ 
+  axios(config)
+      .then((response)=> {
+        console.log("response data", JSON.stringify(response.data));
+        // responseData= response.data.encoded
+      })
+      console.log("custom responseData", responseData)
+  return responseData
 };
+
+
 
 export const deleteRequestHandler = async (url, bodyData) => {
 
