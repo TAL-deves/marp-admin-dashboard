@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Backdrop from '@mui/material/Backdrop';
 import { Circles } from 'react-loader-spinner';
-import { getRequestHandler, patchRequestHandler, postRequestHandler } from '../apiHandler/customApiHandler';
+import { getRequestHandler, patchRequestHandler, photoUploadRequestHandler } from '../apiHandler/customApiHandler';
 // import ImageDragnDrop from '../components/ImageDragnDrop/ImageDragnDrop';
 
 const Container = styled('div')({
@@ -137,6 +137,7 @@ function AddProduct() {
 
   
   const [droppedImages, setDroppedImages] = useState([]);
+  // const [file, setFiles]=useState([])
   const fileInputRef = useRef(null);
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -150,7 +151,10 @@ function AddProduct() {
 
   const handleFileInputChange = (event) => {
     const files = event.target.files;
+    console.log('Selected File:', files);    
     handleFiles(files);
+      handleAddPhoto(files[0]); // Pass convertedFile instead of files
+    console.log("files", files);
   };
 
   const handleFiles = (files) => {
@@ -181,6 +185,25 @@ function AddProduct() {
       console.error(error);
     }
   }
+  // console.log("dropped images", files)
+  async function handleAddPhoto(files) {
+    setShow(true);  
+    const formData= new FormData();
+    // droppedImages.map((item)=>(
+      formData.append('image', files);
+    // );
+    // const image=formData.getAll('image')
+    try {      
+       await photoUploadRequestHandler('https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=productPhotos', formData)
+      .then((res)=>{
+        console.log("formData response", res);
+      });
+    
+      setShow(false);
+    } catch (error) {
+      console.error(error);
+    }
+  }
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
@@ -199,28 +222,24 @@ function AddProduct() {
 
   return (
     <>
-    {show?
-    <>
-    <Backdrop
-        sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        // eslint-disable-next-line no-restricted-globals
-        open={open}
-        // eslint-disable-next-line no-undef
-        // onClick={handleClose}
-      >
-           
-      <Circles
-  height="80"
-  width="80"
-  color="#c7eed8"
-  ariaLabel="circles-loading"
-  wrapperStyle={{}}
-  wrapperClass=""
-  visible={show}
-/>
-         {/* <CircularProgress color="inherit" /> */}
-      </Backdrop>
-    </>:
+     {show ?
+        <>
+          <Backdrop
+            sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            // eslint-disable-next-line no-restricted-globals
+            open={open}
+          >
+            <Circles
+              height="80"
+              width="80"
+              color="#c7eed8"
+              ariaLabel="circles-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={show}
+            /> 
+          </Backdrop>
+        </> :
     <Box container sx={{ maxWidth: "80rem" }}>
       
       <Box sx={{ display: "flex", justifyContent: "flex-start" }}>

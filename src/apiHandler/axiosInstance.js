@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 import encryptData from "./utils/encryption";
 import decryptData from "./utils/decryption";
 
@@ -18,11 +19,12 @@ caxios.interceptors.request.use(
     if (encryption === "TRUE") {
       if (config.method === "put" || config.method === "PUT") {
         config.data = { data: config.data };
-      } else {
+      } 
+      else {
         config.data = { data: encryptData(config.data) };
       }
-    } 
-    // else {
+    }
+    //  else {
     //   config.data = { data: config.data };
     // }
 
@@ -54,6 +56,20 @@ caxios.interceptors.response.use(
 
     //! YOU CAN DIRECTLY HANDLE ERRORS HERE!!!
     // handleCommonErrors(error.response.data.encoded);
+   
+    // console.log("axios error", error.response.data.encoded.errMsg)
+    // const navigate = useNavigate();
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: `${error.response.data.encoded.errMsg}`,
+      // footer: '<a href="">Why do I have this issue?</a>'
+    }).then((res)=>{
+      if(res.isConfirmed){
+        // window.location.reload()
+        // navigate("/")
+      }
+    })
 
     return error.response.data.encoded;
   }

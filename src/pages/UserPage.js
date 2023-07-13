@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -143,7 +142,7 @@ export default function OrderList() {
                             }
                             <TableCell align="left">
 
-                              <Link to={`/dashboard/add-user/${row.id}`}>
+                              <Link to={`/dashboard/add-user/${row.id}` } state={{ role:row.role}}>
                                 <EditIcon sx={{ color: "#6EAB49" }} />
                               </Link>
                             </TableCell>
