@@ -3,13 +3,14 @@ import { Navigate, useNavigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 // import BlogPage from './pages/BlogPage';
+import Vendor from './_mock/vendor';
+import AssignOrder from './_mock/assignOrder';
+import StorageBucket from './_mock/storageBucket';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import UserProfile from './pages/userAccount';
 import Page404 from './pages/Page404';
-import ProductsPage from './pages/ProductsPage';
 import CategoryPage from './_mock/category';
-import OrderListPage from './_mock/orderList';
 import DashboardAppPage from './pages/DashboardAppPage';
 import AddProduct from './pages/AddProduct';
 import ProductReview from './pages/ProductReview';
@@ -23,6 +24,8 @@ import UploadBucket from './pages/UploadBucket';
 import Bucketimages from './pages/Bucketimages';
 import SelectFolderToUploadFile from './pages/SelectFolderToUploadFile';
 import UploadFilesToBucket from './pages/UploadFilesToBucket';
+import ProductsPage from './pages/ProductsPage';
+import OrderList from './_mock/orderList';
 // import { useNavigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
@@ -60,8 +63,9 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
-        { path: 'orderList', element: <OrderListPage /> },
+        { path: 'orderList', element: <OrderList /> },
         { path: 'shipper', element: <Shipper /> },
+        { path: 'assignOrder', element: <AssignOrder /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'category', element: <CategoryPage /> },
@@ -77,13 +81,15 @@ export default function Router() {
         { path: 'add-user/:id', element: <AddUser />, },
         { path: 'bucket-images/:name', element: <Bucketimages/>, },
         { path: 'product/:id', element: <AddProduct />, },
+        { path: 'vendor', element: <Vendor/>, },
+        { path: 'bucket', element: <StorageBucket />, },
         { path: 'add-product-review', element: <ProductReview />, },
       ],
     },
-    {
-      path: 'login',
-      element: <LoginPage />,
-    },
+    // {
+    //   path: 'login',
+    //   element: <LoginPage />,
+    // },
     {
       element: <SimpleLayout />,
       children: [

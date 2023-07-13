@@ -1,5 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 // @mui
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Container, Stack, Typography, Box, Card, CardContent } from '@mui/material';
@@ -12,6 +14,7 @@ import { deleteRequestHandler, getRequestHandler } from '../apiHandler/customApi
 import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
 // mock
 import PRODUCTS from '../_mock/products';
+
 
 
 // ----------------------------------------------------------------------
@@ -93,10 +96,14 @@ export default function ProductsPage() {
       </Helmet>
 
       <Container>
-        <Typography variant="h4" sx={{ mb: 5 }}>
+      <Box sx={{display:"flex"}}>
+          <ShoppingCartIcon sx={{height:36}}/>
+          <Typography variant="h4" sx={{ mb: 5 }}>
           Products
         </Typography>
-
+          </Box>
+        
+        
         <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>
           <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
             <ProductFilterSidebar

@@ -17,7 +17,14 @@ import { getRequestHandler, patchRequestHandler, postRequestHandler } from '../a
 
 function AddUser() {
   const location = useLocation();
-    const currentrole = location.state.role;
+  const { id } = useParams();
+  let currentrole;
+  if(id){
+    currentrole = location.state.role;
+  }
+  else{
+    currentrole="user"
+  }
   const [email, setEmail] = useState()
   const [phoneNumber, setphoneNumber] = useState()
   const [password, setPassword] = useState()
@@ -35,6 +42,7 @@ function AddUser() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
+  
   async function handleCreateUser() {
     setShow(true);
     try {
@@ -54,8 +62,8 @@ function AddUser() {
     }
   }
 
-  const { id } = useParams();
-
+ 
+  
   // get all data 
   async function handleGetAllDataforUpdate() {
     try {
@@ -96,8 +104,9 @@ function AddUser() {
   }
 
   useEffect(() => {
-
-    handleGetAllDataforUpdate()
+    if(id){
+      handleGetAllDataforUpdate()
+    }
 
   }, [])
 

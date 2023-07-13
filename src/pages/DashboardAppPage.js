@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
+import MonetizationOnRoundedIcon from '@mui/icons-material/MonetizationOnRounded';
 // components
 import Iconify from '../components/iconify';
 // sections
@@ -31,24 +32,32 @@ export default function DashboardAppPage() {
 
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome admin dashboard
+          Hi, Welcome admin
         </Typography>
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
+            <AppWidgetSummary title="Weekly Sales" total="0" 
+            // icon={'ant-design:windows-filled'} 
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
+            <AppWidgetSummary title="New Users" total="0"color="info" 
+            // icon={'ant-design:apple-filled'} 
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
+            <AppWidgetSummary title="Total Orders" total="0" color="warning" 
+            // icon={'ant-design:windows-filled'} 
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
+            <AppWidgetSummary title="Total Users" total="0"color="error" 
+            // icon={'ant-design:bug-filled'} 
+            />
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
@@ -95,10 +104,13 @@ export default function DashboardAppPage() {
             <AppCurrentVisits
               title="Current Visits"
               chartData={[
-                { label: 'America', value: 4344 },
-                { label: 'Asia', value: 5435 },
-                { label: 'Europe', value: 1443 },
-                { label: 'Africa', value: 4443 },
+                { label: 'Bangladesh', value: 7344 },
+                { label: 'Bhutan', value: 5435 },
+                { label: 'Japan', value: 3443 },
+                { label: 'Iran', value: 2443 },
+                { label: 'Azerbaijan', value: 3443 },
+                { label: 'Canada', value: 4443 },
+                { label: 'Australia', value: 4543 },
               ]}
               chartColors={[
                 theme.palette.primary.main,
@@ -114,21 +126,21 @@ export default function DashboardAppPage() {
               title="Conversion Rates"
               subheader="(+43%) than last year"
               chartData={[
-                { label: 'Italy', value: 400 },
+                { label: 'Iran', value: 400 },
                 { label: 'Japan', value: 430 },
                 { label: 'China', value: 448 },
-                { label: 'Canada', value: 470 },
-                { label: 'France', value: 540 },
+                { label: 'india', value: 540 },
+                { label: 'Bhutan', value: 470 },
                 { label: 'Germany', value: 580 },
                 { label: 'South Korea', value: 690 },
-                { label: 'Netherlands', value: 1100 },
+                { label: 'Afghanistan', value: 1100 },
                 { label: 'United States', value: 1200 },
-                { label: 'United Kingdom', value: 1380 },
+                { label: 'Bangladesh', value: 1380 },
               ]}
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+          {/* <Grid item xs={12} md={6} lg={4}>
             <AppCurrentSubject
               title="Current Subject"
               chartLabels={['English', 'History', 'Physics', 'Geography', 'Chinese', 'Math']}
@@ -139,9 +151,9 @@ export default function DashboardAppPage() {
               ]}
               chartColors={[...Array(6)].map(() => theme.palette.text.secondary)}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} md={6} lg={8}>
+          {/* <Grid item xs={12} md={6} lg={8}>
             <AppNewsUpdate
               title="News Update"
               list={[...Array(5)].map((_, index) => ({
@@ -152,7 +164,7 @@ export default function DashboardAppPage() {
                 postedAt: faker.date.recent(),
               }))}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} md={6} lg={4}>
             <AppOrderTimeline
@@ -172,7 +184,7 @@ export default function DashboardAppPage() {
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+          {/* <Grid item xs={12} md={6} lg={4}>
             <AppTrafficBySite
               title="Traffic by Site"
               list={[
@@ -198,7 +210,7 @@ export default function DashboardAppPage() {
                 },
               ]}
             />
-          </Grid>
+          </Grid> */}
 {/* 
           <Grid item xs={12} md={6} lg={8}>
             <AppTasks

@@ -46,31 +46,28 @@ export const photoUploadRequestHandler = async (url, bodyData) => {
   return responseData
 };
 
-export const putRequestHandler = async (formData) => {
-  const accessToken = localStorage.getItem("accessToken");
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-    "Content-Type": "multipart/form-data",
-  };
 
-  let responseData;
-  await axios
-    .put(
-      `${process.env.NEXT_PUBLIC_APIPOINT}/user/profile/uploadpicture`,
-      formData,
-      {
-        headers,
-      }
-    )
-    .then((response) => {
-      responseData = JSON.parse(decryptData(responseData.data.encoded));
-    })
-    .catch((error) => {
-      responseData = JSON.parse(decryptData(error.response.data.encoded));
-    });
 
-  return responseData;
-};
+
+
+
+// export const deleteRequestHandler = async (url, bodyData) => {
+
+//   // console.log("inside ---->", url, bodyData);
+
+//   // const responseData = await caxios.delete(url,  bodyData);
+
+//   const responseData = await axios.delete("https://marpapi.techanalyticaltd.com/category/", {
+//     headers: {
+//       Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+//     },
+//     data: {
+//       ...bodyData
+//     }
+//   });
+
+//   return responseData;
+// };
 
 export const deleteRequestHandler = async (url, bodyData) => {
  
@@ -132,6 +129,6 @@ export const logoutHandler = async (url) => {
 export const authGetRequestHandler = async (url) => {
   caxios.defaults.headers.common.Authorization =
     "Bearer fc95e87e0a205c5a77ba8b7b753b91b09e53da13";
-    const responseData = await caxios.get(url);
+  const responseData = await caxios.get(url);
   return responseData;
 };

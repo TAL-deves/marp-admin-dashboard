@@ -17,8 +17,7 @@ import swal from 'sweetalert';
 import { Link } from 'react-router-dom';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import EditIcon from '@mui/icons-material/Edit';
-import Backdrop from '@mui/material/Backdrop';
-import { Circles } from 'react-loader-spinner';
+import BackDrop from '../backDrop';
 import Iconify from '../components/iconify';
 import { getRequestHandler } from '../apiHandler/customApiHandler';
 
@@ -63,24 +62,9 @@ export default function OrderList() {
 
   return (
     <>
-     {show ?
-        <>
-          <Backdrop
-            sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            // eslint-disable-next-line no-restricted-globals
-            open={open}
-          >
-            <Circles
-              height="80"
-              width="80"
-              color="#c7eed8"
-              ariaLabel="circles-loading"
-              wrapperStyle={{}}
-              wrapperClass=""
-              visible={show}
-            /> 
-          </Backdrop>
-        </> :
+      {show ?
+       <BackDrop show={show}/>
+       :
         <>
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant='h4' sx={{ml:2}}><PersonAddAltIcon sx={{}}/> All User List</Typography>
@@ -158,7 +142,7 @@ export default function OrderList() {
                             }
                             <TableCell align="left">
 
-                              <Link to={`/dashboard/add-user/${row.id}`} state={{ role: row.role}}>
+                              <Link to={`/dashboard/add-user/${row.id}` } state={{ role:row.role}}>
                                 <EditIcon sx={{ color: "#6EAB49" }} />
                               </Link>
                             </TableCell>
