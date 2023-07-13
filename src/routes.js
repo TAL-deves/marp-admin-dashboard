@@ -16,6 +16,13 @@ import ProductReview from './pages/ProductReview';
 import { getRequestHandler } from './apiHandler/customApiHandler';
 import AddUser from './pages/AddUser';
 import Shipper from './_mock/shipper';
+import Bucket from './pages/Bucket';
+import AddNewBucket from './pages/AddNewBucket';
+import DeleteBucket from './pages/DeleteBucket';
+import UploadBucket from './pages/UploadBucket';
+import Bucketimages from './pages/Bucketimages';
+import SelectFolderToUploadFile from './pages/SelectFolderToUploadFile';
+import UploadFilesToBucket from './pages/UploadFilesToBucket';
 // import { useNavigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
@@ -60,7 +67,15 @@ export default function Router() {
         { path: 'category', element: <CategoryPage /> },
         { path: 'profile', element: <UserProfile />, },
         { path: 'product', element: <AddProduct />, },
+        { path: 'create-new-bucket', element: <AddNewBucket />, },
+        { path: 'delete-bucket', element: <DeleteBucket />, },
+        { path: 'upload-bucket', element: <UploadBucket />, },
+        { path: 'bucket', element: <Bucket />, },
         { path: 'add-user', element: <AddUser />, },
+        { path: 'upload-files-to-bucket/:name', element: <UploadFilesToBucket />, },
+        { path: 'select-folder-to-upload', element: <SelectFolderToUploadFile />, },
+        { path: 'add-user/:id', element: <AddUser />, },
+        { path: 'bucket-images/:name', element: <Bucketimages/>, },
         { path: 'product/:id', element: <AddProduct />, },
         { path: 'add-product-review', element: <ProductReview />, },
       ],

@@ -8,11 +8,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import Backdrop from '@mui/material/Backdrop';
 import { Circles } from 'react-loader-spinner';
 // utils
-import { deleteRequestHandler } from '../../../apiHandler/customApiHandler';
 import { fCurrency } from '../../../utils/formatNumber';
 // components
 import Label from '../../../components/label';
 import { ColorPreview } from '../../../components/color-utils';
+import { deleteRequestHandler } from '../../../apiHandler/customApiHandler';
 // import {delete} from "../../../../public/assets/delete.png"
 // ----------------------------------------------------------------------
 

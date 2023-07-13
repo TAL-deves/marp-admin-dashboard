@@ -82,7 +82,7 @@ export default function ProductsPage() {
 
 
   useEffect(() => {
-    handleAuthCheck()
+    // handleAuthCheck()
     getData();
   }, []);
 

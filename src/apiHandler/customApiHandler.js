@@ -18,6 +18,34 @@ export const patchRequestHandler = async (url, bodyData) => {
   return responseData;
 };
 
+export const photoUploadRequestHandler = async (url, bodyData) => {
+  // const responseData = await caxios.put(url, bodyData );
+  // return responseData;
+
+  const config = {
+    method: 'put',
+  maxBodyLength: Infinity,
+    url,
+    headers: { 
+      Authorization : `Bearer ${localStorage.getItem(
+        "accessToken"
+      )}`
+    },
+    data : bodyData
+  };
+
+ let responseData;
+
+ 
+  axios(config)
+      .then((response)=> {
+        // console.log(JSON.stringify(response.data));
+        responseData= response.data.encoded
+      })
+      console.log("custom responseData", responseData)
+  return responseData
+};
+
 export const putRequestHandler = async (formData) => {
   const accessToken = localStorage.getItem("accessToken");
   const headers = {
@@ -45,7 +73,17 @@ export const putRequestHandler = async (formData) => {
 };
 
 export const deleteRequestHandler = async (url, bodyData) => {
-  const responseData = await caxios.delete(url, { ...bodyData });
+ 
+   const responseData = await axios.delete(url, {
+    
+   headers : {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    },
+    data: {
+      ...bodyData
+    }
+  });
+
   return responseData;
 };
 

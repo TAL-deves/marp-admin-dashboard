@@ -7,6 +7,8 @@ import LoginIcon from '@mui/icons-material/Login';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SvgColor from '../../../components/svg-color';
+// import {bucketImg} from "../../../img/Storage 1.png"
+import bucketImg from "../../../img/Storage 1.png";
 // ----------------------------------------------------------------------
 
 const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />;
@@ -41,6 +43,12 @@ const navConfig = [
     title: 'shipper',
     path: '/dashboard/shipper',
     icon: <LocalShippingIcon/>,
+  },
+  {
+    title: 'bucket',
+    path: '/dashboard/bucket',
+    // icon: <LocalShippingIcon/>,
+    icon: <img src={bucketImg} alt=""/>,
   },
   {
     title: 'login',

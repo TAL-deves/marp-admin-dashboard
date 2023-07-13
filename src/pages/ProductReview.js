@@ -5,7 +5,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import Backdrop from '@mui/material/Backdrop';
 import { Circles } from 'react-loader-spinner';
-import { getRequestHandler, postRequestHandler } from '../apiHandler/customApiHandler';
+import FormData from 'form-data';
+import { getRequestHandler, photoUploadRequestHandler, postRequestHandler } from '../apiHandler/customApiHandler';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -75,6 +76,32 @@ function ProductReview() {
         navigate("/dashboard/products")
       }
          console.log("new add product response",response);
+      } catch (error) {
+        // Handle the error
+        console.error(error);
+      }
+    }
+    
+
+  
+
+    // formData.append('image', fs.createReadStream('/Users/techanalyticaltd/Desktop/ondontmiss1_1589162412.webp'));
+
+    async function handleAddPhoto() {
+      setShow(true);
+      const formData = new FormData();
+      formData.append('image', imagesList[0]);
+      
+      try {
+        const response = await photoUploadRequestHandler('https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=category',{
+          formData
+        });
+        // Handle the response data
+        setShow(false);
+      // if(response.success){
+      //   navigate("/dashboard/products")
+      // }
+         console.log("photo response",formData);
       } catch (error) {
         // Handle the error
         console.error(error);
@@ -200,7 +227,12 @@ function ProductReview() {
           
         </Box>
         </Link>
-        <Box onClick={()=>{handleAddProducts()}} sx={{border:"1px solid #6610F2", mb:"1rem", width:"120px",height:"34px",  p:".5rem", backgroundColor:"#6610F2", mt:"3rem", cursor:"pointer"}}>
+        <Box 
+        onClick={()=>
+          {
+            handleAddProducts()
+            // handleAddPhoto()
+        }} sx={{border:"1px solid #6610F2", mb:"1rem", width:"120px",height:"34px",  p:".5rem", backgroundColor:"#6610F2", mt:"3rem", cursor:"pointer"}}>
           {/* <AddCircleIcon/> */}
        
           <Typography sx={{color:"white",fontSize:"12px", textDecoration:"none", textAlign:"center"}}>Publish</Typography>
