@@ -19,8 +19,7 @@ export const patchRequestHandler = async (url, bodyData) => {
 };
 
 export const photoUploadRequestHandler = async (url, bodyData) => {
-  // const responseData = await caxios.put(url, bodyData );
-  // return responseData;
+
 
   const config = {
     method: 'put',
@@ -37,13 +36,22 @@ export const photoUploadRequestHandler = async (url, bodyData) => {
  let responseData;
 
  
-  axios(config)
-      .then((response)=> {
-        // console.log(JSON.stringify(response.data));
-        responseData= response.data.encoded
-      })
-      console.log("custom responseData", responseData)
-  return responseData
+  // axios(config)
+  //     .then((response)=> {
+  //       responseData= response.data.encoded
+  //     })
+  //     console.log("custom responseData", responseData)
+  // return responseData
+
+  try {
+    const response = await axios(config);
+    const responseData = response.data.encoded;
+    // console.log("custom responseData", responseData);
+    return responseData;
+  } catch (error) {
+    console.error(error);
+    throw error; // re-throw the error to be caught in the calling code
+  }
 };
 
 

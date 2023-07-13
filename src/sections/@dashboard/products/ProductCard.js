@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 // import Backdrop from 'src/theme/overrides/Backdrop';
 import Backdrop from '@mui/material/Backdrop';
 import { Circles } from 'react-loader-spinner';
+import Swal from 'sweetalert2';
 // utils
 import { fCurrency } from '../../../utils/formatNumber';
 // components
@@ -41,11 +42,16 @@ export default function ShopProductCard({ product }) {
       try {
         const response = await deleteRequestHandler('https://marpapi.techanalyticaltd.com/product/', {id});
         // Handle the response data      
-        console.log("delete data", response);
-        console.log("delete id", id);
+        // console.log("delete data", response.data.encoded.success);
+        // console.log("delete id", id);
         setShow(false)
-        if(response.success){
-          navigate("/dashboard/products")
+        if(response.data.encoded.success){
+          // navigate("/dashboard/products")
+          Swal.fire('Product Deleted').then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload(); // Reload the page
+            }
+          })
         }
   
       } catch (error) {
