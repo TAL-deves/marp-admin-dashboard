@@ -113,7 +113,7 @@ function AddProduct() {
       const response = await getRequestHandler('https://marpapi.techanalyticaltd.com/category/allcategories');
       // Handle the response data      
       setCategoryList(response.data.categoryList)
-       console.log("categories", response.data.categoryList);
+      //  console.log("categories", response.data.categoryList);
 
     } catch (error) {
       // Handle the error
@@ -169,7 +169,7 @@ function AddProduct() {
     try {
       const data = await getRequestHandler('https://marpapi.techanalyticaltd.com/auth/authcheck');
       // Handle the response data
-      console.log("auth check response", data);
+      // console.log("auth check response", data);
       if(data.error.code===401){
         localStorage.removeItem("accessToken")
       localStorage.removeItem("refreshToken")

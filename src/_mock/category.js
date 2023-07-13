@@ -248,6 +248,7 @@ const Category = () => {
 
 
   const handleCategoryDelete = (id) => {
+    // alert("Hello! I am an alert box!");
     async function getData() {
       const responseData = await deleteRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { categoryId: id });
       console.log("responseData", responseData);
