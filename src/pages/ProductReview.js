@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+// eslint-disable-next-line import/no-unresolved
+import 'slick-carousel/slick/slick-theme.css';
+// eslint-disable-next-line import/no-unresolved
+import 'slick-carousel/slick/slick.css';
+// eslint-disable-next-line import/no-unresolved
 import Slider from 'react-slick';
 import Backdrop from '@mui/material/Backdrop';
 import { Circles } from 'react-loader-spinner';
 import FormData from 'form-data';
 import { getRequestHandler, photoUploadRequestHandler, postRequestHandler } from '../apiHandler/customApiHandler';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 
 
 function ProductReview() {

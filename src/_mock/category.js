@@ -85,7 +85,7 @@ const Category = () => {
     handleFiles(files);
   };
   const handleFiles = (files) => {
-    console.log("response button clicked", files);
+    // console.log("response button clicked", files);
     const images = Array.from(files).map((file) => URL.createObjectURL(file));
     setDroppedImages(images);
 // console.log("images -------.", images);
@@ -93,9 +93,8 @@ const Category = () => {
     formData.append('image', files[0]);
     async function getData() {
       try {
-        await photoUploadRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`, {formData})
-       .then((res)=>res.json())
-       .then(()=>console.log("res"))
+        await photoUploadRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`, formData)
+       .then((response)=>console.log("photoUploadRequestHandler api calling", response))
        setShow(false);
      } catch (error) {
        console.error(error);
@@ -228,7 +227,7 @@ const Category = () => {
     setOpen(false);
     async function getData() {
       const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category, subcategory, subcategoryImage:droppedImagesSub.toString() });
-      console.log("NewResData of subcategory", NewResData);
+      // console.log("NewResData of subcategory", NewResData);
       setReload(!reload);
       setDroppedImagesSub(false)
     }
@@ -249,12 +248,21 @@ const Category = () => {
 
   const handleCategoryDelete = (id) => {
     // alert("Hello! I am an alert box!");
-    async function getData() {
-      const responseData = await deleteRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { categoryId: id });
-      console.log("responseData", responseData);
-      setReload(!reload)
-    }
-    getData();
+    // eslint-disable-next-line no-restricted-globals
+    // confirm("Press a button!");
+    let text = "Press a button! Are you sure you want to permanently delete Category";
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm(text) === true) {
+      getData()
+      // eslint-disable-next-line no-inner-declarations
+      async function getData() {
+        const responseData = await deleteRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { categoryId: id });
+        // console.log("responseData", responseData);
+        setReload(!reload)
+      }
+    } else {
+      text =false;
+    } 
   }
   const handleClickedDeleteSub = (id) => {
     // console.log("clicked handleClickedDeleteSub");

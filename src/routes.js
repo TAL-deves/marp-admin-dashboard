@@ -35,9 +35,9 @@ export default function Router() {
   async function handleAuthCheck() {
 
     try {
-      const data = await getRequestHandler('https://marpapi.techanalyticaltd.com/auth/authcheck');
+      const data = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}auth/authcheck`);
       // Handle the response data
-      console.log("auth check response", data);
+      // console.log("auth check response", data);
       if(data.error.code===401){
         localStorage.removeItem("accessToken")
       localStorage.removeItem("refreshToken")

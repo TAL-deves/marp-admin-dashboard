@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box';
@@ -5,6 +6,7 @@ import { Button, TextField } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
+import CircularProgress from '@mui/material/CircularProgress';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Backdrop from '@mui/material/Backdrop';
@@ -39,6 +41,9 @@ function AddProduct() {
   const [subCategoryList, setSubCategoryList] = useState()
   const [existingProduct, setExistingProduct]= useState()
   const [show, setShow] = useState(false);
+  const [showloader, setShowloader] = useState(false);
+  const [droppedImages, setDroppedImages] = useState([]);
+  const [stateDroppedImages, setStateDroppedImages] = useState([]);
 
   const { pathname } = useLocation();
   const { id } = useParams();
@@ -113,7 +118,7 @@ function AddProduct() {
       const response = await getRequestHandler('https://marpapi.techanalyticaltd.com/category/allcategories');
       // Handle the response data      
       setCategoryList(response.data.categoryList)
-      //  console.log("categories", response.data.categoryList);
+       console.log("categories", response.data.categoryList);
 
     } catch (error) {
       // Handle the error
@@ -128,7 +133,6 @@ function AddProduct() {
       // Handle the response data      
       setSubCategoryList(response.data.categoryList.subcategories)
       // console.log("subcategories", response);
-
     } catch (error) {
       // Handle the error
       console.error(error);
@@ -136,7 +140,7 @@ function AddProduct() {
   }
 
   
-  const [droppedImages, setDroppedImages] = useState([]);
+  
   // const [file, setFiles]=useState([])
   const fileInputRef = useRef(null);
   const handleDragOver = (event) => {
@@ -159,8 +163,9 @@ function AddProduct() {
 
   const handleFiles = (files) => {
     const images = Array.from(files).map((file) => URL.createObjectURL(file));
-    setDroppedImages((prevImages) => [...prevImages, ...images]);
+     setStateDroppedImages((prevImages) => [...prevImages, ...images]);
   };
+  console.log("droppedImages", droppedImages)
 
   const handleBrowseClick = () => {
     fileInputRef.current.click();
@@ -173,7 +178,7 @@ function AddProduct() {
     try {
       const data = await getRequestHandler('https://marpapi.techanalyticaltd.com/auth/authcheck');
       // Handle the response data
-      // console.log("auth check response", data);
+      console.log("auth check response", data);
       if(data.error.code===401){
         localStorage.removeItem("accessToken")
       localStorage.removeItem("refreshToken")
@@ -186,21 +191,44 @@ function AddProduct() {
     }
   }
   // console.log("dropped images", files)
-  async function handleAddPhoto(files) {
-    setShow(true);  
-    const formData= new FormData();
-    // droppedImages.map((item)=>(
-      formData.append('image', files);
-    // );
-    // const image=formData.getAll('image')
-    try {      
-       await photoUploadRequestHandler('https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=productPhotos', formData)
-      .then((res)=>{
-        console.log("formData response", res);
-      });
+  // async function handleAddPhoto(files) {
+  //   setShow(true);  
     
-      setShow(false);
+   
+  //   try {      
+  //     const formData= new FormData();
+  //     formData.append('image', files);
+
+  //      const response=await photoUploadRequestHandler('https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=productPhotos', formData)
+  //     // .then((res)=>{
+  //       // });
+  //         console.log("formData response", response);
+    
+  //     setShow(false);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+
+
+
+  async function handleAddPhoto(files) {
+    setShowloader(true);
+    const formData= new FormData();
+    formData.append('image', files);
+    try {
+      const response = await photoUploadRequestHandler('https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=productPhotos',formData);
+      // Handle the response data
+      setShowloader(false);
+    // if(response.success){
+    //    navigate("/dashboard/bucket")
+    // }
+       console.log("formdata response",response.data.data.publicUrl);
+       setDroppedImages((prevImages) => [...prevImages,response.data.data.publicUrl])
+       
     } catch (error) {
+      // Handle the error
+      setShowloader(false);
       console.error(error);
     }
   }
@@ -252,7 +280,7 @@ function AddProduct() {
       </Box>
       <Box sx={{ m: "1rem" }}>
         <Grid container spacing={2}>
-          <Grid item md={6} lg={5}>
+          <Grid item md={6} lg={6}>
             <Typography sx={{ mt: "1rem" }}>Product Name</Typography>
 
             <TextField
@@ -446,19 +474,24 @@ function AddProduct() {
             </Box>
 
           </Grid>
-          <Grid item md={6} lg={7} >
+          <Grid item md={6} lg={6} >
             <Grid container spacing={2} sx={{justifyContent:"center", mt:"2rem"}}>
-              {/* <ImageDragnDrop/> */}
+              
               <Box sx={{ display: "" }}>
                 <Box sx={{ display: "flex" }}>
                   <Grid sx={{ justifyContent: "space-between" }} container spacing={2}>
-                    {droppedImages.map((image, index) => (
+
+                    {stateDroppedImages.map((image, index) => (
                       <Grid key={index} item xs={4}>
                         <Container sx={{ mx: ".5rem" }}>
                           <img src={image} alt={`Dropped ${index}`} style={{ width: "auto", maxHeight: '100%' }} />
                         </Container>
                       </Grid>
                     ))}
+                    {stateDroppedImages.length===1
+                    ?
+                    <></>
+                    :
                     <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOver} onDrop={handleDrop}>
                       <Box >
                         <Typography>Drop your images here, or select</Typography>
@@ -477,6 +510,7 @@ function AddProduct() {
                         </div>
                       </Box>
                     </Container>
+                    }
                   </Grid>
                 </Box>
 
@@ -518,21 +552,37 @@ function AddProduct() {
         </Box>
         {!id?
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          {!showloader?
           <Link state={{ name: productName, cat: categoryName, subCat: subCategoryName, brandname: brand, code: productCode, sKu: sku, salecount: saleCount, newitem: newItem, stoCk: stock, disCount: discount, priCe: price, shortdescription: shortDescription, fulldescription: fullDescription, imagesList: droppedImages }} style={{ textDecoration: "none" }} to="/dashboard/add-product-review">
-            <Box sx={{ border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "34px", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
+            <Box sx={{ border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "auto", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
               {/* <AddCircleIcon/> */}
-
+              
               <Typography sx={{ color: "white", fontSize: "12px", textDecoration: "none", textAlign: "center" }}>Next</Typography>
+              </Box>
+              </Link>
+              :
+              <Box sx={{ border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "auto", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
+              <Box sx={{display:"flex", justifyContent:"space-around"}}><CircularProgress style={{ color: 'white' }}/></Box>
+              </Box>}
 
             </Box>
-          </Link>
-        </Box>
+          // </Link>
+        // </Box>
         :
         <Box sx={{ display: "flex", justifyContent: "flex-end",  }}>          
+            {/* <Box onClick={()=>{handleUpdateProduct()}} sx={{cursor:"pointer", border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "34px", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}> */}
+            {!showloader?
             <Box onClick={()=>{handleUpdateProduct()}} sx={{cursor:"pointer", border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "34px", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
               <Typography sx={{ color: "white", fontSize: "12px", textDecoration: "none", textAlign: "center" }}>Update</Typography>
+              </Box>
+              :
+              <Box sx={{cursor:"pointer", border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "auto", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
+              <Box sx={{display:"flex", justifyContent:"space-around"}}><CircularProgress style={{ color: 'white' }}/>
+              </Box>
+              </Box>
+              }
 
-            </Box>
+            {/* </Box> */}
         </Box>}
 
 
