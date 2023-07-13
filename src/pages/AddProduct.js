@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box';
@@ -11,7 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Backdrop from '@mui/material/Backdrop';
 import { Circles } from 'react-loader-spinner';
-import { getRequestHandler, patchRequestHandler, photoUploadRequestHandler } from '../apiHandler/customApiHandler';
+import deleteIcon from "../img/delete.png";
+import { deleteRequestHandler, getRequestHandler, patchRequestHandler, photoUploadRequestHandler } from '../apiHandler/customApiHandler';
 // import ImageDragnDrop from '../components/ImageDragnDrop/ImageDragnDrop';
 
 const Container = styled('div')({
@@ -39,10 +39,11 @@ function AddProduct() {
   const [subCategoryName, setSubCategoryName] = useState("Smart Watch")
   const [categoryList, setCategoryList] = useState()
   const [subCategoryList, setSubCategoryList] = useState()
-  const [existingProduct, setExistingProduct]= useState()
+  const [existingProduct, setExistingProduct] = useState()
   const [show, setShow] = useState(false);
   const [showloader, setShowloader] = useState(false);
   const [droppedImages, setDroppedImages] = useState([]);
+  const [imgName, setImgName] = useState();
   const [stateDroppedImages, setStateDroppedImages] = useState([]);
 
   const { pathname } = useLocation();
@@ -82,31 +83,31 @@ function AddProduct() {
   async function handleUpdateProduct() {
     setShow(true);
     handleOpen();
-    
+
     try {
       console.log("sku", sku)
-      const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/product/',{
-          sku: `${sku}`,
-          productCode: `${productCode}`,
-          name: `${productName}`,
-           price,
-          discount,
-          newItem,
-          saleCount,
-          stock,
-          shortDescription: `${shortDescription}`,
-          productImages: `${droppedImages}`,
-          brand: `${brand}`,
-          categoryName: `${categoryName}`,
-          subcategoryName: `${subCategoryName}`,
-         id:`${id}`,
+      const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/product/', {
+        sku: `${sku}`,
+        productCode: `${productCode}`,
+        name: `${productName}`,
+        price,
+        discount,
+        newItem,
+        saleCount,
+        stock,
+        shortDescription: `${shortDescription}`,
+        productImages: `${droppedImages}`,
+        brand: `${brand}`,
+        categoryName: `${categoryName}`,
+        subcategoryName: `${subCategoryName}`,
+        id: `${id}`,
       });
       // Handle the response data
       setShow(false);
-      if(response.success){
+      if (response.success) {
         navigate("/dashboard/products")
       }
-       console.log("new update sku",response);
+      console.log("new update sku", response);
     } catch (error) {
       // Handle the error
       console.error(error);
@@ -118,7 +119,7 @@ function AddProduct() {
       const response = await getRequestHandler('https://marpapi.techanalyticaltd.com/category/allcategories');
       // Handle the response data      
       setCategoryList(response.data.categoryList)
-       console.log("categories", response.data.categoryList);
+      console.log("categories", response.data.categoryList);
 
     } catch (error) {
       // Handle the error
@@ -139,8 +140,8 @@ function AddProduct() {
     }
   }
 
-  
-  
+
+
   // const [file, setFiles]=useState([])
   const fileInputRef = useRef(null);
   const handleDragOver = (event) => {
@@ -155,17 +156,17 @@ function AddProduct() {
 
   const handleFileInputChange = (event) => {
     const files = event.target.files;
-    console.log('Selected File:', files);    
+    console.log('Selected File:', files);
     handleFiles(files);
-      handleAddPhoto(files[0]); // Pass convertedFile instead of files
+    handleAddPhoto(files[0]); // Pass convertedFile instead of files
     console.log("files", files);
   };
 
   const handleFiles = (files) => {
     const images = Array.from(files).map((file) => URL.createObjectURL(file));
-     setStateDroppedImages((prevImages) => [...prevImages, ...images]);
+    setStateDroppedImages((prevImages) => [...prevImages, ...images]);
   };
-  console.log("droppedImages", droppedImages)
+  console.log("statedroppedImages", stateDroppedImages)
 
   const handleBrowseClick = () => {
     fileInputRef.current.click();
@@ -179,59 +180,61 @@ function AddProduct() {
       const data = await getRequestHandler('https://marpapi.techanalyticaltd.com/auth/authcheck');
       // Handle the response data
       console.log("auth check response", data);
-      if(data.error.code===401){
+      if (data.error.code === 401) {
         localStorage.removeItem("accessToken")
-      localStorage.removeItem("refreshToken")
-      localStorage.removeItem("user")
-      navigate("/")
+        localStorage.removeItem("refreshToken")
+        localStorage.removeItem("user")
+        navigate("/")
       }
     } catch (error) {
       // Handle the error
       console.error(error);
     }
   }
-  // console.log("dropped images", files)
-  // async function handleAddPhoto(files) {
-  //   setShow(true);  
-    
-   
-  //   try {      
-  //     const formData= new FormData();
-  //     formData.append('image', files);
-
-  //      const response=await photoUploadRequestHandler('https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=productPhotos', formData)
-  //     // .then((res)=>{
-  //       // });
-  //         console.log("formData response", response);
-    
-  //     setShow(false);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
 
 
   async function handleAddPhoto(files) {
     setShowloader(true);
-    const formData= new FormData();
+    const formData = new FormData();
     formData.append('image', files);
     try {
-      const response = await photoUploadRequestHandler('https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=productPhotos',formData);
+      const response = await photoUploadRequestHandler('https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=productPhotos', formData);
       // Handle the response data
       setShowloader(false);
-    // if(response.success){
-    //    navigate("/dashboard/bucket")
-    // }
-       console.log("formdata response",response.data.data.publicUrl);
-       setDroppedImages((prevImages) => [...prevImages,response.data.data.publicUrl])
-       
+      // if(response.success){
+      //    navigate("/dashboard/bucket")
+      // }
+      console.log("formdata response", response);
+      setDroppedImages((prevImages) => [...prevImages, response.data.data.publicUrl])
+
     } catch (error) {
       // Handle the error
       setShowloader(false);
       console.error(error);
     }
   }
+
+        // delete 
+        async function handleDeleteImage(fileNames, index) {
+          setShow(true)
+          console.log("state droppppppppp",fileNames )
+          stateDroppedImages.splice(index, 1)
+          try {
+            const response = await deleteRequestHandler(`https://marpapi.techanalyticaltd.com/admin/bucket/files`,{"bucketName": "productPhotos", fileNames});
+            // Handle the response data
+            console.log("image delete response", response)
+            
+            setShow(false)
+          } catch (error) {
+            // Handle the error
+            console.error(error);
+            setShow(false)
+          }
+        }
+
+
+
+
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
@@ -250,7 +253,7 @@ function AddProduct() {
 
   return (
     <>
-     {show ?
+      {show ?
         <>
           <Backdrop
             sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -265,330 +268,350 @@ function AddProduct() {
               wrapperStyle={{}}
               wrapperClass=""
               visible={show}
-            /> 
+            />
           </Backdrop>
         </> :
-    <Box container sx={{ maxWidth: "80rem" }}>
-      
-      <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-        <Typography sx={{margingLeft:".2rem", borderBottom: "5px solid #6610F2", m: "1rem" }}>
-          + Add Product
-        </Typography>
-        <Typography sx={{ m: "1rem" }}>
-          Product Review
-        </Typography>
-      </Box>
-      <Box sx={{ m: "1rem" }}>
-        <Grid container spacing={2}>
-          <Grid item md={6} lg={6}>
-            <Typography sx={{ mt: "1rem" }}>Product Name</Typography>
+        <Box container sx={{ maxWidth: "80rem" }}>
 
-            <TextField
-              // sx={{ width: "24.5rem" }}
-              sx={{width:{xs:"21rem",sm:"24.5rem",md:"24.5rem"}}}
-              // label="Product Name"
-              name="name"
-              type="name"
-              value={productName}
-              // focused
-              variant="outlined"
-              onChange={(e) => setProductName(e.target.value)}
-            />
-            <Box sx={{ display: "flex", flexDirection:{xs:"column", sm:"row"} }}>
-              <Box sx={{ mr: ".5rem" }}>
-                <Typography sx={{ mt: "1rem" }}>Category</Typography>
+          <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+            <Typography sx={{ margingLeft: ".2rem", borderBottom: "5px solid #6610F2", m: "1rem" }}>
+              + Add Product
+            </Typography>
+            <Typography sx={{ m: "1rem" }}>
+              Product Review
+            </Typography>
+          </Box>
+          <Box sx={{ m: "1rem" }}>
+            <Grid container spacing={2}>
+              <Grid item md={6} lg={6}>
+                <Typography sx={{ mt: "1rem" }}>Product Name</Typography>
 
-                {categoryList ?
-                  <Select
-                    // sx={{ width: '12rem' }}
-                    sx={{width:{xs:"21rem",sm:"12rem"}}}
-                    labelId="demo-simple-select-helper-label"
-                    id="demo-simple-select-helper"
-                    value={categoryName}
-                    onChange={(e) => setCategoryName(e.target.value)}
-                  >
-                    {categoryList.map((option, index) => (
-                      <MenuItem key={index} value={option.name}>
-                        {option.name}
-                      </MenuItem>
-                    ))}
-
-                  </Select>
-                  :
-                  <Select
-                    sx={{ width:{xs:"21rem",sm:"12rem"}, mr: '.7rem' }}
-                    labelId="demo-simple-select-helper-label"
-                    id="demo-simple-select-helper"
-                    value={categoryName}
-                    onChange={(e) => setCategoryName(e.target.value)}
-                  >
-                    <MenuItem value="Electronics">Electronics</MenuItem>
-
-                  </Select>
-                }
-              </Box>
-              <Box>
-                <Typography sx={{ mt: "1rem" }}>Subcategory</Typography>
-                {subCategoryList ?
-                  <Select
-                    sx={{ width:{xs:"21rem",sm:"12rem"} }}
-                    labelId="demo-simple-select-helper-label"
-                    id="demo-simple-select-helper"
-                    value={subCategoryName}
-                    onChange={(e) => setSubCategoryName(e.target.value)}
-                  >
-                    {subCategoryList.map((option, index) => (
-                      <MenuItem key={index} value={option.name}>
-                        {option.name}
-                      </MenuItem>
-                    ))}
-
-                  </Select>
-                  :
-                  <Select
-                    sx={{ width:{xs:"21rem",sm:"12rem"}, mr: '.7rem' }}
-                    labelId="demo-simple-select-helper-label"
-                    id="demo-simple-select-helper"
-                    value={subCategoryName}
-                    onChange={(e) => setSubCategoryName(e.target.value)}
-                  >
-                    <MenuItem value="Phone">Phone</MenuItem>
-
-                  </Select>
-                }
-              </Box>
-            </Box>
-            <Box sx={{ display: "flex", flexDirection:{xs:"column", sm:"row"} }}>
-              <Box>
-                <Typography sx={{ mt: "1rem" }}>Brand</Typography>
                 <TextField
-                  sx={{ width:{xs:"21rem",sm:"12rem"}, mr: ".5rem" }}
-                  // focused
-                  value={brand}
-                  // label="Brand"
+                  // sx={{ width: "24.5rem" }}
+                  sx={{ width: { xs: "21rem", sm: "24.5rem", md: "24.5rem" } }}
+                  // label="Product Name"
                   name="name"
                   type="name"
-                  variant="outlined"
-                  onChange={(e) => setBrand(e.target.value)}
-                />
-              </Box>
-              <Box>
-                <Typography sx={{ mt: "1rem" }}>Product Code</Typography>
-                <TextField
-                  sx={{ width:{xs:"21rem",sm:"12rem"} }}
-                  // label="Product Code"
-                  value={productCode}
-                  name="name"
+                  value={productName}
                   // focused
-                  type="name"
                   variant="outlined"
-                  onChange={(e) => setProductCode(e.target.value)}
+                  onChange={(e) => setProductName(e.target.value)}
                 />
-              </Box>
-            </Box>
-            <Box sx={{ display: "flex", flexDirection:{xs:"column", sm:"row"} }}>
-              <Box>
-                <Typography sx={{ mt: "1rem" }}>Sku</Typography>
-                <TextField
-                  sx={{ width:{xs:"21rem",sm:"12rem"}, mr: ".5rem" }}
-                  value={sku}
-                  // focused
-                  // label="SKU"
-                  name="name"
-                  type="name"
-                  variant="outlined"
-                  onChange={(e) => setSku(e.target.value)}
-                />
-              </Box>
-              <Box>
-                <Typography sx={{ width:{xs:"21rem",sm:"12rem"}, mt: "1rem" }}>Sale Count</Typography>
-                <TextField
-                  sx={{ width:{xs:"21rem",sm:"12rem"} }}
-                  value={saleCount}
-                  // label="Sale Count"
-                  // focused
-                  name="name"
-                  type="number"
-                  variant="outlined"
-                  onChange={(e) => setSaleCount(parseInt(e.target.value, 10))}
-                />
-              </Box>
-            </Box>
-            <Box sx={{ display: "flex", flexDirection:{xs:"column", sm:"row"} }}>
-              <Box>
-                <Typography sx={{ mt: "1rem" }}>New Item</Typography>
-                <Select
-                  sx={{ width:{xs:"21rem",sm:"12rem"}, mr: ".7rem" }}
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
-                  defaultValue={false}
-                  value={newItem}
-                  // label="Electronics"
-                  onChange={(e) => setNewItem(e.target.value)}
-                >
-                  <MenuItem value={!false}>True</MenuItem>
-                  <MenuItem value={false}>False</MenuItem>
-                </Select>
-              </Box>
-              <Box>
-                <Typography sx={{ mt: "1rem", width:{xs:"21rem",sm:"12rem"} }}>Stock</Typography>
-                <TextField
-                  sx={{ width: "100%" }}
-                  value={stock}
-                  // label="Stock"
-                  // focused
-                  name="name"
-                  type="number"
-                  variant="outlined"
-                  onChange={(e) => setStock(parseInt(e.target.value, 10))}
-                />
-              </Box>
-            </Box>
-            <Box sx={{ display: "flex", flexDirection:{xs:"column", sm:"row"} }}>
-              <Box>
-                <Typography sx={{ mt: "1rem", width:{xs:"21rem",sm:"12rem"}, mr: ".7rem" }}>Discount</Typography>
-                <TextField
-                  sx={{ width: "95%" }}
-                   value={discount}
-                  // label="Discount"
-                  name="name"
-                  // focused
-                  type="number"
-                  variant="outlined"
-                  onChange={(e) => setDiscount(parseInt(e.target.value, 10))}
-                />
-              </Box>
-              <Box>
-                <Typography sx={{ mt: "1rem" }}>Price</Typography>
-                <TextField
-                  sx={{ width:{xs:"21rem",sm:"12rem"} }}
-                   value={price}
-                  // label="Price"
-                  name="name"
-                  // focused
-                  type="number"
-                  variant="outlined"
-                  onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                />
-              </Box>
-            </Box>
+                <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
+                  <Box sx={{ mr: ".5rem" }}>
+                    <Typography sx={{ mt: "1rem" }}>Category</Typography>
 
-          </Grid>
-          <Grid item md={6} lg={6} >
-            <Grid container spacing={2} sx={{justifyContent:"center", mt:"2rem"}}>
-              
-              <Box sx={{ display: "" }}>
-                <Box sx={{ display: "flex" }}>
-                  <Grid sx={{ justifyContent: "space-between" }} container spacing={2}>
+                    {categoryList ?
+                      <Select
+                        // sx={{ width: '12rem' }}
+                        sx={{ width: { xs: "21rem", sm: "12rem" } }}
+                        labelId="demo-simple-select-helper-label"
+                        id="demo-simple-select-helper"
+                        value={categoryName}
+                        onChange={(e) => setCategoryName(e.target.value)}
+                      >
+                        {categoryList.map((option, index) => (
+                          <MenuItem key={index} value={option.name}>
+                            {option.name}
+                          </MenuItem>
+                        ))}
 
-                    {stateDroppedImages.map((image, index) => (
-                      <Grid key={index} item xs={4}>
-                        <Container sx={{ mx: ".5rem" }}>
-                          <img src={image} alt={`Dropped ${index}`} style={{ width: "auto", maxHeight: '100%' }} />
-                        </Container>
-                      </Grid>
-                    ))}
-                    {stateDroppedImages.length===1
-                    ?
-                    <></>
-                    :
-                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOver} onDrop={handleDrop}>
-                      <Box >
-                        <Typography>Drop your images here, or select</Typography>
-                        <div>
-                          <Typography onClick={handleBrowseClick} style={{ color: "#6610F2", cursor: 'pointer' }}>
-                            Browse
-                          </Typography>
-                          <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleFileInputChange}
-                            style={{ display: 'none' }}
-                          />
-                        </div>
-                      </Box>
-                    </Container>
+                      </Select>
+                      :
+                      <Select
+                        sx={{ width: { xs: "21rem", sm: "12rem" }, mr: '.7rem' }}
+                        labelId="demo-simple-select-helper-label"
+                        id="demo-simple-select-helper"
+                        value={categoryName}
+                        onChange={(e) => setCategoryName(e.target.value)}
+                      >
+                        <MenuItem value="Electronics">Electronics</MenuItem>
+
+                      </Select>
                     }
-                  </Grid>
+                  </Box>
+                  <Box>
+                    <Typography sx={{ mt: "1rem" }}>Subcategory</Typography>
+                    {subCategoryList ?
+                      <Select
+                        sx={{ width: { xs: "21rem", sm: "12rem" } }}
+                        labelId="demo-simple-select-helper-label"
+                        id="demo-simple-select-helper"
+                        value={subCategoryName}
+                        onChange={(e) => setSubCategoryName(e.target.value)}
+                      >
+                        {subCategoryList.map((option, index) => (
+                          <MenuItem key={index} value={option.name}>
+                            {option.name}
+                          </MenuItem>
+                        ))}
+
+                      </Select>
+                      :
+                      <Select
+                        sx={{ width: { xs: "21rem", sm: "12rem" }, mr: '.7rem' }}
+                        labelId="demo-simple-select-helper-label"
+                        id="demo-simple-select-helper"
+                        value={subCategoryName}
+                        onChange={(e) => setSubCategoryName(e.target.value)}
+                      >
+                        <MenuItem value="Phone">Phone</MenuItem>
+
+                      </Select>
+                    }
+                  </Box>
+                </Box>
+                <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
+                  <Box>
+                    <Typography sx={{ mt: "1rem" }}>Brand</Typography>
+                    <TextField
+                      sx={{ width: { xs: "21rem", sm: "12rem" }, mr: ".5rem" }}
+                      // focused
+                      value={brand}
+                      // label="Brand"
+                      name="name"
+                      type="name"
+                      variant="outlined"
+                      onChange={(e) => setBrand(e.target.value)}
+                    />
+                  </Box>
+                  <Box>
+                    <Typography sx={{ mt: "1rem" }}>Product Code</Typography>
+                    <TextField
+                      sx={{ width: { xs: "21rem", sm: "12rem" } }}
+                      // label="Product Code"
+                      value={productCode}
+                      name="name"
+                      // focused
+                      type="name"
+                      variant="outlined"
+                      onChange={(e) => setProductCode(e.target.value)}
+                    />
+                  </Box>
+                </Box>
+                <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
+                  <Box>
+                    <Typography sx={{ mt: "1rem" }}>Sku</Typography>
+                    <TextField
+                      sx={{ width: { xs: "21rem", sm: "12rem" }, mr: ".5rem" }}
+                      value={sku}
+                      // focused
+                      // label="SKU"
+                      name="name"
+                      type="name"
+                      variant="outlined"
+                      onChange={(e) => setSku(e.target.value)}
+                    />
+                  </Box>
+                  <Box>
+                    <Typography sx={{ width: { xs: "21rem", sm: "12rem" }, mt: "1rem" }}>Sale Count</Typography>
+                    <TextField
+                      sx={{ width: { xs: "21rem", sm: "12rem" } }}
+                      value={saleCount}
+                      // label="Sale Count"
+                      // focused
+                      name="name"
+                      type="number"
+                      variant="outlined"
+                      onChange={(e) => setSaleCount(parseInt(e.target.value, 10))}
+                    />
+                  </Box>
+                </Box>
+                <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
+                  <Box>
+                    <Typography sx={{ mt: "1rem" }}>New Item</Typography>
+                    <Select
+                      sx={{ width: { xs: "21rem", sm: "12rem" }, mr: ".7rem" }}
+                      labelId="demo-simple-select-helper-label"
+                      id="demo-simple-select-helper"
+                      defaultValue={false}
+                      value={newItem}
+                      // label="Electronics"
+                      onChange={(e) => setNewItem(e.target.value)}
+                    >
+                      <MenuItem value={!false}>True</MenuItem>
+                      <MenuItem value={false}>False</MenuItem>
+                    </Select>
+                  </Box>
+                  <Box>
+                    <Typography sx={{ mt: "1rem", width: { xs: "21rem", sm: "12rem" } }}>Stock</Typography>
+                    <TextField
+                      sx={{ width: "100%" }}
+                      value={stock}
+                      // label="Stock"
+                      // focused
+                      name="name"
+                      type="number"
+                      variant="outlined"
+                      onChange={(e) => setStock(parseInt(e.target.value, 10))}
+                    />
+                  </Box>
+                </Box>
+                <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
+                  <Box>
+                    <Typography sx={{ mt: "1rem", width: { xs: "21rem", sm: "12rem" }, mr: ".7rem" }}>Discount</Typography>
+                    <TextField
+                      sx={{ width: "95%" }}
+                      value={discount}
+                      // label="Discount"
+                      name="name"
+                      // focused
+                      type="number"
+                      variant="outlined"
+                      onChange={(e) => setDiscount(parseInt(e.target.value, 10))}
+                    />
+                  </Box>
+                  <Box>
+                    <Typography sx={{ mt: "1rem" }}>Price</Typography>
+                    <TextField
+                      sx={{ width: { xs: "21rem", sm: "12rem" } }}
+                      value={price}
+                      // label="Price"
+                      name="name"
+                      // focused
+                      type="number"
+                      variant="outlined"
+                      onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                    />
+                  </Box>
                 </Box>
 
+              </Grid>
+              <Grid item md={6} lg={6} >
+                <Grid container spacing={2} sx={{ justifyContent: "center", mt: "2rem" }}>
 
-              </Box>
+                  <Box sx={{ display: "" }}>
+                    <Box sx={{ display: "flex" }}>
+                      <Grid sx={{ justifyContent: "space-between" }} container spacing={2}>
 
+                        {stateDroppedImages.map((image, index) => {
+                          console.log("droppedImages in state", droppedImages[index])
+                          let parts;
+                          let fileNames;
+                          if(droppedImages[index])
+                          {
+                            parts = droppedImages[index].split("productPhotos/");
+                           fileNames = parts.pop();
+                          }
+                           
+                            console.log("splitted file name", fileNames)
+                          return(
+                          <Grid key={index} item xs={4} sx={{display:"flex", flexDirection:"column", alignItems:"center"}}>
+                            <Container sx={{ mx: ".5rem" }}>
+                              <img src={image} alt={`Dropped ${index}`} style={{ width: "auto", maxHeight: '100%' }} />
+                            </Container>
+                            <Box sx={{ display: "flex", alignItems: "center", cursor: "pointer" }} 
+                            onClick={() => { handleDeleteImage(fileNames, index) 
+                            }}
+                            >
+                              <img src={deleteIcon} alt="" />
+                              <Typography sx={{ color: "red", padding: ".3rem" }}>Delete</Typography>
+                            </Box>
+                          </Grid>
+
+                        )}
+                        )}
+                        {stateDroppedImages.length === 1
+                          ?
+                          <></>
+                          :
+                          <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx: "1.5rem" }} onDragOver={handleDragOver} onDrop={handleDrop}>
+                            <Box >
+                              <Typography>Drop your images here, or select</Typography>
+                              <div>
+                                <Typography onClick={handleBrowseClick} style={{ color: "#6610F2", cursor: 'pointer' }}>
+                                  Browse
+                                </Typography>
+                                <input
+                                  ref={fileInputRef}
+                                  type="file"
+                                  accept="image/*"
+                                  multiple
+                                  onChange={handleFileInputChange}
+                                  style={{ display: 'none' }}
+                                />
+                              </div>
+                            </Box>
+                          </Container>
+                        }
+                      </Grid>
+                    </Box>
+
+
+                  </Box>
+
+                </Grid>
+                <Box>
+                  <Typography sx={{ mt: "1rem" }}>Short Description</Typography>
+                  <TextField
+                    sx={{ width: { xs: "24rem", sm: "20rem", md: "100%", lg: "100%" } }}
+                    multiline
+                    rows={4}
+                    // focused
+                    value={shortDescription}
+                    // label="Short Description"
+                    name="name"
+                    type="name"
+                    variant="outlined"
+                    onChange={(e) => setShortDescription(e.target.value)}
+                  />
+                </Box>
+              </Grid>
             </Grid>
-            <Box>
-            <Typography sx={{ mt: "1rem" }}>Short Description</Typography>
-            <TextField
-              sx={{ width: {xs:"24rem",sm:"20rem", md:"100%", lg:"100%"}}}
-              multiline
-              rows={4}
-              // focused
-               value={shortDescription}
-              // label="Short Description"
-              name="name"
-              type="name"
-              variant="outlined"
-              onChange={(e) => setShortDescription(e.target.value)}
-            />
+            <Box sx={{ marginTop: "2rem" }}>
+              <Typography sx={{ mt: "1rem" }}>Full Description</Typography>
+              <TextField
+                multiline
+                rows={6}
+                // focused
+                sx={{ width: "100%" }}
+                value={fullDescription}
+                // label="Full Description"
+                name="name"
+                type="name"
+                variant="outlined"
+                onChange={(e) => setFullDescription(e.target.value)}
+              />
             </Box>
-          </Grid>
-        </Grid>
-        <Box sx={{ marginTop: "2rem" }}>
-          <Typography sx={{ mt: "1rem" }}>Full Description</Typography>
-          <TextField
-            multiline
-            rows={6}
-            // focused
-            sx={{ width: "100%" }}
-            value={fullDescription}
-            // label="Full Description"
-            name="name"
-            type="name"
-            variant="outlined"
-            onChange={(e) => setFullDescription(e.target.value)}
-          />
-        </Box>
-        {!id?
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          {!showloader?
-          <Link state={{ name: productName, cat: categoryName, subCat: subCategoryName, brandname: brand, code: productCode, sKu: sku, salecount: saleCount, newitem: newItem, stoCk: stock, disCount: discount, priCe: price, shortdescription: shortDescription, fulldescription: fullDescription, imagesList: droppedImages }} style={{ textDecoration: "none" }} to="/dashboard/add-product-review">
-            <Box sx={{ border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "auto", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
-              {/* <AddCircleIcon/> */}
-              
-              <Typography sx={{ color: "white", fontSize: "12px", textDecoration: "none", textAlign: "center" }}>Next</Typography>
+            {!id ?
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                {!showloader ?
+                  <Link state={{ name: productName, cat: categoryName, subCat: subCategoryName, brandname: brand, code: productCode, sKu: sku, salecount: saleCount, newitem: newItem, stoCk: stock, disCount: discount, priCe: price, shortdescription: shortDescription, fulldescription: fullDescription, imagesList: droppedImages }} style={{ textDecoration: "none" }} to="/dashboard/add-product-review">
+                    <Box sx={{ border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "auto", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
+                      {/* <AddCircleIcon/> */}
+
+                      <Typography sx={{ color: "white", fontSize: "12px", textDecoration: "none", textAlign: "center" }}>Next</Typography>
+                    </Box>
+                  </Link>
+                  :
+                  <Box sx={{ border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "auto", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-around" }}><CircularProgress style={{ color: 'white' }} /></Box>
+                  </Box>}
+
               </Box>
-              </Link>
+              // </Link>
+              // </Box>
               :
-              <Box sx={{ border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "auto", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
-              <Box sx={{display:"flex", justifyContent:"space-around"}}><CircularProgress style={{ color: 'white' }}/></Box>
+              <Box sx={{ display: "flex", justifyContent: "flex-end", }}>
+                {/* <Box onClick={()=>{handleUpdateProduct()}} sx={{cursor:"pointer", border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "34px", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}> */}
+                {!showloader ?
+                  <Box onClick={() => { handleUpdateProduct() }} sx={{ cursor: "pointer", border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "34px", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
+                    <Typography sx={{ color: "white", fontSize: "12px", textDecoration: "none", textAlign: "center" }}>Update</Typography>
+                  </Box>
+                  :
+                  <Box sx={{ cursor: "pointer", border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "auto", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-around" }}><CircularProgress style={{ color: 'white' }} />
+                    </Box>
+                  </Box>
+                }
+
+                {/* </Box> */}
               </Box>}
 
-            </Box>
-          // </Link>
-        // </Box>
-        :
-        <Box sx={{ display: "flex", justifyContent: "flex-end",  }}>          
-            {/* <Box onClick={()=>{handleUpdateProduct()}} sx={{cursor:"pointer", border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "34px", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}> */}
-            {!showloader?
-            <Box onClick={()=>{handleUpdateProduct()}} sx={{cursor:"pointer", border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "34px", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
-              <Typography sx={{ color: "white", fontSize: "12px", textDecoration: "none", textAlign: "center" }}>Update</Typography>
-              </Box>
-              :
-              <Box sx={{cursor:"pointer", border: "1px solid #6610F2", mb: "1rem", width: "120px", height: "auto", p: ".5rem", backgroundColor: "#6610F2", mt: "3rem" }}>
-              <Box sx={{display:"flex", justifyContent:"space-around"}}><CircularProgress style={{ color: 'white' }}/>
-              </Box>
-              </Box>
-              }
 
-            {/* </Box> */}
+
+          </Box>
         </Box>}
-
-
-
-      </Box>
-    </Box>}
     </>
   )
 }
