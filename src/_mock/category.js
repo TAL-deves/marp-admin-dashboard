@@ -85,16 +85,14 @@ const Category = () => {
     handleFiles(files);
   };
   const handleFiles = (files) => {
-    // console.log("response button clicked", files);
     const images = Array.from(files).map((file) => URL.createObjectURL(file));
     setDroppedImages(images);
-// console.log("images -------.", images);
     const formData= new FormData();
     formData.append('image', files[0]);
     async function getData() {
       try {
         await photoUploadRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`, formData)
-       .then((response)=>console.log("photoUploadRequestHandler api calling", response))
+       .then((response)=>setCreateFile(response.data.data.publicUrl))
        setShow(false);
      } catch (error) {
        console.error(error);
@@ -106,53 +104,9 @@ const Category = () => {
     fileInputRef.current.click();
   };
 
-
-  // const handleFileInputChange = (event) => {
-  //   const files = event.target.files[0];
-  //   setCreateFile(event.target.files[0])
-  //   console.log('Selected File:', event);
-  //   const blobUrl = URL.createObjectURL(files);
-  //   const convertedFile = new File([files], files.name, {
-  //     type: files.type,
-  //   });
-  //   handleFiles(files);
-  //   URL.revokeObjectURL(blobUrl);
-  //   handleAddPhoto(files);
-  //   console.log("files", event.target.files[0]);
-  // };
-
-
-// async function handleAddPhoto(files) {
-//     setShow(true);  
-//     // console.log("files response", createFile);
-//     const formData= new FormData();
-//     formData.append('image', files);
-//     // const image=formData.getAll('image')
-//     try {
-//        await photoUploadRequestHandler('https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=productPhotos', formData)
-//       .then((res)=>{
-//         console.log("formData response", res);
-//       });
-//       setShow(false);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   }
-
-
-
-
-
-
-
-
-
-
-
-
-
   // subCategory image section start from here
   const [droppedImagesSub, setDroppedImagesSub] = useState("");
+  const [createFileSub, setCreateFileSub] = useState("");
   const fileInputRefSub = React.useRef(null);
   const handleDragOverSub = (event) => {
     event.preventDefault();
@@ -169,17 +123,26 @@ const Category = () => {
     handleFilesSub(files1);
   };
   const handleBrowseClickSub = () => {
-    console.log("Browser click button");
     fileInputRefSub.current.click();
-    // async function getData() {
-    //   const categoriesData = await putRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`);
-    //   setData(categoriesData);
-    // }
-    // getData();
   };
   const handleFilesSub = (files1) => {
     const imagesSub = Array.from(files1).map((file) => URL.createObjectURL(file));
     setDroppedImagesSub(imagesSub);
+    const formData= new FormData();
+    formData.append('image', files1[0]);
+    async function getData() {
+      try {
+        await photoUploadRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=subcategory`, formData)
+       .then((response)=>setCreateFileSub(response.data.data.publicUrl)
+       )
+       setShow(false);
+     } catch (error) {
+       console.error(error);
+     }}
+    getData();
+
+
+
   };
 
   // Data coming from backend
@@ -199,9 +162,11 @@ const Category = () => {
   const handleOpen = () => setOpens(true);
 
   const handleNewCategory = () => {
+    console.log("createFile", createFile);
     setOpens(false);
     async function getData() {
-      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category,categoryImage:droppedImages.toString() });
+      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category,categoryImage:createFile});
+      console.log("new category create", NewResData);
       setReload(!reload);
       setDroppedImages(false);
     }
@@ -226,7 +191,7 @@ const Category = () => {
   const handleSubcategoryCreate = () => {
     setOpen(false);
     async function getData() {
-      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category, subcategory, subcategoryImage:droppedImagesSub.toString() });
+      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category, subcategory, subcategoryImage:createFileSub});
       // console.log("NewResData of subcategory", NewResData);
       setReload(!reload);
       setDroppedImagesSub(false)
@@ -277,7 +242,7 @@ const Category = () => {
   // if(hidden){
 
   // }
-// console.log("image photo", droppedImages);
+console.log("Category data", data, subCate);
 
 
   return (
@@ -328,7 +293,7 @@ const Category = () => {
                               height="full"
                               width="full"
                               // image=""
-                              image="./../../assets/Rectangle 181.png"
+                              image={item.image}
                             />
                           </Grid>
                           <Grid item xs={3}>
@@ -405,9 +370,9 @@ const Category = () => {
                                     <CardMedia
                                       component="img"
                                       alt="green iguana"
-                                      height="full"
-                                      width="full"
-                                      image="./../../assets/Rectangle 181.png"
+                                      height='100%'
+                                      width="100%"
+                                      image={subItem.image}
                                     />
                                   </Grid>
                                   <Grid item xs={3}>
