@@ -169,7 +169,7 @@ const Category = () => {
       console.log("new category create", NewResData);
       setReload(!reload);
       setDroppedImages(false);
-    }
+    } 
     getData();
   }
 
