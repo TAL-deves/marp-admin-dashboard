@@ -30,7 +30,7 @@ export default function OrderList() {
   async function handleGetAllDataforUpdate() {
     setShow(true)
     try {
-      const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/ordermanagement?page=${currentPage}&items=10&deliveryStatus=queued`);
+      const response = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/ordermanagement?page=${currentPage}&items=10&deliveryStatus=queued`);
       // Handle the response data
       setOrderList(response.data.orders)
       // console.log("order response", response.data)
