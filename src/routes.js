@@ -11,8 +11,8 @@ import LoginPage from './pages/LoginPage';
 import UserProfile from './pages/userAccount';
 import Page404 from './pages/Page404';
 import CategoryPage from './_mock/category';
-import DashboardAppPage from './pages/DashboardAppPage';
 import AddProduct from './pages/AddProduct';
+import DashboardAppPage from './pages/DashboardAppPage';
 import ProductReview from './pages/ProductReview';
 import { getRequestHandler } from './apiHandler/customApiHandler';
 import AddUser from './pages/AddUser';
@@ -35,9 +35,9 @@ export default function Router() {
   async function handleAuthCheck() {
 
     try {
-      const data = await getRequestHandler('https://marpapi.techanalyticaltd.com/auth/authcheck');
+      const data = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}auth/authcheck`);
       // Handle the response data
-      console.log("auth check response", data);
+      // console.log("auth check response", data);
       if(data.error.code===401){
         localStorage.removeItem("accessToken")
       localStorage.removeItem("refreshToken")
