@@ -38,7 +38,7 @@ export default function OrderList() {
       
       setTotalPages(response.data.totalPages);
       // setId(response.data.allData.id)
-      console.log("user response", response.data.allData)
+      // console.log("user response", response.data.allData)
       // setCurrentPage(response.data.currentPage);
       setShow(false)
     } catch (error) {

@@ -46,7 +46,7 @@ function AddUser() {
   async function handleCreateUser() {
     setShow(true);
     try {
-      const response = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/useraction`, {
+      const response = await postRequestHandler('https://marpapi.techanalyticaltd.com/admin/useraction', {
         phoneNumber, email, password, role
       });
       // Handle the response data
@@ -67,7 +67,7 @@ function AddUser() {
   // get all data 
   async function handleGetAllDataforUpdate() {
     try {
-      const response = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/useraction?role=${currentrole}`);
+      const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/useraction?role=${currentrole}`);
       // Handle the response data
       const matchedUser = response.data.allData.find(user => user.id === id);
       // setProductName(matchedProduct.name)
@@ -88,7 +88,7 @@ function AddUser() {
     setShow(true);
 
     try {
-      const response = await patchRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/useraction`, {
+      const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/admin/useraction', {
         id, email, phoneNumber, role
       });
       // Handle the response data
