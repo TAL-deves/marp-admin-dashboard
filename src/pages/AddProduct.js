@@ -505,7 +505,7 @@ function AddProduct() {
                             }}
                             >
                               <img src={deleteIcon} alt="" />
-                              <Typography sx={{ color: "red", padding: ".3rem" }}>Delete</Typography>
+                              <Typography sx={{ color: "red", padding: ".3rem" }}>Remove</Typography>
                             </Box>
                           </Grid>
 
