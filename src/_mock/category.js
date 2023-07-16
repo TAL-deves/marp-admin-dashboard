@@ -135,7 +135,7 @@ const Category = () => {
     formData.append('image', files1[0]);
     async function getData() {
       try {
-        await photoUploadRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=subcategory`, formData)
+        await photoUploadRequestHandler(`https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=subcategory`, formData)
        .then((response)=>setCreateFileSub(response.data.data.publicUrl)
       //  setImageUrlStore(response.data.data.publicUrl)
        )
@@ -153,7 +153,7 @@ const Category = () => {
   useEffect(() => {
     setShow(true);
     async function getData() {
-      const categoriesData = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`);
+      const categoriesData = await getRequestHandler(`https://marpapi.techanalyticaltd.com/category/`);
       setData(categoriesData.data.categoryList);
       setShow(false)
     }
@@ -169,7 +169,7 @@ const Category = () => {
     console.log("createFile", createFile);
     setOpens(false);
     async function getData() {
-      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category,categoryImage:createFile});
+      const NewResData = await postRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, { category,categoryImage:createFile});
       console.log("new category create", NewResData);
       setReload(!reload);
       setDroppedImages(false);
@@ -195,7 +195,7 @@ const Category = () => {
   const handleSubcategoryCreate = () => {
     setOpen(false);
     async function getData() {
-      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category, subcategory, subcategoryImage:createFileSub});
+      const NewResData = await postRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, { category, subcategory, subcategoryImage:createFileSub});
       // console.log("NewResData of subcategory", NewResData);
       setReload(!reload);
       setDroppedImagesSub(false)
@@ -221,7 +221,7 @@ const Category = () => {
       getData()
       // eslint-disable-next-line no-inner-declarations
       async function getData() {
-        const responseData = await deleteRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { categoryId: id });
+        const responseData = await deleteRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, { categoryId: id });
         // console.log("responseData", responseData);
         setReload(!reload)
       }
@@ -232,7 +232,7 @@ const Category = () => {
   const handleClickedDeleteSub = (id) => {
     // console.log("clicked handleClickedDeleteSub");
     async function getData() {
-      const resSubCateData = await deleteRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { subcategoryId: id });
+      const resSubCateData = await deleteRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, { subcategoryId: id });
       console.log("resSubCateData", resSubCateData);
       // setReload(!reload)
     }
