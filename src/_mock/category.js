@@ -136,9 +136,9 @@ const Category = () => {
     async function getData() {
       try {
         await photoUploadRequestHandler(`https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=subcategory`, formData)
-       .then((response)=>setCreateFileSub(response.data.data.publicUrl)
-      //  setImageUrlStore(response.data.data.publicUrl)
-       )
+       .then((response)=>setCreateFileSub(response.data.data.publicUrl))
+       console.log("image updated response",createFileSub)
+       
        setShow(false);
      } catch (error) {
        console.error(error);
@@ -391,7 +391,7 @@ const Category = () => {
                   }
                 }}
               >
-                <Typography sx={{ my: 3 }} variant='h4'>SubCategory of {subCate.name}
+                <Typography sx={{ my: 3 }} variant='h4'>SubCategory of {subCate?.name}
                 
                 </Typography>
 
@@ -489,7 +489,10 @@ const Category = () => {
                     <>
                     <Container sx={{ mx: ".5rem" }}>
                     <img src={droppedImages} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
-                    <DeleteForeverIcon sx={{color:'red'}} onClick={handleDeleteCategoryImage}/>
+                    <Button onClick={handleDeleteCategoryImage}>
+                    <DeleteForeverIcon sx={{color:'red'}}/>
+                    </Button>
+                
                   </Container> 
                   {/* <Container sx={{ mx: ".5rem" }}>
                     <img src={droppedImagesSub} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />

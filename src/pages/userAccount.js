@@ -5,11 +5,37 @@ import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import styled from '@emotion/styled';
 import { Helmet } from 'react-helmet-async';
-import {getRequestHandler, postRequestHandler, patchRequestHandler} from "../apiHandler/customApiHandler"
+import Modal from '@mui/material/Modal';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import {getRequestHandler, postRequestHandler, patchRequestHandler, photoUploadRequestHandler, deleteRequestHandler} from "../apiHandler/customApiHandler"
 import BackDrop from "../backDrop"
 
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    minWidth: 400,
+    bgcolor: 'background.paper',
+    // border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 
+
+  const Container = styled('div')({
+    border: '2px dotted #03A550',
+    borderRadius:"10px",
+    height: "6rem",
+    width: "100%",
+    textAlign: 'center',
+    // justifyContent:"center",
+    // alignContent:"center"
+    // cursor: 'pointer',
+  });
 
 const userAccount = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -40,7 +66,7 @@ const [email, setEmail]=useState("")
       }, [reloader]);
 // console.log("admin email", data?.email);
 // const name="Admin dashboard";
-// const phoneNumber="01234567891";
+// const phoneNumber="01515212610";
 const password="100200300";
 
 
@@ -65,6 +91,78 @@ const handleSetPassword=()=>{
       }
       getData();
 }
+
+
+
+
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [droppedImages, setDroppedImages] = useState("");
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [createFile, setCreateFile] = useState("");
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const fileInputRef = React.useRef(null);
+const handleDragOver = (event) => {
+  event.preventDefault();
+};
+const handleDrop = (event) => {
+  event.preventDefault();
+  const files = event.dataTransfer.files;
+  handleFiles(files);
+};
+const handleFileInputChange = (event) => {
+  const files = event.target.files;
+  handleFiles(files);
+};
+const handleFiles = (files) => {
+    console.log("update image ");
+  const images = Array.from(files).map((file) => URL.createObjectURL(file));
+  setDroppedImages(images);
+  const profilePhoto= new FormData();
+  profilePhoto.append('image', files[0]);
+  async function getData() {
+    try {
+      await photoUploadRequestHandler(`https://marpapi.techanalyticaltd.com/admin/profile/uploadpicture`, profilePhoto)
+     .then((response)=>setCreateFile(response.data.data.publicUrl))
+     console.log("image updated response", createFile);
+     setShow(false);
+   } catch (error) {
+     console.error(error);
+   }}
+  getData();
+};
+
+const handleBrowseClick = () => {
+    console.log("handle Browse Click");
+  fileInputRef.current.click();
+};
+
+const handleDeleteCategoryImage=async()=>{
+    let parts;
+    let fileNames;
+    console.log("createFile category image __", createFile);
+    if(createFile)
+    {
+      parts = createFile.split("profilePhotos/");
+     fileNames = parts.pop();
+    }
+    try {
+      const response = await deleteRequestHandler(`https://marpapi.techanalyticaltd.com/admin/bucket/files`,{"bucketName": "profilePhotos", fileNames});
+      // Handle the response data
+      console.log("image delete response", response);
+      setShow(false)
+      setDroppedImages(false);
+    } catch (error) {
+      // Handle the error
+      console.error(error);
+      setDroppedImages(false);
+    }
+  }
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [open, setOpen] = React.useState(false);
+const handleOpen = () => setOpen(true);
+const handleClose = () => setOpen(false);
 
   return(
     <>
@@ -98,9 +196,49 @@ const handleSetPassword=()=>{
                             }
                         }}
                     >
-                        <Typography variant='h4'>Personal Details </Typography>
-                        <Avatar sx={{width:160,height:160, marginTop:3}} alt="Travis Howard" src="../../assets/images/avatars/tree-736885_1280.jpg" />
-                        <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                    <Typography variant='h4'>Personal Details </Typography>
+                        <Avatar sx={{width:160,height:160, marginTop:3}} alt="Travis Howard" src={"../../assets/images/avatars/tree-736885_1280.jpg"} />
+                        {/* <Avatar sx={{width:160,height:160, marginTop:3}} alt="Travis Howard" src={"../../assets/images/avatars/tree-736885_1280.jpg"} /> */}
+                        {/* <Box sx={{display:'flex',
+              justifyContent:'center',
+              alignContent:'center',
+              marginY:5
+              }}>
+                  <Box sx={{ display: "flex" }}> 
+                   {
+                    droppedImages ?
+                    <>
+                    <Container sx={{ mx: ".5rem" }}>
+                    <img src={droppedImages} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
+                          <DeleteForeverIcon sx={{color:'red'}} onClick={handleDeleteSubImage}/>
+                  </Container> 
+                    </>
+                  :
+                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem"}} onDragOver={handleDragOver} onDrop={handleDrop}>
+                    <Box >
+                    <FileDownloadIcon/>
+                      <Typography>Drag and drop your file here<br/> or</Typography>
+                      <div>
+                        <Button variant="contained" onClick={handleBrowseClick} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
+                bgcolor: '#03A550'
+              },}}>SELECT FILE</Button>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleFileInputChange}
+                          style={{ display: 'none' }}
+                        />
+                      </div>
+                    </Box>
+                  </Container>
+                   }
+                </Box>
+              </Box> */}
+                        <Button
+                        onClick={handleOpen}
+                         variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
                                 bgcolor: '#6EAB49'
                             }, marginY:2, width:"80%"}}>UPDATE YOUR IMAGE</Button>
                         {/* <Box
@@ -181,6 +319,86 @@ const handleSetPassword=()=>{
 </>
             }
         </Box>
+
+        <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+          <Box sx={style}>
+              <Box>
+              <Box sx={{display:'flex',
+              justifyContent:'center',
+              alignContent:'center',
+              marginY:5
+              }}>
+                  <Box sx={{ display: "flex" }}> 
+                   {
+                    droppedImages ?
+                    <>
+                    <Container sx={{ mx: ".5rem" }}>
+                    <img src={droppedImages} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
+                          <DeleteForeverIcon sx={{color:'red'}} onClick={handleDeleteCategoryImage}/>
+                  </Container> 
+                    </>
+                  :
+                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem"}} onDragOver={handleDragOver} onDrop={handleDrop}>
+                    <Box >
+                    <FileDownloadIcon/>
+                      <Typography>Drag and drop your file here<br/> or</Typography>
+                      <div>
+                        <Button variant="contained" onClick={handleBrowseClick} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
+                bgcolor: '#03A550'
+              },}}>SELECT FILE</Button>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleFileInputChange}
+                          style={{ display: 'none' }}
+                        />
+                      </div>
+                    </Box>
+                  </Container>
+                   }
+                </Box>
+              </Box>
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: "center",
+                justifyContent: 'center',
+            
+              }}>
+              {/* <Button variant="contained" onClick={handleBrowseClick} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
+                bgcolor: '#03A550'
+              },}}>Choose Image</Button> */}
+              <Button variant="contained" 
+              sx={{
+                bgcolor: "#6610F2", ":hover": {
+                  bgcolor: '#6EAB49'
+                }, width: "32%"}}
+               onClick={handleUpdateProfile}>Save Photo</Button>
+              </Box>
+              {/* <Button variant="contained" onClick={handleBrowseClick} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
+                bgcolor: '#03A550'
+              },}}>Choose Image</Button>
+              <Button variant="contained" sx={{
+                bgcolor: "#6610F2", ":hover": {
+                  bgcolor: '#6EAB49'
+                }, width: "32%",
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: "center",
+                justifyContent: 'center',
+                margin: 'auto'
+              }} onClick={handleUpdateProfile}>Save Photo</Button> */}
+            </Box>
+          </Box>
+      </Modal>
+
         </>
         )
 };
