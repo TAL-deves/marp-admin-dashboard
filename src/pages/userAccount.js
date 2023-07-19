@@ -45,8 +45,7 @@ const password="100200300";
 
 
 const handleUpdateProfile=()=>{
-    // const userId=data.id;
-    console.log("update button clicked phn eml pwd", phoneNumber, email, password );
+    // console.log("update button clicked phn eml pwd", phoneNumber, email, password );
     async function getData() {
         const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/updateaccountinfo`, {phoneNumber, email, password});
         // setData(categoriesData.data);
