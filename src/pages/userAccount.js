@@ -41,7 +41,9 @@ const userAccount = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [reloader, setReloader]=React.useState(true);
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const [data, setData]=useState([])
+const [password, setPassword]=useState("");
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [ConPassword, setConPassword]=useState("");
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const [show, setShow]=useState(false)
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -55,7 +57,7 @@ const [email, setEmail]=useState("")
         setShow(true);
         async function getData() {
           const adminProfile = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/profile`);
-          setData(adminProfile.data);
+          // setData(adminProfile.data);
           setRole(adminProfile.data.role);
           setPhoneNumber(adminProfile.data.phoneNumber);
           setEmail(adminProfile.data.email);
@@ -67,13 +69,13 @@ const [email, setEmail]=useState("")
 // console.log("admin email", data?.email);
 // const name="Admin dashboard";
 // const phoneNumber="01515212610";
-const password="100200300";
+// const password="100200300";
 
 
 const handleUpdateProfile=()=>{
     // console.log("update button clicked phn eml pwd", phoneNumber, email, password );
     async function getData() {
-        const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/updateaccountinfo`, {phoneNumber, email, password});
+        const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/updateaccountinfo`, {phoneNumber, email, role});
         // setData(categoriesData.data);
         console.log("admin Profile update Res", adminProfileRes);
         setReloader(!reloader);
@@ -81,13 +83,15 @@ const handleUpdateProfile=()=>{
       getData();
 }
 const handleSetPassword=()=>{
-    const userId=data.id;
-    console.log("Set Password button", userId);
+    // const userId=data.id;
+    console.log("Set Password button" , password);
     async function getData() {
-        const categoriesData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}auth/resetpassword`, {userId});
+      const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/updateaccountinfo`, {password});
         // setData(categoriesData.data);
-        console.log("categoriesData", categoriesData);
+        console.log("admin profile set password", adminProfileRes);
         // setShow(false);
+        setPassword("");
+        setConPassword("")
       }
       getData();
 }
@@ -301,17 +305,31 @@ const handleClose = () => setOpen(false);
                     New Password
                    </Typography> */}
                    <TextField id="outlined-basic" label="New Password" variant="filled" type="password" 
-                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}/>
+                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}
+                   onChange={(e)=>setPassword(e.target.value)}/>
                    {/* <Typography>
                     Confirm Password
                    </Typography> */}
                    <TextField id="outlined-basic" label="Confirm Password" variant="filled" type="password" 
-                   sx={{width:"80%", marginX:"10%"}}/>
-                   <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                   sx={{width:"80%", marginX:"10%"}} onChange={(e)=>setConPassword(e.target.value)}/>
+                   {
+                    (password===ConPassword && true) ?
+                    <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                      bgcolor: '#6EAB49'
+                  }, marginY:2, width:"80%"}} 
+                  onClick={handleSetPassword}
+                  >SET PASSWORD</Button> :
+                  <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                    bgcolor: '#6EAB49'
+                }, marginY:2, width:"80%"}} 
+                onClick={handleSetPassword}
+                >DISABLE BUTTON</Button>
+                   }
+                   {/* <Button disabled variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
                                 bgcolor: '#6EAB49'
                             }, marginY:2, width:"80%"}} 
                             onClick={handleSetPassword}
-                            >SET PASSWORD</Button>
+                            >SET PASSWORD</Button> */}
                         </Box>
                     {/* </Box> */}
                 </Grid>
