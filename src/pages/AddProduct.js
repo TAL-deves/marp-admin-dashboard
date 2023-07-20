@@ -27,7 +27,7 @@ function AddProduct() {
   const [productCode, setProductCode] = useState()
   const [productName, setProductName] = useState()
   const [price, setPrice] = useState()
-  const [discount, setDiscount] = useState()
+  const [discount, setDiscount] = useState(0)
   const [newItem, setNewItem] = useState(false)
   const [saleCount, setSaleCount] = useState()
   const [stock, setStock] = useState()
@@ -54,7 +54,7 @@ function AddProduct() {
       const response = await getRequestHandler('https://marpapi.techanalyticaltd.com/product/', id);
       // Handle the response data
       const matchedProduct = response.data.allProducts.find(product => product.id === id);
-      console.log("main data", matchedProduct);
+      // console.log("main data", matchedProduct);
       setProductName(matchedProduct.name)
       setCategoryName(matchedProduct.Category.name)
       setSubCategoryName(matchedProduct.Subcategory.name)
@@ -68,10 +68,11 @@ function AddProduct() {
       setPrice(matchedProduct.price)
       setShortDescription(matchedProduct.shortDescription)
       setFullDescription(matchedProduct.fullDescription)
-      // setDroppedImages(productImages)
+      setDroppedImages(matchedProduct.productImages)
+      setStateDroppedImages(matchedProduct.productImages)
       // productImages.map((img)=>{return droppedImages.push(img)})
       // setDroppedImages(productImages.map((img) => img))
-      // console.log("images", productImages)
+     console.log("images", matchedProduct)
     } catch (error) {
       // Handle the error
       console.error(error);
@@ -119,7 +120,7 @@ function AddProduct() {
       const response = await getRequestHandler('https://marpapi.techanalyticaltd.com/category/allcategories');
       // Handle the response data      
       setCategoryList(response.data.categoryList)
-      console.log("categories", response.data.categoryList);
+      // console.log("categories", response.data.categoryList);
 
     } catch (error) {
       // Handle the error
@@ -156,7 +157,7 @@ function AddProduct() {
 
   const handleFileInputChange = (event) => {
     const files = event.target.files;
-    console.log('Selected File:', files);
+    // console.log('Selected File:', files);
     handleFiles(files);
     handleAddPhoto(files[0]); // Pass convertedFile instead of files
     console.log("files", files);
@@ -166,7 +167,7 @@ function AddProduct() {
     const images = Array.from(files).map((file) => URL.createObjectURL(file));
     setStateDroppedImages((prevImages) => [...prevImages, ...images]);
   };
-  console.log("statedroppedImages", stateDroppedImages)
+  console.log("statedroppedImages---", stateDroppedImages)
 
   const handleBrowseClick = () => {
     fileInputRef.current.click();
@@ -216,19 +217,19 @@ function AddProduct() {
 
         // delete 
         async function handleDeleteImage(fileNames, index) {
-          setShow(true)
-          console.log("state droppppppppp",fileNames )
+          setShowloader(true);
           stateDroppedImages.splice(index, 1)
+          console.log("fileNames------", fileNames);
           try {
             const response = await deleteRequestHandler(`https://marpapi.techanalyticaltd.com/admin/bucket/files`,{"bucketName": "productPhotos", fileNames});
             // Handle the response data
             console.log("image delete response", response)
             
-            setShow(false)
+            setShowloader(false)
           } catch (error) {
             // Handle the error
             console.error(error);
-            setShow(false)
+            setShowloader(false)
           }
         }
 
@@ -485,7 +486,7 @@ function AddProduct() {
                       <Grid sx={{ justifyContent: "space-between" }} container spacing={2}>
 
                         {stateDroppedImages.map((image, index) => {
-                          console.log("droppedImages in state", droppedImages[index])
+                          console.log( "droppedImages in state33 droppedImages[index]", droppedImages[index])
                           let parts;
                           let fileNames;
                           if(droppedImages[index])

@@ -29,6 +29,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import styled from '@emotion/styled';
 import swal from 'sweetalert';
 import BackDrop from "../backDrop";
@@ -107,6 +108,7 @@ const Category = () => {
   // subCategory image section start from here
   const [droppedImagesSub, setDroppedImagesSub] = useState("");
   const [createFileSub, setCreateFileSub] = useState("");
+  // const [imageUrlStore, setImageUrlStore] = useState([]);
   const fileInputRefSub = React.useRef(null);
   const handleDragOverSub = (event) => {
     event.preventDefault();
@@ -128,12 +130,14 @@ const Category = () => {
   const handleFilesSub = (files1) => {
     const imagesSub = Array.from(files1).map((file) => URL.createObjectURL(file));
     setDroppedImagesSub(imagesSub);
+    console.log("imagesSub-----", imagesSub);
     const formData= new FormData();
     formData.append('image', files1[0]);
     async function getData() {
       try {
-        await photoUploadRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=subcategory`, formData)
+        await photoUploadRequestHandler(`https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=subcategory`, formData)
        .then((response)=>setCreateFileSub(response.data.data.publicUrl)
+      //  setImageUrlStore(response.data.data.publicUrl)
        )
        setShow(false);
      } catch (error) {
@@ -149,7 +153,7 @@ const Category = () => {
   useEffect(() => {
     setShow(true);
     async function getData() {
-      const categoriesData = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`);
+      const categoriesData = await getRequestHandler(`https://marpapi.techanalyticaltd.com/category/`);
       setData(categoriesData.data.categoryList);
       setShow(false)
     }
@@ -165,11 +169,11 @@ const Category = () => {
     console.log("createFile", createFile);
     setOpens(false);
     async function getData() {
-      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category,categoryImage:createFile});
+      const NewResData = await postRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, { category,categoryImage:createFile});
       console.log("new category create", NewResData);
       setReload(!reload);
       setDroppedImages(false);
-    }
+    } 
     getData();
   }
 
@@ -191,7 +195,7 @@ const Category = () => {
   const handleSubcategoryCreate = () => {
     setOpen(false);
     async function getData() {
-      const NewResData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { category, subcategory, subcategoryImage:createFileSub});
+      const NewResData = await postRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, { category, subcategory, subcategoryImage:createFileSub});
       // console.log("NewResData of subcategory", NewResData);
       setReload(!reload);
       setDroppedImagesSub(false)
@@ -207,21 +211,17 @@ const Category = () => {
   const handleClickedEdit = (id) => {
     console.log("edit button", id);
       setHidden(true);
-    // swal("Logged out!", "Your have successfully logged out!", "success");
   }
 
 
   const handleCategoryDelete = (id) => {
-    // alert("Hello! I am an alert box!");
-    // eslint-disable-next-line no-restricted-globals
-    // confirm("Press a button!");
     let text = "Press a button! Are you sure you want to permanently delete Category";
     // eslint-disable-next-line no-restricted-globals
     if (confirm(text) === true) {
       getData()
       // eslint-disable-next-line no-inner-declarations
       async function getData() {
-        const responseData = await deleteRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { categoryId: id });
+        const responseData = await deleteRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, { categoryId: id });
         // console.log("responseData", responseData);
         setReload(!reload)
       }
@@ -232,17 +232,59 @@ const Category = () => {
   const handleClickedDeleteSub = (id) => {
     // console.log("clicked handleClickedDeleteSub");
     async function getData() {
-      const resSubCateData = await deleteRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}category/`, { subcategoryId: id });
+      const resSubCateData = await deleteRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, { subcategoryId: id });
       console.log("resSubCateData", resSubCateData);
       // setReload(!reload)
     }
     getData();
   }
 
-  // if(hidden){
 
-  // }
-console.log("Category data", data, subCate);
+  const handleDeleteCategoryImage=async()=>{
+    let parts;
+    let fileNames;
+    console.log("createFile category image __", createFile);
+    if(createFile)
+    {
+      parts = createFile.split("category/");
+     fileNames = parts.pop();
+    }
+    try {
+      const response = await deleteRequestHandler(`https://marpapi.techanalyticaltd.com/admin/bucket/files`,{"bucketName": "category", fileNames});
+      // Handle the response data
+      console.log("image delete response", response);
+      setShow(false)
+      setDroppedImages(false);
+    } catch (error) {
+      // Handle the error
+      console.error(error);
+      setDroppedImages(false);
+    }
+  }
+
+
+  const handleDeleteSubImage=async()=>{
+    let parts;
+    let fileNames;
+    if(createFileSub)
+    {
+      parts = createFileSub.split("subcategory/");
+     fileNames = parts.pop();
+    }
+    try {
+      const response = await deleteRequestHandler(`https://marpapi.techanalyticaltd.com/admin/bucket/files`,{"bucketName": "subcategory", fileNames});
+      // Handle the response data
+      // console.log("image delete response", response);
+      setShow(false)
+      setDroppedImagesSub(false)
+    } catch (error) {
+      // Handle the error
+      console.error(error);
+      setDroppedImagesSub(false)
+    }
+  }
+ 
+// console.log("Category data", data, subCate);
 
 
   return (
@@ -447,7 +489,12 @@ console.log("Category data", data, subCate);
                     <>
                     <Container sx={{ mx: ".5rem" }}>
                     <img src={droppedImages} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
+                    <DeleteForeverIcon sx={{color:'red'}} onClick={handleDeleteCategoryImage}/>
                   </Container> 
+                  {/* <Container sx={{ mx: ".5rem" }}>
+                    <img src={droppedImagesSub} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
+                          <DeleteForeverIcon sx={{color:'red'}} onClick={handleDeleteSubImage}/>
+                  </Container> */}
                     </>
                   :
                     <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOver} onDrop={handleDrop}>
@@ -519,7 +566,7 @@ console.log("Category data", data, subCate);
                     <>
                     <Container sx={{ mx: ".5rem" }}>
                     <img src={droppedImagesSub} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
-              
+                          <DeleteForeverIcon sx={{color:'red'}} onClick={handleDeleteSubImage}/>
                   </Container> 
                     </>
                   :

@@ -54,7 +54,7 @@ export default function LoginPage() {
 <Box sx={{display:"flex",
       justifyContent:"start",
       alignItems:"start",
-      // height:"80vh"
+      height:"30vh"
       }}>
       <Logo/>
 </Box>

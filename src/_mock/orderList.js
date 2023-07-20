@@ -33,7 +33,7 @@ export default function OrderList() {
       const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/ordermanagement?page=${currentPage}&items=10&deliveryStatus=queued`);
       // Handle the response data
       setOrderList(response.data.orders)
-      console.log("order response", response.data)
+      // console.log("order response", response.data)
       setTotalPages(response.data.totalPages)
       setShow(false)
     } catch (error) {
@@ -55,7 +55,7 @@ export default function OrderList() {
        order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase())
        );
 
-       console.log("filteredOrders",filteredOrders)
+      //  console.log("filteredOrders",filteredOrders)
   }
     // if(orderList){
     //   const searchedorder =orderList.filter((order) =>
