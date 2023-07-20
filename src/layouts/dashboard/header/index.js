@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
 // utils
+import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import { bgBlur } from '../../../utils/cssStyles';
 // components
 import Iconify from '../../../components/iconify';
@@ -10,7 +11,7 @@ import Iconify from '../../../components/iconify';
 import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
-import NotificationsPopover from './NotificationsPopover';
+// import NotificationsPopover from './NotificationsPopover';
 
 // ----------------------------------------------------------------------
 
@@ -54,7 +55,8 @@ export default function Header({ onOpenNav }) {
             display: { lg: 'none' },
           }}
         >
-          <Iconify icon="eva:menu-2-fill" />
+          {/* <Iconify icon="eva:menu-2-fill" /> */}
+          <MenuOpenIcon/>
         </IconButton>
 
         <Searchbar />
@@ -69,7 +71,7 @@ export default function Header({ onOpenNav }) {
           }}
         >
           {/* <LanguagePopover /> */}
-          <NotificationsPopover />
+          {/* <NotificationsPopover /> */}
           <AccountPopover />
         </Stack>
       </StyledToolbar>
