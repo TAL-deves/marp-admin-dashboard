@@ -8,10 +8,13 @@ import TextField from '@mui/material/TextField';
 import styled from '@emotion/styled';
 import { Helmet } from 'react-helmet-async';
 import Modal from '@mui/material/Modal';
+import swal from 'sweetalert';
+import {IconButton, InputAdornment} from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {getRequestHandler, postRequestHandler, patchRequestHandler, photoUploadRequestHandler, deleteRequestHandler} from "../apiHandler/customApiHandler"
 import BackDrop from "../backDrop"
+import Iconify from '../components/iconify';
 
 const style = {
     position: 'absolute',
@@ -53,6 +56,8 @@ const [phoneNumber, setPhoneNumber]=useState("")
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const [email, setEmail]=useState("")
     // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [showPassword, setShowPassword] = useState(false);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         setShow(true);
         async function getData() {
@@ -61,7 +66,7 @@ const [email, setEmail]=useState("")
           setRole(adminProfile.data.role);
           setPhoneNumber(adminProfile.data.phoneNumber);
           setEmail(adminProfile.data.email);
-          console.log("admin Profile response", adminProfile.data);
+          // console.log("admin Profile response", adminProfile.data);
           setShow(false);
         }
         getData();
@@ -83,19 +88,22 @@ const handleUpdateProfile=()=>{
       getData();
 }
 const handleSetPassword=()=>{
-    // const userId=data.id;
-    console.log("Set Password button" , password);
     async function getData() {
-      const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/updateaccountinfo`, {password});
+      const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/updateaccountinfo`, {password,phoneNumber, email});
         // setData(categoriesData.data);
-        console.log("admin profile set password", adminProfileRes);
-        // setShow(false);
+        swal("New Password!", "Your are successfully set new password!", "success");
         setPassword("");
-        setConPassword("")
+        setConPassword("");
+       setReloader(!reloader);
       }
       getData();
 }
-
+ const handleDisable=()=>{
+  console.log("handleDisable");
+  setPassword("");
+  setConPassword("");
+ setReloader(!reloader);
+ }
 
 
 
@@ -253,27 +261,38 @@ const handleClose = () => setOpen(false);
                     Full Name
                    </Typography> */}
                    <TextField id="outlined-basic" label="Full Name" variant="filled" type="text"
-                   defaultValue={role}
+                  //  defaultValue={role}
                    onChange={(e)=>setRole(e.target.value)}
-                    sx={{width:"80%", marginX:"10%", marginY:"2%"}}/>
-                   {/* <Typography>
-                    Phone Number
-                   </Typography> */}
-                   <TextField id="outlined-basic" label="Phone Number" variant="filled" type="number"
-                   defaultValue={phoneNumber}
-                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}
+                    sx={{width:"80%", marginX:"10%", marginY:"1%"}}/>
+                       <TextField id="outlined-basic" label="Age" variant="filled" type="number"
+                  //  defaultValue={email}
+                   sx={{width:"80%", marginX:"10%", marginY:"1%"}}
+                   onChange={(e)=>setEmail(e.target.value)}
+                   />
+                   <TextField id="outlined-basic" label="Gender" variant="filled" type="text"
+                  //  defaultValue={phoneNumber}
+                   sx={{width:"80%", marginX:"10%", marginY:"1%"}}
+                   onChange={(e)=>setPhoneNumber(e.target.value)}/>
+                   <TextField id="outlined-basic" label="maritual Status" variant="filled" type="text"
+                  //  defaultValue={phoneNumber}
+                   sx={{width:"80%", marginX:"10%", marginY:"1%"}}
                    onChange={(e)=>setPhoneNumber(e.target.value)}/>
                    {/* <Typography>
                     Email 
                    </Typography> */}
-                   <TextField id="outlined-basic" label="Email" variant="filled" type="email"
-                   defaultValue={email}
-                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}
+                   <TextField id="outlined-basic" label="address" variant="filled" type="email"
+                  //  defaultValue={email}
+                   sx={{width:"80%", marginX:"10%", marginY:"1%"}}
                    onChange={(e)=>setEmail(e.target.value)}
                    />
+                   {/* <TextField id="outlined-basic" label="Age" variant="filled" type="number"
+                  //  defaultValue={email}
+                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}
+                   onChange={(e)=>setEmail(e.target.value)}
+                   /> */}
                    <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
                                 bgcolor: '#6EAB49'
-                            }, marginY:2, width:"80%"}} onClick={handleUpdateProfile}>UPDATE</Button>
+                            }, marginY:2, width:"80%"}} onClick={handleUpdateProfile}>PROFILE UPDATE</Button>
                         {/* </Box> */}
                     </Box>
                 </Grid>
@@ -304,32 +323,78 @@ const handleClose = () => setOpen(false);
                    {/* <Typography>
                     New Password
                    </Typography> */}
-                   <TextField id="outlined-basic" label="New Password" variant="filled" type="password" 
-                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}
-                   onChange={(e)=>setPassword(e.target.value)}/>
                    {/* <Typography>
                     Confirm Password
                    </Typography> */}
-                   <TextField id="outlined-basic" label="Confirm Password" variant="filled" type="password" 
-                   sx={{width:"80%", marginX:"10%"}} onChange={(e)=>setConPassword(e.target.value)}/>
+                   {/* <TextField id="outlined-basic" label="Confirm Password" variant="filled" type="password" 
+                   sx={{width:"80%", marginX:"10%"}} onChange={(e)=>setConPassword(e.target.value)}/> */}
+    <TextField id="outlined-basic" label="Phone Number" variant="filled" type="number"
+                   defaultValue={phoneNumber}
+                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}
+                   onChange={(e)=>setPhoneNumber(e.target.value)}/>
+                   {/* <Typography>
+                    Email 
+                   </Typography> */}
+                   <TextField id="outlined-basic" label="Email" variant="filled" type="email"
+                   defaultValue={email}
+                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}
+                   onChange={(e)=>setEmail(e.target.value)}
+                   />
+        <TextField
+        sx={{width:"80%", marginX:"10%", marginY:"2%"}}
+        id="outlined-basic"
+        variant="filled"
+        placeholder='password must be 6 characters'
+        name="password"
+        label="New password"
+        onChange={e => setPassword(e.target.value)}
+        type={showPassword ? 'text' : 'password'}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+        <TextField
+        sx={{width:"80%", marginX:"10%", marginY:"2%"}}
+        id="outlined-basic" 
+        placeholder='password must be 6 characters'
+        label="Confirm Password" 
+        variant="filled"
+        onChange={(e)=>setConPassword(e.target.value)}
+        type={showPassword ? 'text' : 'password'}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
                    {
-                    (password===ConPassword && true) ?
+                    (password===ConPassword) ?
                     <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
                       bgcolor: '#6EAB49'
                   }, marginY:2, width:"80%"}} 
                   onClick={handleSetPassword}
-                  >SET PASSWORD</Button> :
-                  <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
-                    bgcolor: '#6EAB49'
-                }, marginY:2, width:"80%"}} 
-                onClick={handleSetPassword}
-                >DISABLE BUTTON</Button>
+                  >ACCOUNT UPDATE</Button> :
+                //   <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                //     bgcolor: '#6EAB49'
+                // }, marginY:2, width:"80%"}} 
+                // onClick={handleSetPassword}
+                // >DISABLE BUTTON</Button>
+                <Button sx={{bgcolor:"#B20000", color:"white",":hover": {
+                  bgcolor: '#6610F2'
+              }, marginY:2, width:"80%"}} 
+              onClick={handleDisable}>PassWord Not Match</Button>
                    }
-                   {/* <Button disabled variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
-                                bgcolor: '#6EAB49'
-                            }, marginY:2, width:"80%"}} 
-                            onClick={handleSetPassword}
-                            >SET PASSWORD</Button> */}
+                  
                         </Box>
                     {/* </Box> */}
                 </Grid>
