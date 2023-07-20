@@ -27,7 +27,7 @@ function AddProduct() {
   const [productCode, setProductCode] = useState()
   const [productName, setProductName] = useState()
   const [price, setPrice] = useState()
-  const [discount, setDiscount] = useState()
+  const [discount, setDiscount] = useState(0)
   const [newItem, setNewItem] = useState(false)
   const [saleCount, setSaleCount] = useState()
   const [stock, setStock] = useState()
@@ -68,10 +68,11 @@ function AddProduct() {
       setPrice(matchedProduct.price)
       setShortDescription(matchedProduct.shortDescription)
       setFullDescription(matchedProduct.fullDescription)
-      // setDroppedImages(productImages)
+      setDroppedImages(matchedProduct.productImages)
+      setStateDroppedImages(matchedProduct.productImages)
       // productImages.map((img)=>{return droppedImages.push(img)})
       // setDroppedImages(productImages.map((img) => img))
-      // console.log("images", productImages)
+     console.log("images", matchedProduct)
     } catch (error) {
       // Handle the error
       console.error(error);
@@ -216,7 +217,7 @@ function AddProduct() {
 
         // delete 
         async function handleDeleteImage(fileNames, index) {
-          setShow(true);
+          setShowloader(true);
           stateDroppedImages.splice(index, 1)
           console.log("fileNames------", fileNames);
           try {
@@ -224,11 +225,11 @@ function AddProduct() {
             // Handle the response data
             console.log("image delete response", response)
             
-            setShow(false)
+            setShowloader(false)
           } catch (error) {
             // Handle the error
             console.error(error);
-            setShow(false)
+            setShowloader(false)
           }
         }
 
