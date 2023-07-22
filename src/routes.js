@@ -35,7 +35,7 @@ export default function Router() {
   async function handleAuthCheck() {
 
     try {
-      const data = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}auth/authcheck`);
+      const data = await getRequestHandler(`https://marpapi.techanalyticaltd.com/auth/authcheck`);
       // Handle the response data
       // console.log("auth check response", data);
       if(data.error.code===401){
@@ -82,6 +82,7 @@ export default function Router() {
         { path: 'bucket-images/:name', element: <Bucketimages/>, },
         { path: 'product/:id', element: <AddProduct />, },
         { path: 'vendor', element: <Vendor/>, },
+        { path: 'forgotPassword', element: <Vendor/>, },
         { path: 'bucket', element: <StorageBucket />, },
         { path: 'add-product-review', element: <ProductReview />, },
       ],

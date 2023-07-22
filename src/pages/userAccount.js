@@ -48,15 +48,27 @@ const [password, setPassword]=useState("");
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const [ConPassword, setConPassword]=useState("");
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const [show, setShow]=useState(false)
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const [role, setRole]=useState("")
+const [show, setShow]=useState(false);
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const [phoneNumber, setPhoneNumber]=useState("")
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const [email, setEmail]=useState("")
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [showPassword, setShowPassword] = useState(false);
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [role, setRole]=useState("")
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [age, setAge]=useState(0)
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [gender, setGender]=useState("")
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [maritalStatus, setMaritalStatus]=useState("")
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [address, setAddress]=useState("")
+// eslint-disable-next-line react-hooks/rules-of-hooks
+// const [role, setRole]=useState("")
+
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         setShow(true);
@@ -78,12 +90,13 @@ const [email, setEmail]=useState("")
 
 
 const handleUpdateProfile=()=>{
-    // console.log("update button clicked phn eml pwd", phoneNumber, email, password );
+  const DOB=new Date().toLocaleDateString("de-DE");
+const Age=parseInt(age, 10);
     async function getData() {
-        const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/updateaccountinfo`, {phoneNumber, email, role});
+        const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/profile`, {fullName:role, age:Age, gender, maritalStatus, address});
         // setData(categoriesData.data);
         console.log("admin Profile update Res", adminProfileRes);
-        setReloader(!reloader);
+        // setReloader(!reloader);
       }
       getData();
 }
@@ -210,56 +223,12 @@ const handleClose = () => setOpen(false);
                     >
                     <Typography variant='h4'>Personal Details </Typography>
                         <Avatar sx={{width:160,height:160, marginTop:3}} alt="Travis Howard" src={"../../assets/images/avatars/tree-736885_1280.jpg"} />
-                        {/* <Avatar sx={{width:160,height:160, marginTop:3}} alt="Travis Howard" src={"../../assets/images/avatars/tree-736885_1280.jpg"} /> */}
-                        {/* <Box sx={{display:'flex',
-              justifyContent:'center',
-              alignContent:'center',
-              marginY:5
-              }}>
-                  <Box sx={{ display: "flex" }}> 
-                   {
-                    droppedImages ?
-                    <>
-                    <Container sx={{ mx: ".5rem" }}>
-                    <img src={droppedImages} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
-                          <DeleteForeverIcon sx={{color:'red'}} onClick={handleDeleteSubImage}/>
-                  </Container> 
-                    </>
-                  :
-                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem"}} onDragOver={handleDragOver} onDrop={handleDrop}>
-                    <Box >
-                    <FileDownloadIcon/>
-                      <Typography>Drag and drop your file here<br/> or</Typography>
-                      <div>
-                        <Button variant="contained" onClick={handleBrowseClick} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
-                bgcolor: '#03A550'
-              },}}>SELECT FILE</Button>
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          onChange={handleFileInputChange}
-                          style={{ display: 'none' }}
-                        />
-                      </div>
-                    </Box>
-                  </Container>
-                   }
-                </Box>
-              </Box> */}
+              
                         <Button
                         onClick={handleOpen}
                          variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
                                 bgcolor: '#6EAB49'
                             }, marginY:2, width:"80%"}}>UPDATE YOUR IMAGE</Button>
-                        {/* <Box
-                           alignItems="center"
-                           justifyContent={'center'}
-                          > */}
-                   {/* <Typography>
-                    Full Name
-                   </Typography> */}
                    <TextField id="outlined-basic" label="Full Name" variant="filled" type="text"
                   //  defaultValue={role}
                    onChange={(e)=>setRole(e.target.value)}
@@ -267,29 +236,24 @@ const handleClose = () => setOpen(false);
                        <TextField id="outlined-basic" label="Age" variant="filled" type="number"
                   //  defaultValue={email}
                    sx={{width:"80%", marginX:"10%", marginY:"1%"}}
-                   onChange={(e)=>setEmail(e.target.value)}
+                   onChange={(e)=>setAge(e.target.value)}
                    />
                    <TextField id="outlined-basic" label="Gender" variant="filled" type="text"
                   //  defaultValue={phoneNumber}
                    sx={{width:"80%", marginX:"10%", marginY:"1%"}}
-                   onChange={(e)=>setPhoneNumber(e.target.value)}/>
+                   onChange={(e)=>setGender(e.target.value)}/>
                    <TextField id="outlined-basic" label="maritual Status" variant="filled" type="text"
                   //  defaultValue={phoneNumber}
                    sx={{width:"80%", marginX:"10%", marginY:"1%"}}
-                   onChange={(e)=>setPhoneNumber(e.target.value)}/>
+                   onChange={(e)=>setMaritalStatus(e.target.value)}/>
                    {/* <Typography>
                     Email 
                    </Typography> */}
                    <TextField id="outlined-basic" label="address" variant="filled" type="email"
                   //  defaultValue={email}
                    sx={{width:"80%", marginX:"10%", marginY:"1%"}}
-                   onChange={(e)=>setEmail(e.target.value)}
+                   onChange={(e)=>setAddress(e.target.value)}
                    />
-                   {/* <TextField id="outlined-basic" label="Age" variant="filled" type="number"
-                  //  defaultValue={email}
-                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}
-                   onChange={(e)=>setEmail(e.target.value)}
-                   /> */}
                    <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
                                 bgcolor: '#6EAB49'
                             }, marginY:2, width:"80%"}} onClick={handleUpdateProfile}>PROFILE UPDATE</Button>
