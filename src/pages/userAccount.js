@@ -61,7 +61,7 @@ const [email, setEmail]=useState("")
     useEffect(() => {
         setShow(true);
         async function getData() {
-          const adminProfile = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/profile`);
+          const adminProfile = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/profile`);
           // setData(adminProfile.data);
           setRole(adminProfile.data.role);
           setPhoneNumber(adminProfile.data.phoneNumber);
