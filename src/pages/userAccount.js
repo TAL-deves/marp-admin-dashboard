@@ -242,14 +242,14 @@ const handleClose = () => setOpen(false);
                   //  defaultValue={phoneNumber}
                    sx={{width:"80%", marginX:"10%", marginY:"1%"}}
                    onChange={(e)=>setGender(e.target.value)}/>
-                   <TextField id="outlined-basic" label="maritual Status" variant="filled" type="text"
+                   <TextField id="outlined-basic" label="Marital Status" variant="filled" type="text"
                   //  defaultValue={phoneNumber}
                    sx={{width:"80%", marginX:"10%", marginY:"1%"}}
                    onChange={(e)=>setMaritalStatus(e.target.value)}/>
                    {/* <Typography>
                     Email 
                    </Typography> */}
-                   <TextField id="outlined-basic" label="address" variant="filled" type="email"
+                   <TextField id="outlined-basic" label="Address" variant="filled" type="email"
                   //  defaultValue={email}
                    sx={{width:"80%", marginX:"10%", marginY:"1%"}}
                    onChange={(e)=>setAddress(e.target.value)}

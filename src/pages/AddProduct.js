@@ -273,8 +273,7 @@ function AddProduct() {
           </Backdrop>
         </> :
         <Box container sx={{ maxWidth: "80rem" }}>
-
-          <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+           <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
             <Typography sx={{ margingLeft: ".2rem", borderBottom: "5px solid #6610F2", m: "1rem" }}>
               + Add Product
             </Typography>
@@ -480,12 +479,9 @@ function AddProduct() {
               </Grid>
               <Grid item md={6} lg={6} >
                 <Grid container spacing={2} sx={{ justifyContent: "center", mt: "2rem" }}>
-
-                  <Box sx={{ display: "" }}>
+                   <Box sx={{ display: "" }}>
                     <Box sx={{ display: "flex" }}>
-                      <Grid sx={{ justifyContent: "space-between" }} container spacing={2}>
-
-                        {stateDroppedImages.map((image, index) => {
+                      <Grid sx={{ justifyContent: "space-between" }} container spacing={2}>{stateDroppedImages.map((image, index) => {
                           console.log( "droppedImages in state33 droppedImages[index]", droppedImages[index])
                           let parts;
                           let fileNames;
@@ -509,8 +505,7 @@ function AddProduct() {
                               <Typography sx={{ color: "red", padding: ".3rem" }}>Remove</Typography>
                             </Box>
                           </Grid>
-
-                        )}
+                          )}
                         )}
                         {stateDroppedImages.length === 1
                           ?
@@ -605,13 +600,8 @@ function AddProduct() {
                     </Box>
                   </Box>
                 }
-
-                {/* </Box> */}
               </Box>}
-
-
-
-          </Box>
+              </Box>
         </Box>}
     </>
   )

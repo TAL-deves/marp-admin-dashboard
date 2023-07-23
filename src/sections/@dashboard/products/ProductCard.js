@@ -43,7 +43,7 @@ export default function ShopProductCard({ product }) {
         const response = await deleteRequestHandler('https://marpapi.techanalyticaltd.com/product/', {id});
         // Handle the response data      
         // console.log("delete data", response.data.encoded.success);
-        // console.log("delete id", id);
+        console.log("delete id", id);
         setShow(false)
         if(response.data.encoded.success){
           // navigate("/dashboard/products")

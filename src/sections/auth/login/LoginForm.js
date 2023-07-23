@@ -31,9 +31,9 @@ export default function LoginForm() {
     handleOpen();
     console.log("phone", typeof(phone), phone);
    const data=await loginHandler("https://marpapi.techanalyticaltd.com/admin/login",phone, password);
-   setUserId(data.data.user);
-  //  console.log("phone ,password", phone, password, data
-  //  );
+   setUserId(data);
+   console.log("phone ,password", phone, password, data
+   );
    if(data.success){
      swal("Log in!", "Your are successfully loged in!", "success");
      navigate('/dashboard', { replace: true });
@@ -43,12 +43,12 @@ export default function LoginForm() {
     }
   };
 
-
+console.log("data ----->", userId);
 
   // const handleForgotClick =async() => {
   //   console.log("handleForgotClick");
-  //   const ForgotRes=await postRequestHandler("https://marpapi.techanalyticaltd.com/auth/forgotpassword",{userId});
-  //   console.log("forgot password response", ForgotRes);
+  //   // const ForgotRes=await postRequestHandler("https://marpapi.techanalyticaltd.com/auth/forgotpassword",{userId});
+  //   // console.log("forgot password response", ForgotRes);
   // };
   const handleClose = () => {
     setOpen(false);
@@ -96,7 +96,7 @@ export default function LoginForm() {
           ),
         }}
       />
-          <Typography sx={{ color:"#6610F2",":hover":{color:'#6EAB49'}, cursor:"pointer"}}>Forgot PassWord?</Typography>
+          {/* <Typography sx={{ color:"#6610F2",":hover":{color:'#6EAB49'}, cursor:"pointer"}} onClick={handleForgotClick}>Forgot PassWord?</Typography> */}
     </Stack>
     }
       <LoadingButton sx={{marginTop:4}} fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>Login</LoadingButton>
