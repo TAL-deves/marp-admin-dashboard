@@ -9,13 +9,14 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Helmet } from 'react-helmet-async';
 // eslint-disable-next-line import/no-unresolved
-import { getRequestHandler, putRequestHandler,photoUploadRequestHandler, postRequestHandler, deleteRequestHandler } from "src/apiHandler/customApiHandler";
+import { getRequestHandler, patchRequestHandler,photoUploadRequestHandler, postRequestHandler, deleteRequestHandler } from "src/apiHandler/customApiHandler";
 import CardMedia from '@mui/material/CardMedia';
 import { useState, useEffect } from "react";
 // eslint-disable-next-line import/no-unresolved
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import Modal from '@mui/material/Modal';
@@ -67,6 +68,7 @@ const Category = () => {
   const [subcategory, setSubcategory] = useState("");
   const [reload, setReload] = useState(false)
   const [show, setShow] = React.useState(false)
+  const navigate = useNavigate();
 
 
   // category image section start from here
@@ -144,9 +146,6 @@ const Category = () => {
        console.error(error);
      }}
     getData();
-
-
-
   };
 
   // Data coming from backend
@@ -155,6 +154,7 @@ const Category = () => {
     async function getData() {
       const categoriesData = await getRequestHandler(`https://marpapi.techanalyticaltd.com/category/`);
       setData(categoriesData.data.categoryList);
+      console.log("hole data here", data);
       setShow(false)
     }
     getData();
@@ -212,6 +212,32 @@ const Category = () => {
     console.log("edit button", id);
       setHidden(true);
   }
+
+
+  async function handleUpdateCategory(id) {
+    setShow(true);
+  //  const updateCategory=data?.filter()
+
+    try {
+      console.log("sku", id)
+      const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/category/', {
+        "categoryId": "clk146gui007q5xbtta23wt0r",
+        "updatedCategoryName": "Vegetable",
+        "updatedCategoryImage": "https://oajxusxzqqhuwzvyniyc.supabase.co/storage/v1/object/public/category/MARP-category-1689247440708.jpeg"
+    });
+      // Handle the response data
+      
+      if (response.success) {
+        setReload(!reload)
+        navigate("/dashboard/category")
+      }
+    } catch (error) {
+      // Handle the error
+      console.error(error);
+    }
+    setShow(false);
+  }
+
 
 
   const handleCategoryDelete = (id) => {
@@ -358,7 +384,7 @@ const Category = () => {
                               alignItems: 'center',
                               height: '100%',
                             }}>
-                              <Button onClick={() => handleClickedEdit(item.id)}><ModeEditIcon sx={{ color: "#6EAB49" }} /></Button>
+                              <Button onClick={() => handleUpdateCategory(item.id)}><ModeEditIcon sx={{ color: "#6EAB49" }} /></Button>
                               <Button onClick={() => handleCategoryDelete(item.id)}><DeleteIcon sx={{ color: "#E53E3E" }} />
                               </Button>
                               <Button onClick={() => {
@@ -460,6 +486,87 @@ const Category = () => {
       :
       <> </>
       }
+
+{/* updated category start from here */}
+<Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={opens}
+        onClose={handleClose}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={opens}>
+          <Box sx={style}>
+              <Box>
+                <Box sx={{display:'flex',
+              justifyContent:'center',
+              alignContent:'center',
+              marginY:5
+              }}>
+                  <Box sx={{ display: "flex" }}> 
+                   {
+                    droppedImages ?
+                    <>
+                    <Container sx={{ mx: ".5rem" }}>
+                    <img src={droppedImages} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
+                    <Button onClick={handleDeleteCategoryImage}>
+                    <DeleteForeverIcon sx={{color:'red'}}/>
+                    </Button>
+                
+                  </Container> 
+                  {/* <Container sx={{ mx: ".5rem" }}>
+                    <img src={droppedImagesSub} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
+                          <DeleteForeverIcon sx={{color:'red'}} onClick={handleDeleteSubImage}/>
+                  </Container> */}
+                    </>
+                  :
+                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOver} onDrop={handleDrop}>
+                    <Box >
+                      <FileDownloadIcon/>
+                      <Typography>Drag and drop your file here<br/> or</Typography>
+                      <div>
+                        <Button variant="contained" onClick={handleBrowseClick} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
+                bgcolor: '#03A550'
+              },}}>SELECT FILE</Button>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleFileInputChange}
+                          style={{ display: 'none' }}
+                        />
+                      </div>
+                    </Box>
+                  </Container>
+                   }
+                </Box>
+                </Box>
+                <Typography sx={{ marginY: 2 }}>
+                Category
+              </Typography>
+              <TextField id="outlined-basic" label="Category" variant="outlined" type="text" sx={{ width: "100%", marginBottom: 2 }} onChange={(e) => setCategory(e.target.value)} />
+              <Button variant="contained" sx={{
+                bgcolor: "#6610F2", ":hover": {
+                  bgcolor: '#6EAB49'
+                }, width: "32%",
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: "center",
+                justifyContent: 'center',
+                margin: 'auto'
+              }} onClick={handleNewCategory}>CREATE</Button>
+            </Box>
+          </Box>
+        </Fade>
+      </Modal>
+
 
       {/* New Category create start from here */}
       <Modal
