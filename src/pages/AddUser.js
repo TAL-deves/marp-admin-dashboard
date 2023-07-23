@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box';
+import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Button, TextField } from "@mui/material";
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -19,30 +19,34 @@ function AddUser() {
   const location = useLocation();
   const { id } = useParams();
   let currentrole;
-  if(id){
+  if (id) {
     currentrole = location.state.role;
   }
-  else{
-    currentrole="user"
+  else {
+    currentrole = "user"
   }
   const [email, setEmail] = useState()
   const [phoneNumber, setphoneNumber] = useState()
   const [password, setPassword] = useState()
   const [role, setRole] = useState("")
-  const [show, setShow] = useState(false);
+  const [locked, setLocked] = useState()
+  const [show, setShow] = useState();
   const { pathname } = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [existingUser, setExistingUser] = useState()
   const navigate = useNavigate();
-  const handleChange = (event) => {
+  const handleChangeRole = (event) => {
     setRole(event.target.value);
+  };
+  const handleChangelocked = (event) => {
+    setLocked(event.target.value);
   };
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  
+
   async function handleCreateUser() {
     setShow(true);
     try {
@@ -54,16 +58,16 @@ function AddUser() {
       if (response.success) {
         navigate("/dashboard/user")
       }
-      console.log("create user response", response);
-      console.log("role response", role);
+      // console.log("create user response", response);
+      // console.log("role response", role);
     } catch (error) {
       // Handle the error
       console.error(error);
     }
   }
 
- 
-  
+
+
   // get all data 
   async function handleGetAllDataforUpdate() {
     try {
@@ -74,9 +78,10 @@ function AddUser() {
       setEmail(matchedUser.email)
       setphoneNumber(matchedUser.phoneNumber)
       setRole(matchedUser.role)
+      setLocked(matchedUser.locked)
       setExistingUser(true)
       // setPassword()
-      console.log("main data", matchedUser.role);
+      console.log("main data", matchedUser);
 
     } catch (error) {
       // Handle the error
@@ -89,13 +94,13 @@ function AddUser() {
 
     try {
       const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/admin/useraction', {
-        id, email, phoneNumber, role
+        id, email, phoneNumber, role, locked
       });
       // Handle the response data
       setShow(false);
-      // if(response.success){
-      //   navigate("/dashboard/user")
-      // }
+      if(response.success){
+        navigate("/dashboard/user")
+      }
       console.log("update", response)
     } catch (error) {
       // Handle the error
@@ -104,7 +109,7 @@ function AddUser() {
   }
 
   useEffect(() => {
-    if(id){
+    if (id) {
       handleGetAllDataforUpdate()
     }
 
@@ -112,8 +117,8 @@ function AddUser() {
 
   return (
     <div>
-      
-     {show ?
+
+      {show ?
         <>
           <Backdrop
             sx={{ color: '#808080', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -128,7 +133,7 @@ function AddUser() {
               wrapperStyle={{}}
               wrapperClass=""
               visible={show}
-            /> 
+            />
           </Backdrop>
         </> :
 
@@ -190,14 +195,30 @@ function AddUser() {
               id="demo-simple-select"
               sx={{ width: { xs: "21rem", sm: "24.5rem", md: "24.5rem" }, }}
               value={role}
-              label="Role"
-              onChange={handleChange}
+              label="Locked locked"
+              onChange={handleChangeRole}
             >
               <MenuItem value={"shipper"}>Shipper</MenuItem>
               <MenuItem value={"user"}>User</MenuItem>
               <MenuItem value={"admin"}>Admin</MenuItem>
             </Select>
           </FormControl>
+          {existingUser?
+          <FormControl sx={{ m: ".5rem" }}>
+          <InputLabel id="demo-simple-select-label">Role</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            sx={{ width: { xs: "21rem", sm: "24.5rem", md: "24.5rem" }, }}
+            value={locked}
+            label="Locked Status"
+            onChange={handleChangelocked}
+          >
+            <MenuItem value={JSON.parse("true")}>True</MenuItem>
+            <MenuItem value={JSON.parse("false")}>False</MenuItem>
+          </Select>
+        </FormControl>:
+        <></>}
           {!existingUser ?
             <TextField
               // sx={{ width: "24.5rem" }}
@@ -220,7 +241,22 @@ function AddUser() {
               }}
             />
             :
-            <></>}
+            <>
+              {/* <FormControl sx={{ m: ".5rem" }}>
+                <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  sx={{ width: { xs: "21rem", sm: "24.5rem", md: "24.5rem" } }}
+                  value={locked}
+                  label="Locked locked"
+                  onChange={handleChangelocked}
+                >
+                  <MenuItem value={JSON.parse("true")}>True</MenuItem>
+                  <MenuItem value={JSON.parse("false")}>False</MenuItem>
+                </Select>
+              </FormControl> */}
+              </>}
           {!existingUser ?
             <Box sx={{ width: { xs: "21rem", sm: "24.5rem", md: "24.5rem" }, textAlign: "center", backgroundColor: "#6EAB49", m: ".5rem", height: "51px", borderRadius: "4px", fontSize: "28px", color: "white", pt: "3px", cursor: "pointer" }} onClick={() => { handleCreateUser() }}>
               Create

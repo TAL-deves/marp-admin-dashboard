@@ -38,7 +38,7 @@ export default function OrderList() {
       
       setTotalPages(response.data.totalPages);
       // setId(response.data.allData.id)
-      // console.log("user response", response.data.allData)
+       console.log("user response", response.data.allData)
       // setCurrentPage(response.data.currentPage);
       setShow(false)
     } catch (error) {
@@ -99,7 +99,8 @@ export default function OrderList() {
               <TableHead>
                 <TableRow>
                   <TableCell>Created at</TableCell>
-                  <TableCell align="left">Name</TableCell>
+                  <TableCell align="left">Email</TableCell>
+                  <TableCell align="left">Phone</TableCell>
                   <TableCell align="left">Role</TableCell>
                   {/* <TableCell align="left">Verified</TableCell> */}
                   <TableCell align="left">Status</TableCell>
@@ -123,7 +124,9 @@ export default function OrderList() {
                               new Date(row.createdAt).toLocaleDateString('en-GB')
                               }
                             </TableCell>
-                            <TableCell align="left">{row.profile?.fullName}</TableCell>
+                            <TableCell align="left">{row.email}</TableCell>
+                            <TableCell align="left">{row.phoneNumber}</TableCell>
+                            {/* <TableCell align="left">{row.profile?.email}</TableCell> */}
                             <TableCell align="left">{row.role}</TableCell>
                             {row.locked === false ?
                               <TableCell align="left">
