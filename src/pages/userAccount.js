@@ -8,10 +8,13 @@ import TextField from '@mui/material/TextField';
 import styled from '@emotion/styled';
 import { Helmet } from 'react-helmet-async';
 import Modal from '@mui/material/Modal';
+import swal from 'sweetalert';
+import {IconButton, InputAdornment} from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {getRequestHandler, postRequestHandler, patchRequestHandler, photoUploadRequestHandler, deleteRequestHandler} from "../apiHandler/customApiHandler"
 import BackDrop from "../backDrop"
+import Iconify from '../components/iconify';
 
 const style = {
     position: 'absolute',
@@ -41,25 +44,41 @@ const userAccount = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [reloader, setReloader]=React.useState(true);
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const [data, setData]=useState([])
+const [password, setPassword]=useState("");
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const [show, setShow]=useState(false)
+const [ConPassword, setConPassword]=useState("");
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const [role, setRole]=useState("")
+const [show, setShow]=useState(false);
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const [phoneNumber, setPhoneNumber]=useState("")
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const [email, setEmail]=useState("")
     // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [showPassword, setShowPassword] = useState(false);
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [role, setRole]=useState("")
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [age, setAge]=useState(0)
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [gender, setGender]=useState("")
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [maritalStatus, setMaritalStatus]=useState("")
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const [address, setAddress]=useState("")
+// eslint-disable-next-line react-hooks/rules-of-hooks
+// const [role, setRole]=useState("")
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         setShow(true);
         async function getData() {
-          const adminProfile = await getRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/profile`);
-          setData(adminProfile.data);
+          const adminProfile = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/profile`);
+          // setData(adminProfile.data);
           setRole(adminProfile.data.role);
           setPhoneNumber(adminProfile.data.phoneNumber);
           setEmail(adminProfile.data.email);
-          console.log("admin Profile response", adminProfile.data);
+          // console.log("admin Profile response", adminProfile.data);
           setShow(false);
         }
         getData();
@@ -67,31 +86,37 @@ const [email, setEmail]=useState("")
 // console.log("admin email", data?.email);
 // const name="Admin dashboard";
 // const phoneNumber="01515212610";
-const password="100200300";
+// const password="100200300";
 
 
 const handleUpdateProfile=()=>{
-    // console.log("update button clicked phn eml pwd", phoneNumber, email, password );
+  const DOB=new Date().toLocaleDateString("de-DE");
+const Age=parseInt(age, 10);
     async function getData() {
-        const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/updateaccountinfo`, {phoneNumber, email, password});
+        const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/profile`, {fullName:role, age:Age, gender, maritalStatus, address});
         // setData(categoriesData.data);
         console.log("admin Profile update Res", adminProfileRes);
-        setReloader(!reloader);
+        // setReloader(!reloader);
       }
       getData();
 }
 const handleSetPassword=()=>{
-    const userId=data.id;
-    console.log("Set Password button", userId);
     async function getData() {
-        const categoriesData = await postRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}auth/resetpassword`, {userId});
+      const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/updateaccountinfo`, {password,phoneNumber, email});
         // setData(categoriesData.data);
-        console.log("categoriesData", categoriesData);
-        // setShow(false);
+        swal("New Password!", "Your are successfully set new password!", "success");
+        setPassword("");
+        setConPassword("");
+       setReloader(!reloader);
       }
       getData();
 }
-
+ const handleDisable=()=>{
+  console.log("handleDisable");
+  setPassword("");
+  setConPassword("");
+ setReloader(!reloader);
+ }
 
 
 
@@ -198,78 +223,40 @@ const handleClose = () => setOpen(false);
                     >
                     <Typography variant='h4'>Personal Details </Typography>
                         <Avatar sx={{width:160,height:160, marginTop:3}} alt="Travis Howard" src={"../../assets/images/avatars/tree-736885_1280.jpg"} />
-                        {/* <Avatar sx={{width:160,height:160, marginTop:3}} alt="Travis Howard" src={"../../assets/images/avatars/tree-736885_1280.jpg"} /> */}
-                        {/* <Box sx={{display:'flex',
-              justifyContent:'center',
-              alignContent:'center',
-              marginY:5
-              }}>
-                  <Box sx={{ display: "flex" }}> 
-                   {
-                    droppedImages ?
-                    <>
-                    <Container sx={{ mx: ".5rem" }}>
-                    <img src={droppedImages} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
-                          <DeleteForeverIcon sx={{color:'red'}} onClick={handleDeleteSubImage}/>
-                  </Container> 
-                    </>
-                  :
-                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem"}} onDragOver={handleDragOver} onDrop={handleDrop}>
-                    <Box >
-                    <FileDownloadIcon/>
-                      <Typography>Drag and drop your file here<br/> or</Typography>
-                      <div>
-                        <Button variant="contained" onClick={handleBrowseClick} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
-                bgcolor: '#03A550'
-              },}}>SELECT FILE</Button>
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          onChange={handleFileInputChange}
-                          style={{ display: 'none' }}
-                        />
-                      </div>
-                    </Box>
-                  </Container>
-                   }
-                </Box>
-              </Box> */}
+              
                         <Button
                         onClick={handleOpen}
                          variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
                                 bgcolor: '#6EAB49'
                             }, marginY:2, width:"80%"}}>UPDATE YOUR IMAGE</Button>
-                        {/* <Box
-                           alignItems="center"
-                           justifyContent={'center'}
-                          > */}
-                   {/* <Typography>
-                    Full Name
-                   </Typography> */}
                    <TextField id="outlined-basic" label="Full Name" variant="filled" type="text"
-                   defaultValue={role}
+                  //  defaultValue={role}
                    onChange={(e)=>setRole(e.target.value)}
-                    sx={{width:"80%", marginX:"10%", marginY:"2%"}}/>
-                   {/* <Typography>
-                    Phone Number
-                   </Typography> */}
-                   <TextField id="outlined-basic" label="Phone Number" variant="filled" type="number"
-                   defaultValue={phoneNumber}
-                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}
-                   onChange={(e)=>setPhoneNumber(e.target.value)}/>
+                    sx={{width:"80%", marginX:"10%", marginY:"1%"}}/>
+                       <TextField id="outlined-basic" label="Age" variant="filled" type="number"
+                  //  defaultValue={email}
+                   sx={{width:"80%", marginX:"10%", marginY:"1%"}}
+                   onChange={(e)=>setAge(e.target.value)}
+                   />
+                   <TextField id="outlined-basic" label="Gender" variant="filled" type="text"
+                  //  defaultValue={phoneNumber}
+                   sx={{width:"80%", marginX:"10%", marginY:"1%"}}
+                   onChange={(e)=>setGender(e.target.value)}/>
+                   <TextField id="outlined-basic" label="maritual Status" variant="filled" type="text"
+                  //  defaultValue={phoneNumber}
+                   sx={{width:"80%", marginX:"10%", marginY:"1%"}}
+                   onChange={(e)=>setMaritalStatus(e.target.value)}/>
                    {/* <Typography>
                     Email 
                    </Typography> */}
-                   <TextField id="outlined-basic" label="Email" variant="filled" type="email"
-                   defaultValue={email}
-                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}
-                   onChange={(e)=>setEmail(e.target.value)}
+                   <TextField id="outlined-basic" label="address" variant="filled" type="email"
+                  //  defaultValue={email}
+                   sx={{width:"80%", marginX:"10%", marginY:"1%"}}
+                   onChange={(e)=>setAddress(e.target.value)}
                    />
                    <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
                                 bgcolor: '#6EAB49'
-                            }, marginY:2, width:"80%"}} onClick={handleUpdateProfile}>UPDATE</Button>
+                            }, marginY:2, width:"80%"}} onClick={handleUpdateProfile}>PROFILE UPDATE</Button>
                         {/* </Box> */}
                     </Box>
                 </Grid>
@@ -300,18 +287,78 @@ const handleClose = () => setOpen(false);
                    {/* <Typography>
                     New Password
                    </Typography> */}
-                   <TextField id="outlined-basic" label="New Password" variant="filled" type="password" 
-                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}/>
                    {/* <Typography>
                     Confirm Password
                    </Typography> */}
-                   <TextField id="outlined-basic" label="Confirm Password" variant="filled" type="password" 
-                   sx={{width:"80%", marginX:"10%"}}/>
-                   <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
-                                bgcolor: '#6EAB49'
-                            }, marginY:2, width:"80%"}} 
-                            onClick={handleSetPassword}
-                            >SET PASSWORD</Button>
+                   {/* <TextField id="outlined-basic" label="Confirm Password" variant="filled" type="password" 
+                   sx={{width:"80%", marginX:"10%"}} onChange={(e)=>setConPassword(e.target.value)}/> */}
+    <TextField id="outlined-basic" label="Phone Number" variant="filled" type="number"
+                   defaultValue={phoneNumber}
+                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}
+                   onChange={(e)=>setPhoneNumber(e.target.value)}/>
+                   {/* <Typography>
+                    Email 
+                   </Typography> */}
+                   <TextField id="outlined-basic" label="Email" variant="filled" type="email"
+                   defaultValue={email}
+                   sx={{width:"80%", marginX:"10%", marginY:"2%"}}
+                   onChange={(e)=>setEmail(e.target.value)}
+                   />
+        <TextField
+        sx={{width:"80%", marginX:"10%", marginY:"2%"}}
+        id="outlined-basic"
+        variant="filled"
+        placeholder='password must be 6 characters'
+        name="password"
+        label="New password"
+        onChange={e => setPassword(e.target.value)}
+        type={showPassword ? 'text' : 'password'}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+        <TextField
+        sx={{width:"80%", marginX:"10%", marginY:"2%"}}
+        id="outlined-basic" 
+        placeholder='password must be 6 characters'
+        label="Confirm Password" 
+        variant="filled"
+        onChange={(e)=>setConPassword(e.target.value)}
+        type={showPassword ? 'text' : 'password'}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+                   {
+                    (password===ConPassword) ?
+                    <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                      bgcolor: '#6EAB49'
+                  }, marginY:2, width:"80%"}} 
+                  onClick={handleSetPassword}
+                  >ACCOUNT UPDATE</Button> :
+                //   <Button variant="contained" sx={{bgcolor:"#6610F2", color:"white",":hover": {
+                //     bgcolor: '#6EAB49'
+                // }, marginY:2, width:"80%"}} 
+                // onClick={handleSetPassword}
+                // >DISABLE BUTTON</Button>
+                <Button sx={{bgcolor:"#B20000", color:"white",":hover": {
+                  bgcolor: '#6610F2'
+              }, marginY:2, width:"80%"}} 
+              onClick={handleDisable}>PassWord Not Match</Button>
+                   }
+                  
                         </Box>
                     {/* </Box> */}
                 </Grid>
