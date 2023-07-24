@@ -104,7 +104,7 @@ const handleSetPassword=()=>{
     async function getData() {
       const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/updateaccountinfo`, {password,phoneNumber, email});
         // setData(categoriesData.data);
-        swal("New Password!", "Your are successfully set new password!", "success");
+        swal("Updated!", "Your are successfully updated your account!", "success");
         setPassword("");
         setConPassword("");
        setReloader(!reloader);

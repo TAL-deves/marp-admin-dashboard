@@ -216,6 +216,7 @@ const Category = () => {
 
   async function handleUpdateCategory(id) {
     setShow(true);
+    handleOpen();
   //  const updateCategory=data?.filter()
 
     try {
@@ -310,7 +311,7 @@ const Category = () => {
     }
   }
  
-// console.log("Category data", data, subCate);
+console.log("Category data", data, subCate);
 
 
   return (
@@ -417,14 +418,12 @@ const Category = () => {
                   }
                 }}
               >
-                <Typography sx={{ my: 3 }} variant='h4'>SubCategory of {subCate?.name}
-                
-                </Typography>
+                <Typography sx={{ my: 3 }} variant='h4'>SubCategory</Typography>
 
                 {
                   subCate.length === 0 ?
                     <Typography>
-                      No Subcategory here
+                      No Subcategory here!!!
                     </Typography>
                     :
                     <>
@@ -481,11 +480,11 @@ const Category = () => {
 </>
 </Box>
 
-    {hidden ?
+    {/* {hidden ?
   <AleartComponent open={hidden}/>
       :
       <> </>
-      }
+      } */}
 
 {/* updated category start from here */}
 <Modal

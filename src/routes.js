@@ -12,6 +12,7 @@ import UserProfile from './pages/userAccount';
 import Page404 from './pages/Page404';
 import CategoryPage from './_mock/category';
 import AddProduct from './pages/AddProduct';
+import CategoryUpdate from './pages/CategoryUpdat';
 import DashboardAppPage from './pages/DashboardAppPage';
 import ProductReview from './pages/ProductReview';
 import { getRequestHandler } from './apiHandler/customApiHandler';
@@ -69,6 +70,8 @@ export default function Router() {
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'category', element: <CategoryPage /> },
+        { path: 'category/:id', element: <CategoryUpdate />, },
+        { path: 'product/:id', element: <AddProduct />, },
         { path: 'profile', element: <UserProfile />, },
         { path: 'product', element: <AddProduct />, },
         { path: 'create-new-bucket', element: <AddNewBucket />, },
@@ -80,7 +83,7 @@ export default function Router() {
         { path: 'select-folder-to-upload', element: <SelectFolderToUploadFile />, },
         { path: 'add-user/:id', element: <AddUser />, },
         { path: 'bucket-images/:name', element: <Bucketimages/>, },
-        { path: 'product/:id', element: <AddProduct />, },
+        { path: 'product/:id', element: <AddProduct />},
         { path: 'vendor', element: <Vendor/>, },
         { path: 'forgotPassword', element: <Vendor/>, },
         { path: 'bucket', element: <StorageBucket />, },
