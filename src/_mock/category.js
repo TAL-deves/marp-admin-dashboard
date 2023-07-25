@@ -70,6 +70,15 @@ const Category = () => {
   const [show, setShow] = React.useState(false)
   const navigate = useNavigate();
 
+  const [idUpdate, setIdUpdate] = useState("");
+  const [UpCategory, setUpCategory] = useState("");
+  const [categoryImage, setCategoryImage] = useState("");
+
+
+  // setIdUpdate(data?.id);
+  // setUpCategory(data?.name);
+  // setCategoryImage(data?.image);
+
 
   // category image section start from here
   const [droppedImages, setDroppedImages] = useState("");
@@ -153,8 +162,12 @@ const Category = () => {
     setShow(true);
     async function getData() {
       const categoriesData = await getRequestHandler(`https://marpapi.techanalyticaltd.com/category/`);
+      // console.log("categoriesData----", categoriesData.data.categoryList
+      // );
       setData(categoriesData.data.categoryList);
-      console.log("hole data here", data);
+      // setIdUpdate(categoriesData.data.categoryList?.id);
+      // setUpCategory(categoriesData.data.categoryList?.name);
+      // setCategoryImage(categoriesData.data.categoryList?.image);
       setShow(false)
     }
     getData();
@@ -166,13 +179,15 @@ const Category = () => {
   const handleOpen = () => setOpens(true);
 
   const handleNewCategory = () => {
-    console.log("createFile", createFile);
-    setOpens(false);
+    setShow(true);
+    // console.log("createFile", createFile);
+    setOpenUpdate(false);
     async function getData() {
       const NewResData = await postRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, { category,categoryImage:createFile});
-      console.log("new category create", NewResData);
+      // console.log("new category create", NewResData);
       setReload(!reload);
       setDroppedImages(false);
+      handleClose();
     } 
     getData();
   }
@@ -213,19 +228,32 @@ const Category = () => {
       setHidden(true);
   }
 
+  const handleCloseUpdate=()=>{
+    setOpenUpdate(false);
+    setUpCategory("")
+    setShow(false);
+  }
 
+
+const [openUpdate, setOpenUpdate]=useState(false);
   async function handleUpdateCategory(id) {
     setShow(true);
-    handleOpen();
-  //  const updateCategory=data?.filter()
+    setOpenUpdate(true);
+const filteredItem = data?.filter((user) => user.id === id);
+setIdUpdate(filteredItem[0]?.id);
+   setUpCategory(filteredItem[0]?.name);
+   setCategoryImage(filteredItem[0]?.image);
+  }
 
+  const handleUpdatedCategory = async() => {
+    setOpenUpdate(false);
     try {
-      console.log("sku", id)
       const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/category/', {
-        "categoryId": "clk146gui007q5xbtta23wt0r",
-        "updatedCategoryName": "Vegetable",
-        "updatedCategoryImage": "https://oajxusxzqqhuwzvyniyc.supabase.co/storage/v1/object/public/category/MARP-category-1689247440708.jpeg"
+        "categoryId":`${idUpdate}`,
+        "updatedCategoryName": `${UpCategory}`,
+        "updatedCategoryImage":`${categoryImage}`,
     });
+    console.log("response----",response);
       // Handle the response data
       
       if (response.success) {
@@ -237,6 +265,7 @@ const Category = () => {
       console.error(error);
     }
     setShow(false);
+    handleCloseUpdate();
   }
 
 
@@ -270,10 +299,10 @@ const Category = () => {
   const handleDeleteCategoryImage=async()=>{
     let parts;
     let fileNames;
-    console.log("createFile category image __", createFile);
-    if(createFile)
+    console.log("createFile category image __", categoryImage);
+    if(categoryImage)
     {
-      parts = createFile.split("category/");
+      parts = categoryImage.split("category/");
      fileNames = parts.pop();
     }
     try {
@@ -311,7 +340,7 @@ const Category = () => {
     }
   }
  
-console.log("Category data", data, subCate);
+console.log("Category data categoryImage UpCategory",categoryImage, UpCategory);
 
 
   return (
@@ -390,8 +419,7 @@ console.log("Category data", data, subCate);
                               </Button>
                               <Button onClick={() => {
                                   setSubCate(item.subcategories)}}>
-                                <KeyboardArrowDownIcon sx={{ color: "#6610F2" }} onClick={() => {
-                                  setSubCate(item.subcategories)}} />
+                                <KeyboardArrowDownIcon sx={{ color: "#6610F2"}}/>
                               </Button>
                             </CardActions>
                           </Grid>
@@ -480,18 +508,13 @@ console.log("Category data", data, subCate);
 </>
 </Box>
 
-    {/* {hidden ?
-  <AleartComponent open={hidden}/>
-      :
-      <> </>
-      } */}
 
 {/* updated category start from here */}
 <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
-        open={opens}
-        onClose={handleClose}
+        open={openUpdate}
+        onClose={handleCloseUpdate}
         closeAfterTransition
         slots={{ backdrop: Backdrop }}
         slotProps={{
@@ -500,7 +523,7 @@ console.log("Category data", data, subCate);
           },
         }}
       >
-        <Fade in={opens}>
+        <Fade in={openUpdate}>
           <Box sx={style}>
               <Box>
                 <Box sx={{display:'flex',
@@ -510,10 +533,10 @@ console.log("Category data", data, subCate);
               }}>
                   <Box sx={{ display: "flex" }}> 
                    {
-                    droppedImages ?
+                    categoryImage ?
                     <>
                     <Container sx={{ mx: ".5rem" }}>
-                    <img src={droppedImages} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
+                    <img src="https://oajxusxzqqhuwzvyniyc.supabase.co/storage/v1/object/public/category/MARP-category-1689247440708.jpeg" alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
                     <Button onClick={handleDeleteCategoryImage}>
                     <DeleteForeverIcon sx={{color:'red'}}/>
                     </Button>
@@ -528,7 +551,7 @@ console.log("Category data", data, subCate);
                     <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOver} onDrop={handleDrop}>
                     <Box >
                       <FileDownloadIcon/>
-                      <Typography>Drag and drop your file here<br/> or</Typography>
+                      <Typography>Drag and drop your file<br/> or</Typography>
                       <div>
                         <Button variant="contained" onClick={handleBrowseClick} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
                 bgcolor: '#03A550'
@@ -550,7 +573,7 @@ console.log("Category data", data, subCate);
                 <Typography sx={{ marginY: 2 }}>
                 Category
               </Typography>
-              <TextField id="outlined-basic" label="Category" variant="outlined" type="text" sx={{ width: "100%", marginBottom: 2 }} onChange={(e) => setCategory(e.target.value)} />
+              <TextField id="outlined-basic" label="Category" variant="outlined" defaultValue={UpCategory} type="text" sx={{ width: "100%", marginBottom: 2 }} onChange={(e) => setUpCategory(e.target.value)} />
               <Button variant="contained" sx={{
                 bgcolor: "#6610F2", ":hover": {
                   bgcolor: '#6EAB49'
@@ -560,7 +583,7 @@ console.log("Category data", data, subCate);
                 alignItems: "center",
                 justifyContent: 'center',
                 margin: 'auto'
-              }} onClick={handleNewCategory}>CREATE</Button>
+              }} onClick={handleUpdatedCategory}>Updated</Button>
             </Box>
           </Box>
         </Fade>

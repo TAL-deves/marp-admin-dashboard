@@ -48,7 +48,7 @@ export default function ProductsPage() {
 
   // get products 
   async function getData() {
-    const categoriesData = await getRequestHandler("https://marpapi.techanalyticaltd.com/product/?page=1&items=10");
+    const categoriesData = await getRequestHandler("https://marpapi.techanalyticaltd.com/product/?page=1&items=20");
     setData(categoriesData.data.allProducts)
 
   }

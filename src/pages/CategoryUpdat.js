@@ -87,21 +87,21 @@ function AddProduct() {
 
     try {
       console.log("sku", sku)
-      const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/product/', {
-        sku: `${sku}`,
-        productCode: `${productCode}`,
-        name: `${productName}`,
+      const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/category/', {
+        // sku: `${sku}`,
+        // productCode: `${productCode}`,
+        // name: `${productName}`,
         price,
         discount,
-        newItem,
-        saleCount,
-        stock,
+        // newItem,
+        // saleCount,
+        // stock,
         shortDescription: `${shortDescription}`,
-        productImages: `${droppedImages}`,
-        brand: `${brand}`,
-        categoryName: `${categoryName}`,
-        subcategoryName: `${subCategoryName}`,
-        id: `${id}`,
+        // productImages: `${droppedImages}`,
+        // brand: `${brand}`,
+        // categoryName: `${categoryName}`,
+        // subcategoryName: `${subCategoryName}`,
+        // id: `${id}`,
       });
       // Handle the response data
       setShow(false);
