@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
 // mock
+// eslint-disable-next-line import/no-unresolved
+import { getRequestHandler } from 'src/apiHandler/customApiHandler';
 import account from '../../../_mock/account';
 // hooks
 import useResponsive from '../../../hooks/useResponsive';
@@ -36,15 +38,31 @@ Nav.propTypes = {
 
 export default function Nav({ openNav, onCloseNav }) {
   const { pathname } = useLocation();
-
   const isDesktop = useResponsive('up', 'lg');
+  const [url, setUrl]=useState("")
+  const [role, setRole]=useState("")
+  const [email, setEmail]=useState("")
 
   useEffect(() => {
     if (openNav) {
       onCloseNav();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+    // setShow(true);
+    async function getData() {
+      const adminProfile = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/profile`);
+      // console.log("adminProfile------",adminProfile);
+      // setData(adminProfile.data);
+      setUrl(adminProfile.data.profile.profilePhotoBucketURL);
+      setRole(adminProfile.data.role);
+      // setPhoneNumber(adminProfile.data.phoneNumber);
+      setEmail(adminProfile.data.profile.fullName);
+      // console.log("admin Profile url role",adminProfile.data, url, role);
+      // setShow(false);
+    }
+    getData();
+  }, [pathname])
+
+// console.log("role---", role);
 
   const renderContent = (
     <Scrollbar
@@ -60,15 +78,15 @@ export default function Nav({ openNav, onCloseNav }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Avatar src={url} alt="photoURL" />
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
+                {email}
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role}
+                {role}
               </Typography>
             </Box>
           </StyledAccount>

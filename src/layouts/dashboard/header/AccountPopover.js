@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect  } from 'react';
 // @mui
 import CircularProgress from '@mui/material/CircularProgress';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -7,14 +7,14 @@ import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 import { Circles } from 'react-loader-spinner'
 // mocks_
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation} from 'react-router-dom';
 import swal from 'sweetalert';
 import BounceLoader from "react-spinners/BounceLoader";
 // eslint-disable-next-line import/no-unresolved
-import { logoutHandler } from 'src/apiHandler/customApiHandler';
+import {getRequestHandler, logoutHandler } from 'src/apiHandler/customApiHandler';
 import Link from "@mui/material/Link";
 // import Link from '@mui/material/Link';
-import account from '../../../_mock/account';
+// import account from '../../../_mock/account';
 
 
 // ----------------------------------------------------------------------
@@ -40,8 +40,12 @@ const MENU_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(null);
   const [loader, setLoader] = useState(false);
+  const [role, setRole] = useState("");
+  const [url, setUrl] = useState("");
+  const [email, setEmail] = useState("");
   const navigate=useNavigate();
 
   const handleOpen = (event) => {
@@ -51,6 +55,18 @@ export default function AccountPopover() {
   const handleClose=()=>{
     setOpen(null);
   }
+
+  // eslint-disable-next-line no-undef
+  useEffect(() => {
+    async function getData() {
+      const adminProfile = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/profile`);
+      setUrl(adminProfile.data.profile.profilePhotoBucketURL);
+      setRole(adminProfile.data.role);
+      setEmail(adminProfile.data.profile.fullName);
+    }
+    getData();
+  }, [])
+
 
   const handleLogout =async() => {
     console.log("Log out button");
@@ -109,7 +125,7 @@ color='#c7eed8'
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={url} alt="photoURL" />
       </IconButton>
      
 
@@ -134,10 +150,10 @@ color='#c7eed8'
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {role}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {email}
           </Typography>
         </Box>
 

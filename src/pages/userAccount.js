@@ -57,6 +57,8 @@ const [email, setEmail]=useState("")
     const [showPassword, setShowPassword] = useState(false);
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
+const [url, setUrl]=useState("")
+// eslint-disable-next-line react-hooks/rules-of-hooks
 const [role, setRole]=useState("")
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const [age, setAge]=useState(0)
@@ -75,19 +77,15 @@ const [address, setAddress]=useState("")
         async function getData() {
           const adminProfile = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/profile`);
           // setData(adminProfile.data);
+          setUrl(adminProfile.data.profile.profilePhotoBucketURL);
           setRole(adminProfile.data.role);
           setPhoneNumber(adminProfile.data.phoneNumber);
           setEmail(adminProfile.data.email);
-          // console.log("admin Profile response", adminProfile.data);
+          // console.log("admin Profile url role",adminProfile.data, url, role);
           setShow(false);
         }
         getData();
       }, [reloader]);
-// console.log("admin email", data?.email);
-// const name="Admin dashboard";
-// const phoneNumber="01515212610";
-// const password="100200300";
-
 
 const handleUpdateProfile=()=>{
   const DOB=new Date().toLocaleDateString("de-DE");
@@ -96,13 +94,13 @@ const Age=parseInt(age, 10);
         const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/profile`, {fullName:role, age:Age, gender, maritalStatus, address});
         // setData(categoriesData.data);
         console.log("admin Profile update Res", adminProfileRes);
-        // setReloader(!reloader);
+        setReloader(!reloader);
       }
       getData();
 }
 const handleSetPassword=()=>{
     async function getData() {
-      const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/updateaccountinfo`, {password,phoneNumber, email});
+      const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/updateaccountinfo`, {password, phoneNumber, email});
         // setData(categoriesData.data);
         swal("Updated!", "Your are successfully updated your account!", "success");
         setPassword("");
@@ -140,32 +138,47 @@ const handleFileInputChange = (event) => {
   handleFiles(files);
 };
 const handleFiles = (files) => {
-    console.log("update image ");
   const images = Array.from(files).map((file) => URL.createObjectURL(file));
   setDroppedImages(images);
   const profilePhoto= new FormData();
   profilePhoto.append('image', files[0]);
   async function getData() {
     try {
-      await photoUploadRequestHandler(`https://marpapi.techanalyticaltd.com/admin/profile/uploadpicture`, profilePhoto)
+      await photoUploadRequestHandler(`https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=profilePhotos`, profilePhoto)
+    //  .then((response)=>console.log(response.data.data.publicUrl))
      .then((response)=>setCreateFile(response.data.data.publicUrl))
-     console.log("image updated response", createFile);
      setShow(false);
    } catch (error) {
      console.error(error);
    }}
   getData();
+
+
 };
 
 const handleBrowseClick = () => {
-    console.log("handle Browse Click");
   fileInputRef.current.click();
 };
+
+const handleUpdateImage=async()=>{
+  const profilePhotoBucketURL=createFile;
+  try {
+    const adminProfileRes = await patchRequestHandler(`https://marpapi.techanalyticaltd.com/admin/profile`,{profilePhotoBucketURL});
+    setShow(false)
+    setReloader(!reloader);
+    setDroppedImages(false);
+    setOpen(false);
+  } catch (error) {
+    console.error(error);
+    setDroppedImages(false);
+    setOpen(false);
+  }
+}
+
 
 const handleDeleteCategoryImage=async()=>{
     let parts;
     let fileNames;
-    console.log("createFile category image __", createFile);
     if(createFile)
     {
       parts = createFile.split("profilePhotos/");
@@ -173,8 +186,6 @@ const handleDeleteCategoryImage=async()=>{
     }
     try {
       const response = await deleteRequestHandler(`https://marpapi.techanalyticaltd.com/admin/bucket/files`,{"bucketName": "profilePhotos", fileNames});
-      // Handle the response data
-      console.log("image delete response", response);
       setShow(false)
       setDroppedImages(false);
     } catch (error) {
@@ -222,7 +233,7 @@ const handleClose = () => setOpen(false);
                         }}
                     >
                     <Typography variant='h4'>Personal Details </Typography>
-                        <Avatar sx={{width:160,height:160, marginTop:3}} alt="Travis Howard" src={"../../assets/images/avatars/tree-736885_1280.jpg"} />
+                        <Avatar sx={{width:160,height:160, marginTop:3}} alt="Travis Howard" src={url} />
               
                         <Button
                         onClick={handleOpen}
@@ -427,7 +438,7 @@ const handleClose = () => setOpen(false);
                 bgcolor: "#6610F2", ":hover": {
                   bgcolor: '#6EAB49'
                 }, width: "32%"}}
-               onClick={handleUpdateProfile}>Save Photo</Button>
+               onClick={handleUpdateImage}>Save Photo</Button>
               </Box>
               {/* <Button variant="contained" onClick={handleBrowseClick} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
                 bgcolor: '#03A550'

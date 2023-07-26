@@ -98,12 +98,14 @@ const Category = () => {
   };
   const handleFiles = (files) => {
     const images = Array.from(files).map((file) => URL.createObjectURL(file));
+    console.log("imagess----------", images);
     setDroppedImages(images);
     const formData= new FormData();
     formData.append('image', files[0]);
+    console.log("formData----------", formData);
     async function getData() {
       try {
-        await photoUploadRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`, formData)
+        await photoUploadRequestHandler(`https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=category`, formData)
        .then((response)=>setCreateFile(response.data.data.publicUrl))
        setShow(false);
      } catch (error) {
@@ -235,14 +237,52 @@ const Category = () => {
   }
 
 
-const [openUpdate, setOpenUpdate]=useState(false);
+const [openUpdate, setOpenUpdate]=useState("");
+const [droppedImagesUp, setDroppedImagesUp]=useState("");
+const fileInputRefUp = React.useRef(null);
+const handleDragOverUp = (event) => {
+  event.preventDefault();
+};
+const handleDropUp = (event) => {
+  event.preventDefault();
+  const files = event.dataTransfer.files;
+  handleFilesUp(files);
+};
+const handleFileInputChangeUp = (event) => {
+  const files = event.target.files;
+  handleFiles(files);
+};
+const handleFilesUp = (files) => {
+  const images = Array.from(files).map((file) => URL.createObjectURL(file));
+  console.log("imagess----------", images);
+  setDroppedImagesUp(images);
+  const formData= new FormData();
+  formData.append('image', files[0]);
+  console.log("formData----------", formData);
+  async function getData() {
+    try {
+      await photoUploadRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`, formData)
+     .then((response)=>setOpenUpdate(response.data.data.publicUrl))
+     setShow(false);
+     console.log("openUpdate", openUpdate);
+   } catch (error) {
+     console.error(error);
+   }}
+  getData();
+};
+
+const handleBrowseClickUp = () => {
+  fileInputRefUp.current.click();
+};
+
+
   async function handleUpdateCategory(id) {
     setShow(true);
     setOpenUpdate(true);
 const filteredItem = data?.filter((user) => user.id === id);
 setIdUpdate(filteredItem[0]?.id);
    setUpCategory(filteredItem[0]?.name);
-   setCategoryImage(filteredItem[0]?.image);
+   setDroppedImagesUp(filteredItem[0]?.image);
   }
 
   const handleUpdatedCategory = async() => {
@@ -311,10 +351,12 @@ setIdUpdate(filteredItem[0]?.id);
       console.log("image delete response", response);
       setShow(false)
       setDroppedImages(false);
+      setCategoryImage(false)
     } catch (error) {
       // Handle the error
       console.error(error);
       setDroppedImages(false);
+      setCategoryImage(false)
     }
   }
 
@@ -533,10 +575,10 @@ console.log("Category data categoryImage UpCategory",categoryImage, UpCategory);
               }}>
                   <Box sx={{ display: "flex" }}> 
                    {
-                    categoryImage ?
+                    droppedImagesUp ?
                     <>
                     <Container sx={{ mx: ".5rem" }}>
-                    <img src="https://oajxusxzqqhuwzvyniyc.supabase.co/storage/v1/object/public/category/MARP-category-1689247440708.jpeg" alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
+                    <img src={droppedImagesUp} alt={`Dropped`} style={{ width: "auto", maxHeight: '100%' }} />
                     <Button onClick={handleDeleteCategoryImage}>
                     <DeleteForeverIcon sx={{color:'red'}}/>
                     </Button>
@@ -548,20 +590,20 @@ console.log("Category data categoryImage UpCategory",categoryImage, UpCategory);
                   </Container> */}
                     </>
                   :
-                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOver} onDrop={handleDrop}>
+                    <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOverUp} onDrop={handleDropUp}>
                     <Box >
                       <FileDownloadIcon/>
                       <Typography>Drag and drop your file<br/> or</Typography>
                       <div>
-                        <Button variant="contained" onClick={handleBrowseClick} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
+                        <Button variant="contained" onClick={handleBrowseClickUp} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
                 bgcolor: '#03A550'
               },}}>SELECT FILE</Button>
                         <input
-                          ref={fileInputRef}
+                          ref={fileInputRefUp}
                           type="file"
                           accept="image/*"
                           multiple
-                          onChange={handleFileInputChange}
+                          onChange={handleFileInputChangeUp}
                           style={{ display: 'none' }}
                         />
                       </div>
