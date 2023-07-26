@@ -152,8 +152,6 @@ const handleFiles = (files) => {
      console.error(error);
    }}
   getData();
-
-
 };
 
 const handleBrowseClick = () => {
