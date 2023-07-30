@@ -71,12 +71,13 @@ const Category = () => {
   const navigate = useNavigate();
 
   const [idUpdate, setIdUpdate] = useState("");
-  const [UpCategory, setUpCategory] = useState("");
+  const [categoryName, setcategoryName] = useState("");
   const [categoryImage, setCategoryImage] = useState("");
 
+// console.log("useState id , name, image ", idUpdate, categoryName, categoryImage);
 
   // setIdUpdate(data?.id);
-  // setUpCategory(data?.name);
+  // setcategoryName(data?.name);
   // setCategoryImage(data?.image);
 
 
@@ -167,9 +168,6 @@ const Category = () => {
       // console.log("categoriesData----", categoriesData.data.categoryList
       // );
       setData(categoriesData.data.categoryList);
-      // setIdUpdate(categoriesData.data.categoryList?.id);
-      // setUpCategory(categoriesData.data.categoryList?.name);
-      // setCategoryImage(categoriesData.data.categoryList?.image);
       setShow(false)
     }
     getData();
@@ -183,7 +181,7 @@ const Category = () => {
   const handleNewCategory = () => {
     setShow(true);
     // console.log("createFile", createFile);
-    setOpenUpdate(false);
+    // setOpenUpdate(false);
     async function getData() {
       const NewResData = await postRequestHandler(`https://marpapi.techanalyticaltd.com/category/`, { category,categoryImage:createFile});
       // console.log("new category create", NewResData);
@@ -232,11 +230,11 @@ const Category = () => {
 
   const handleCloseUpdate=()=>{
     setOpenUpdate(false);
-    setUpCategory("")
+    setcategoryName("")
     setShow(false);
   }
 
-
+// update category image and also category name
 const [openUpdate, setOpenUpdate]=useState("");
 const [droppedImagesUp, setDroppedImagesUp]=useState("");
 const fileInputRefUp = React.useRef(null);
@@ -250,7 +248,7 @@ const handleDropUp = (event) => {
 };
 const handleFileInputChangeUp = (event) => {
   const files = event.target.files;
-  handleFiles(files);
+  handleFilesUp(files);
 };
 const handleFilesUp = (files) => {
   const images = Array.from(files).map((file) => URL.createObjectURL(file));
@@ -261,8 +259,8 @@ const handleFilesUp = (files) => {
   console.log("formData----------", formData);
   async function getData() {
     try {
-      await photoUploadRequestHandler(`${process.env.REACT_APP_PUBLIC_APIPOINT}admin/bucket/uploadsingleimage?uploadto=category`, formData)
-     .then((response)=>setOpenUpdate(response.data.data.publicUrl))
+      await photoUploadRequestHandler(`https://marpapi.techanalyticaltd.com/admin/bucket/uploadsingleimage?uploadto=category`, formData)
+     .then((response)=>setDroppedImagesUp(response.data.data.publicUrl))
      setShow(false);
      console.log("openUpdate", openUpdate);
    } catch (error) {
@@ -276,40 +274,65 @@ const handleBrowseClickUp = () => {
 };
 
 
+const handleUpdatedCategory = async() => {
+  // setOpenUpdate(false);
+  console.log("idUpdate categoryName droppedImagesUp",idUpdate, categoryName, droppedImagesUp);
+  try {
+    const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/category/', {
+      "categoryId":`${idUpdate}`,
+      "updatedCategoryName": `${categoryName}`,
+      "updatedCategoryImage":`${droppedImagesUp}`,
+  });
+  console.log("response----",response);
+    // Handle the response data
+    
+    if (response.success) {
+      setReload(!reload)
+      navigate("/dashboard/category")
+    }
+  } catch (error) {
+    // Handle the error
+    console.error(error);
+  }
+  setShow(false);
+  handleCloseUpdate();
+}
+
   async function handleUpdateCategory(id) {
     setShow(true);
     setOpenUpdate(true);
 const filteredItem = data?.filter((user) => user.id === id);
 setIdUpdate(filteredItem[0]?.id);
-   setUpCategory(filteredItem[0]?.name);
+   setcategoryName(filteredItem[0]?.name);
    setDroppedImagesUp(filteredItem[0]?.image);
   }
 
-  const handleUpdatedCategory = async() => {
-    setOpenUpdate(false);
-    try {
-      const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/category/', {
-        "categoryId":`${idUpdate}`,
-        "updatedCategoryName": `${UpCategory}`,
-        "updatedCategoryImage":`${categoryImage}`,
-    });
-    console.log("response----",response);
-      // Handle the response data
+  // const handleUpdatedCategory = async() => {
+  //   // setOpenUpdate(false);
+  //   console.log("idUpdate categoryName droppedImagesUp",idUpdate, categoryName, droppedImagesUp);
+  //   try {
+  //     const response = await patchRequestHandler('https://marpapi.techanalyticaltd.com/category/', {
+  //       "categoryId":`${idUpdate}`,
+  //       "updatedCategoryName": `${categoryName}`,
+  //       "updatedCategoryImage":`${droppedImagesUp}`,
+  //   });
+  //   console.log("response----",response);
+  //     // Handle the response data
       
-      if (response.success) {
-        setReload(!reload)
-        navigate("/dashboard/category")
-      }
-    } catch (error) {
-      // Handle the error
-      console.error(error);
-    }
-    setShow(false);
-    handleCloseUpdate();
-  }
+  //     if (response.success) {
+  //       setReload(!reload)
+  //       navigate("/dashboard/category")
+  //     }
+  //   } catch (error) {
+  //     // Handle the error
+  //     console.error(error);
+  //   }
+  //   setShow(false);
+  //   handleCloseUpdate();
+  // }
 
 
-
+// delete category image 
   const handleCategoryDelete = (id) => {
     let text = "Press a button! Are you sure you want to permanently delete Category";
     // eslint-disable-next-line no-restricted-globals
@@ -325,6 +348,7 @@ setIdUpdate(filteredItem[0]?.id);
       text =false;
     } 
   }
+  // delete subcategory 
   const handleClickedDeleteSub = (id) => {
     // console.log("clicked handleClickedDeleteSub");
     async function getData() {
@@ -335,14 +359,14 @@ setIdUpdate(filteredItem[0]?.id);
     getData();
   }
 
-
+// delete category image 
   const handleDeleteCategoryImage=async()=>{
     let parts;
     let fileNames;
-    console.log("createFile category image __", categoryImage);
-    if(categoryImage)
+    console.log("createFile category image delete __", droppedImagesUp);
+    if(droppedImagesUp)
     {
-      parts = categoryImage.split("category/");
+      parts = droppedImagesUp.split("category/");
      fileNames = parts.pop();
     }
     try {
@@ -351,16 +375,17 @@ setIdUpdate(filteredItem[0]?.id);
       console.log("image delete response", response);
       setShow(false)
       setDroppedImages(false);
-      setCategoryImage(false)
+      setDroppedImagesUp(false)
+      // setCategoryImage(false)
     } catch (error) {
       // Handle the error
       console.error(error);
       setDroppedImages(false);
-      setCategoryImage(false)
+      // setCategoryImage(false)
     }
   }
 
-
+// delete subcategory image 
   const handleDeleteSubImage=async()=>{
     let parts;
     let fileNames;
@@ -382,7 +407,7 @@ setIdUpdate(filteredItem[0]?.id);
     }
   }
  
-console.log("Category data categoryImage UpCategory",categoryImage, UpCategory);
+console.log("Category data droppedImagesUp categoryName",droppedImagesUp, categoryName);
 
 
   return (
@@ -593,7 +618,7 @@ console.log("Category data categoryImage UpCategory",categoryImage, UpCategory);
                     <Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", m: "1rem", mx:"1.5rem" }} onDragOver={handleDragOverUp} onDrop={handleDropUp}>
                     <Box >
                       <FileDownloadIcon/>
-                      <Typography>Drag and drop your file<br/> or</Typography>
+                      <Typography>Updated drag and drop your fil <br/> or</Typography>
                       <div>
                         <Button variant="contained" onClick={handleBrowseClickUp} sx={{ color: "#fff", bgcolor: "#6EAB49", ":hover": {
                 bgcolor: '#03A550'
@@ -615,7 +640,7 @@ console.log("Category data categoryImage UpCategory",categoryImage, UpCategory);
                 <Typography sx={{ marginY: 2 }}>
                 Category
               </Typography>
-              <TextField id="outlined-basic" label="Category" variant="outlined" defaultValue={UpCategory} type="text" sx={{ width: "100%", marginBottom: 2 }} onChange={(e) => setUpCategory(e.target.value)} />
+              <TextField id="outlined-basic" label="Category" variant="outlined" defaultValue={categoryName} type="text" sx={{ width: "100%", marginBottom: 2 }} onChange={(e) => setcategoryName(e.target.value)} />
               <Button variant="contained" sx={{
                 bgcolor: "#6610F2", ":hover": {
                   bgcolor: '#6EAB49'
@@ -630,6 +655,9 @@ console.log("Category data categoryImage UpCategory",categoryImage, UpCategory);
           </Box>
         </Fade>
       </Modal>
+
+{/* <AleartComponent/> */}
+
 
 
       {/* New Category create start from here */}

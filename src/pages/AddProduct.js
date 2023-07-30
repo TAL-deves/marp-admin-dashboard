@@ -52,6 +52,7 @@ function AddProduct() {
   async function handleGetAllDataforUpdate() {
     try {
       const response = await getRequestHandler('https://marpapi.techanalyticaltd.com/product/', id);
+      console.log("response-all data---", response);
       // Handle the response data
       const matchedProduct = response.data.allProducts.find(product => product.id === id);
       // console.log("main data", matchedProduct);
@@ -72,7 +73,7 @@ function AddProduct() {
       setStateDroppedImages(matchedProduct.productImages)
       // productImages.map((img)=>{return droppedImages.push(img)})
       // setDroppedImages(productImages.map((img) => img))
-     console.log("images", matchedProduct)
+     console.log("images link", matchedProduct)
     } catch (error) {
       // Handle the error
       console.error(error);
