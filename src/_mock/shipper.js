@@ -18,6 +18,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { getRequestHandler } from '../apiHandler/customApiHandler';
 
 
@@ -98,9 +99,22 @@ export default function OrderList() {
           </Backdrop>
         </> :
         <>
-          <Box>
+           <Box sx={{display:"flex", justifyContent:"space-between"}}>
             <Typography variant='h4'>Shipping Item</Typography>
-            <Button variant="contained">+ Add new shipment</Button>
+          <Box>
+          <Button sx={{
+                bgcolor:
+                '#03A550', color: "white", ":hover": {
+                    bgcolor: "#6610F2"
+                }
+              }}>+ Add new shipment</Button>
+            <Button variant="contained" sx={{
+                bgcolor:
+                '#FFFFFF',color: "black",":hover": {
+                    bgcolor: "#6610F2", color:"white"
+                }
+              }}><FileUploadIcon/>Export orders</Button>
+          </Box>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Box sx={{ display: "flex", mb: "1rem" }}>

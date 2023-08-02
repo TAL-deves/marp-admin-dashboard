@@ -32,10 +32,14 @@ export default function OrderList() {
   const [show, setShow] = React.useState(false)
 
   async function handleGetAllDataforUpdate() {
+
     setShow(true)
+    console.log("response data ---111",);
     try {
+    //   const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/ordermanagement?page=1&items=10&deliveryStatus=queued`);
       const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/ordermanagement?page=${currentPage}&items=10&deliveryStatus=queued`);
       // Handle the response data
+      console.log("response data ---", response);
       setOrderList(response.data.orders)
       // console.log("order response", response.data)
       setTotalPages(response.data.totalPages)
@@ -100,7 +104,7 @@ export default function OrderList() {
         </> :
         <>
           <Box sx={{display:"flex", justifyContent:"space-between"}}>
-            <Typography variant='h4'>Shipping Item</Typography>
+            <Typography variant='h4'>All Orders</Typography>
           <Box>
           <Button sx={{
                 bgcolor:
