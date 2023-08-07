@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Backdrop from '@mui/material/Backdrop';
 import Select from '@mui/material/Select';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
+import InputLabel from '@mui/material/InputLabel';
 import EditIcon from '@mui/icons-material/Edit';
 import TableCell from '@mui/material/TableCell';
 import { Circles } from 'react-loader-spinner';
@@ -17,6 +18,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
 import Paper from '@mui/material/Paper';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { getRequestHandler } from '../apiHandler/customApiHandler';
@@ -25,7 +27,8 @@ import { getRequestHandler } from '../apiHandler/customApiHandler';
 export default function OrderList() {
 
   const [orderList, setOrderList] = React.useState()
-  const [filteredOrder, setFilteredOrder] = React.useState()
+  const [tittle, setTittle] = React.useState("")
+  const [age, setAge] = React.useState(0);
   const [selectedDeliveryStatus, setSelectedDeliveryStatus] = React.useState('all');
   const [currentPage, setCurrentPage] = React.useState(1);
   const [totalPages, setTotalPages] = React.useState(0);
@@ -123,9 +126,9 @@ export default function OrderList() {
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Box sx={{ display: "flex", mb: "1rem" }}>
 
-              <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setSelectedDeliveryStatus("all") }}>Assign Order</Box>
-              <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setSelectedDeliveryStatus("queued") }}>Processing</Box>
-              <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setSelectedDeliveryStatus("in_progress") }}>Delivered</Box>
+              <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setSelectedDeliveryStatus("queued") }}>Pending Order</Box>
+              <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setSelectedDeliveryStatus("shipper") }}>Shipper</Box>
+              {/* <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setSelectedDeliveryStatus("in_progress") }}>Delivered</Box> */}
               {/* <Box sx={{ border: "1px solid #F4F6F8", backgroundColor: "#F4F6F8", borderRadius: 1.1, p: ".5rem", m: ".5rem", cursor: "pointer", boxShadow: 3, '&:hover': { boxShadow: 4 } }} onClick={() => { setSelectedDeliveryStatus("completed") }}>Completed</Box> */}
             </Box>
             <TextField
@@ -136,10 +139,11 @@ export default function OrderList() {
               sx={{ mb: "1rem" }}
             />
           </Box>
-          <Box>
-            <Typography variant='h4'>Assign Order</Typography>
-          </Box>
-
+            {/* <Typography variant='h4'> */}
+              {
+selectedDeliveryStatus==="queued" ?
+<>
+<Typography variant='h4'>Pending Order</Typography>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
@@ -151,113 +155,136 @@ export default function OrderList() {
                   <TableCell align="left">Payment Status</TableCell>
                   <TableCell align="left">Delivery Status</TableCell>
                   <TableCell align="left">Total</TableCell>
-                  <TableCell align="left">Delivery Address</TableCell>
                   <TableCell align="left">Action</TableCell>
-                  <TableCell align="left">Action status</TableCell>
+                  <TableCell align="left">Assign Order</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                        {filteredOrders.map((row) => (
+                          <TableRow
+                            key={row.id}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell component="th" scope="row">
+                            {row.id}
+                            </TableCell>
+                            <TableCell align="left">
+                            {
+                              new Date(row.createdAt).toLocaleDateString('en-GB')
+                              }
+                              </TableCell>
+                            <TableCell align="left">Customer name</TableCell>
+                            <TableCell align="left">{row.orderNumber}</TableCell>
+                            {row.paymentStatus === "pending" ?
+                              <TableCell align="left">
+                                <Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8" }}>
+                                  <span style={{ color: 'green', fontSize: "2rem", lineHeight: '0.35' }}>•</span>
+                                  {row.paymentStatus}
+                                </Typography>
+                              </TableCell>
+                              :
+                              <TableCell align="left"><Typography sx={{ display: 'inline-block', border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8" }}><span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>{row.paymentStatus}</Typography></TableCell>
+                            }
+                            {row.deliveryStatus === "queued" ?
+                              <TableCell align="left">
+                                <Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8", }}>
+                                  <span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>
+                                  {row.deliveryStatus}
+                                </Typography>
+                              </TableCell>
+                              :
+                              <TableCell align="left"><Typography sx={{ display: 'inline-block', border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8" }}><span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>{row.deliveryStatus}</Typography></TableCell>
+                            }
+                            <TableCell align="left">৳{row.totalAmount}</TableCell>
+                            <TableCell align="left"><EditIcon /></TableCell>
+                            <TableCell align="left">
+              <FormControl variant="standard" sx={{ minWidth: 80 }}><Select 
+          labelId="demo-simple-select-filled-label"
+          id="demo-simple-select-filled"
+          // value={age}
+          // label="Category"
+          onChange={(e)=>setAge(e.target.value)}
+        >
+          <MenuItem value={10}>Hasan</MenuItem>
+          <MenuItem value={20}>AR</MenuItem>
+          <MenuItem value={30}>Orasur</MenuItem>
+        </Select>
+              </FormControl>
+                              </TableCell>
+                          </TableRow>
+                        ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          </> 
+          :
+          <>
+          <Typography variant='h4'>Shipper</Typography> 
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">Name</TableCell>
+                  <TableCell align="center">Total Delivered</TableCell>
+                  <TableCell align="center">Pending Order</TableCell>
+                  <TableCell align="center">Processing  Order</TableCell>
+                  <TableCell align="center">Status</TableCell>
+                  {/* <TableCell align="left">Delivery Status</TableCell>
+                  <TableCell align="left">Total</TableCell> */}
+                  {/* <TableCell align="left">Delivery Address</TableCell> */}
+                  <TableCell align="center">Action</TableCell>
+                  {/* <TableCell align="left">Assign Order</TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
 
-                {!orderList ?
-                  <></>
+                {/* {!orderList ?
+                  <>Testing</>
                   :
-                  <>
+                  <> */}
+                    {/* { selectedDeliveryStatus === 'queued' ?
+                      <> */}
+                        {filteredOrders.map((row) => (
+                          <TableRow
+                            key={row.id}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            {/* <TableCell component="th" scope="row">
+                            {row.id}
+                            </TableCell> */}
+                            {/* <TableCell align="left">
+                            {
+                              new Date(row.createdAt).toLocaleDateString('en-GB')
+                              }
+                              </TableCell> */}
+                            <TableCell align="center">Customer name</TableCell>
+                            <TableCell align="center">৳{row.totalAmount}</TableCell>
+                            <TableCell align="center">0</TableCell>
+                            <TableCell align="center">0</TableCell>
+                            {/* <TableCell align="center">{row.orderStatus}</TableCell> */}
 
-                    {filteredOrders ?
-                      <>
-                        {filteredOrders.filter((row) =>
-                          selectedDeliveryStatus === 'all'
-                            ? true
-                            : row.deliveryStatus === selectedDeliveryStatus
-                        ).map((row) => (
-                          <TableRow
-                            key={row.id}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                          >
-                            <TableCell component="th" scope="row">
-                              "#111827"
-                            </TableCell>
-                            <TableCell align="left">{row.createdAt}</TableCell>
-                            <TableCell align="left">{row.userId}</TableCell>
-                            <TableCell align="left">{row.orderNumber}</TableCell>
-                            {/* <TableCell align="left">{row.vendor}</TableCell> */}
-                            {row.paymentStatus === "pending" ?
-                              <TableCell align="left">
-                                <Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8" }}>
-                                  <span style={{ color: 'green', fontSize: "2rem", lineHeight: '0.35' }}>•</span>
-                                  {row.paymentStatus}
-                                </Typography>
-                              </TableCell>
-                              :
-                              <TableCell align="left"><Typography sx={{ display: 'inline-block', border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8" }}><span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>{row.paymentStatus}</Typography></TableCell>
-                            }
-                            {row.deliveryStatus === "queued" ?
-                              <TableCell align="left">
+
+                            {row.orderStatus === "active" ?
+                              <TableCell align="center">
                                 <Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8", }}>
-                                  <span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>
-                                  {row.deliveryStatus}
+                                  <span style={{ color: '#10B981', fontSize: "2rem", lineHeight: '0.35' }}>•</span>
+                                  {row.orderStatus}
                                 </Typography>
                               </TableCell>
                               :
-                              <TableCell align="left"><Typography sx={{ display: 'inline-block', border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8" }}><span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>{row.deliveryStatus}</Typography></TableCell>
+                              <TableCell align="center"><Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8", }}><span style={{ color:'#EF0000', fontSize: "2rem", lineHeight: '0.35' }}>•</span>{row.orderStatus}</Typography></TableCell>
                             }
-                            {/* <TableCell align="left">{row.deliveryStatus}</TableCell> */}
-                            <TableCell align="left">৳{row.totalAmount}</TableCell>
-                            <TableCell align="left"><AddLocationAltIcon /></TableCell>
-                            <TableCell align="left"><EditIcon /></TableCell>
-                            <TableCell align="left">Processing</TableCell>
+                            {/* <TableCell align="left"><AddLocationAltIcon /></TableCell> */}
+                            <TableCell align="center"><EditIcon /></TableCell>
+                 
                           </TableRow>
                         ))}
-                      </>
-                      :
-                      <>
-                        {orderList.filter((row) =>
-                          selectedDeliveryStatus === 'all'
-                            ? true
-                            : row.deliveryStatus === selectedDeliveryStatus
-                        ).map((row) => (
-                          <TableRow
-                            key={row.id}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                          >
-                            <TableCell component="th" scope="row">
-                              {row.orderNumber}
-                            </TableCell>
-                            <TableCell align="left">{row.createdAt}</TableCell>
-                            <TableCell align="left">{row.userId}</TableCell>
-                            {/* <TableCell align="left">{row.vendor}</TableCell> */}
-                            {row.paymentStatus === "pending" ?
-                              <TableCell align="left">
-                                <Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8" }}>
-                                  <span style={{ color: 'green', fontSize: "2rem", lineHeight: '0.35' }}>•</span>
-                                  {row.paymentStatus}
-                                </Typography>
-                              </TableCell>
-                              :
-                              <TableCell align="left"><Typography sx={{ display: 'inline-block', border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8" }}><span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>{row.paymentStatus}</Typography></TableCell>
-                            }
-                            {row.deliveryStatus === "queued" ?
-                              <TableCell align="left">
-                                <Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8", }}>
-                                  <span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>
-                                  {row.deliveryStatus}
-                                </Typography>
-                              </TableCell>
-                              :
-                              <TableCell align="left"><Typography sx={{ display: 'inline-block', border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8" }}><span style={{ color: 'red', fontSize: "2rem", lineHeight: '0.35' }}>•</span>{row.deliveryStatus}</Typography></TableCell>
-                            }
-                            {/* <TableCell align="left">{row.deliveryStatus}</TableCell> */}
-                            <TableCell align="left">৳{row.totalAmount}</TableCell>
-                            {/* <TableCell align="left"><EditIcon /></TableCell>
-                            <TableCell align="left"><AddLocationAltIcon /></TableCell> */}
-                          </TableRow>
-                        ))}
-                      </>
-                    }
-                  </>}
+                  {/* </>} */}
               </TableBody>
             </Table>
           </TableContainer>
+          </>
+}
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             {/* <Typography>Page: {currentPage}</Typography> */}
             <Stack spacing={2} sx={{ mt: "1rem" }}>

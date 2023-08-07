@@ -2,6 +2,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import CardActionArea from '@mui/material/CardActionArea';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
@@ -525,17 +526,27 @@ console.log("Category data droppedImagesUp categoryName",droppedImagesUp, catego
                       {
                         subCate.map((subItem) => (
                           <>
-                            <Card sx={{ width: "96%", height: { xs: 40, marginBottom: 8 } }}>
+                            <Card sx={{  width: "100%", }}>
                               <Box sx={{ flexGrow: 1 }}>
                                 <Grid container spacing={2}>
                                   <Grid item xs={3}>
                                     <CardMedia
                                       component="img"
                                       alt="green iguana"
-                                      height='100%'
-                                      width="100%"
+                                  height="100%"
+                              width="full"
                                       image={subItem.image}
                                     />
+      {/* <Card sx={{ maxWidth: 345 }}>
+      <CardActionArea>
+        <CardMedia
+          component="img"
+          maxHeight="250"
+          image={subItem.image}
+          alt="green iguana"
+        />
+      </CardActionArea>
+    </Card> */}
                                   </Grid>
                                   <Grid item xs={3}>
                                     <CardContent sx={{
