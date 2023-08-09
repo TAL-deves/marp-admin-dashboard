@@ -118,7 +118,6 @@ const handleSetPassword=()=>{
 
 
 
-
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const [droppedImages, setDroppedImages] = useState("");
 // eslint-disable-next-line react-hooks/rules-of-hooks

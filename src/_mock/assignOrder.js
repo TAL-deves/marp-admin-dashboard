@@ -37,7 +37,7 @@ export default function OrderList() {
   async function handleGetAllDataforUpdate() {
 
     setShow(true)
-    console.log("response data ---111",);
+    // console.log("response data ---111",);
     try {
     //   const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/ordermanagement?page=1&items=10&deliveryStatus=queued`);
       const response = await getRequestHandler(`https://marpapi.techanalyticaltd.com/admin/ordermanagement?page=${currentPage}&items=10&deliveryStatus=queued`);
@@ -141,7 +141,74 @@ export default function OrderList() {
           </Box>
             {/* <Typography variant='h4'> */}
               {
-selectedDeliveryStatus==="queued" ?
+selectedDeliveryStatus==="shipper" ?
+<>
+<Typography variant='h4'>Shipper</Typography> 
+<TableContainer component={Paper}>
+  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <TableHead>
+      <TableRow>
+        <TableCell align="center">Name</TableCell>
+        <TableCell align="center">Total Delivered</TableCell>
+        <TableCell align="center">Pending Order</TableCell>
+        <TableCell align="center">Processing  Order</TableCell>
+        <TableCell align="center">Status</TableCell>
+        {/* <TableCell align="left">Delivery Status</TableCell>
+        <TableCell align="left">Total</TableCell> */}
+        {/* <TableCell align="left">Delivery Address</TableCell> */}
+        <TableCell align="center">Action</TableCell>
+        {/* <TableCell align="left">Assign Order</TableCell> */}
+      </TableRow>
+    </TableHead>
+    <TableBody>
+
+      {/* {!orderList ?
+        <>Testing</>
+        :
+        <> */}
+          {/* { selectedDeliveryStatus === 'queued' ?
+            <> */}
+              {filteredOrders.map((row) => (
+                <TableRow
+                  key={row.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  {/* <TableCell component="th" scope="row">
+                  {row.id}
+                  </TableCell> */}
+                  {/* <TableCell align="left">
+                  {
+                    new Date(row.createdAt).toLocaleDateString('en-GB')
+                    }
+                    </TableCell> */}
+                  <TableCell align="center">Customer name</TableCell>
+                  <TableCell align="center">৳{row.totalAmount}</TableCell>
+                  <TableCell align="center">0</TableCell>
+                  <TableCell align="center">0</TableCell>
+                  {/* <TableCell align="center">{row.orderStatus}</TableCell> */}
+
+
+                  {row.orderStatus === "active" ?
+                    <TableCell align="center">
+                      <Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8", }}>
+                        <span style={{ color: '#10B981', fontSize: "2rem", lineHeight: '0.35' }}>•</span>
+                        {row.orderStatus}
+                      </Typography>
+                    </TableCell>
+                    :
+                    <TableCell align="center"><Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8", }}><span style={{ color:'#EF0000', fontSize: "2rem", lineHeight: '0.35' }}>•</span>{row.orderStatus}</Typography></TableCell>
+                  }
+                  {/* <TableCell align="left"><AddLocationAltIcon /></TableCell> */}
+                  <TableCell align="center"><EditIcon /></TableCell>
+       
+                </TableRow>
+              ))}
+        {/* </>} */}
+    </TableBody>
+  </Table>
+</TableContainer>
+</>
+          :
 <>
 <Typography variant='h4'>Pending Order</Typography>
           <TableContainer component={Paper}>
@@ -217,73 +284,7 @@ selectedDeliveryStatus==="queued" ?
             </Table>
           </TableContainer>
           </> 
-          :
-          <>
-          <Typography variant='h4'>Shipper</Typography> 
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center">Name</TableCell>
-                  <TableCell align="center">Total Delivered</TableCell>
-                  <TableCell align="center">Pending Order</TableCell>
-                  <TableCell align="center">Processing  Order</TableCell>
-                  <TableCell align="center">Status</TableCell>
-                  {/* <TableCell align="left">Delivery Status</TableCell>
-                  <TableCell align="left">Total</TableCell> */}
-                  {/* <TableCell align="left">Delivery Address</TableCell> */}
-                  <TableCell align="center">Action</TableCell>
-                  {/* <TableCell align="left">Assign Order</TableCell> */}
-                </TableRow>
-              </TableHead>
-              <TableBody>
 
-                {/* {!orderList ?
-                  <>Testing</>
-                  :
-                  <> */}
-                    {/* { selectedDeliveryStatus === 'queued' ?
-                      <> */}
-                        {filteredOrders.map((row) => (
-                          <TableRow
-                            key={row.id}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                          >
-                            {/* <TableCell component="th" scope="row">
-                            {row.id}
-                            </TableCell> */}
-                            {/* <TableCell align="left">
-                            {
-                              new Date(row.createdAt).toLocaleDateString('en-GB')
-                              }
-                              </TableCell> */}
-                            <TableCell align="center">Customer name</TableCell>
-                            <TableCell align="center">৳{row.totalAmount}</TableCell>
-                            <TableCell align="center">0</TableCell>
-                            <TableCell align="center">0</TableCell>
-                            {/* <TableCell align="center">{row.orderStatus}</TableCell> */}
-
-
-                            {row.orderStatus === "active" ?
-                              <TableCell align="center">
-                                <Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8", }}>
-                                  <span style={{ color: '#10B981', fontSize: "2rem", lineHeight: '0.35' }}>•</span>
-                                  {row.orderStatus}
-                                </Typography>
-                              </TableCell>
-                              :
-                              <TableCell align="center"><Typography sx={{ display: 'flex', alignItems: "center", border: '1px solid #F4F6F8', borderRadius: 1, inlineSize: 'fit-content', p: ".2rem", bgcolor: "#F4F6F8", }}><span style={{ color:'#EF0000', fontSize: "2rem", lineHeight: '0.35' }}>•</span>{row.orderStatus}</Typography></TableCell>
-                            }
-                            {/* <TableCell align="left"><AddLocationAltIcon /></TableCell> */}
-                            <TableCell align="center"><EditIcon /></TableCell>
-                 
-                          </TableRow>
-                        ))}
-                  {/* </>} */}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          </>
 }
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             {/* <Typography>Page: {currentPage}</Typography> */}

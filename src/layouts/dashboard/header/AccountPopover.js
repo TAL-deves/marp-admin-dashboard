@@ -13,6 +13,7 @@ import BounceLoader from "react-spinners/BounceLoader";
 // eslint-disable-next-line import/no-unresolved
 import {getRequestHandler, logoutHandler } from 'src/apiHandler/customApiHandler';
 import Link from "@mui/material/Link";
+import Button from '@mui/material/Button';
 // import Link from '@mui/material/Link';
 // import account from '../../../_mock/account';
 
@@ -30,11 +31,7 @@ const MENU_OPTIONS = [
     label: 'Profile',
     icon: 'eva:person-fill',
     path:'/dashboard/profile'
-  },
-  // {
-  //   label: 'Settings',
-  //   icon: 'eva:settings-2-fill',
-  // },
+  }
 ];
 
 // ----------------------------------------------------------------------
@@ -53,7 +50,17 @@ export default function AccountPopover() {
   };
 
   const handleClose=()=>{
+    // navigate('/dashboard/profile', { replace: true });
     setOpen(null);
+  }
+  const handleChange=(path)=>{
+    if(path==="Home"){
+      navigate('/dashboard/app', { replace: true });
+    }else{
+      navigate('/dashboard/profile', { replace: true }); 
+    }
+    handleClose();
+    console.log("path ---", path);
   }
 
   // eslint-disable-next-line no-undef
@@ -161,9 +168,11 @@ color='#c7eed8'
 
         <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.id} onClick={handleClose}><Link href={option.path}>
-            {option.label}
-          </Link>
+            <MenuItem key={option.id}
+            onClick={()=>handleChange(option.label)}
+            ><Typography>
+               {option.label}
+          </Typography>
             </MenuItem>
           ))}
         </Stack>

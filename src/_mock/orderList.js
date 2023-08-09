@@ -146,7 +146,12 @@ export default function OrderList() {
                         <TableCell component="th" scope="row">
                           {row.orderNumber}
                         </TableCell>
-                        <TableCell align="left">{row.createdAt}</TableCell>
+                        {/* <TableCell align="left">{row.createdAt}</TableCell> */}
+                        <TableCell align="left">
+                            {
+                              new Date(row.createdAt).toLocaleDateString('en-GB')
+                              }
+                              </TableCell>
                         <TableCell align="left">{row.userId}</TableCell>
                         {/* <TableCell align="left">{row.vendor}</TableCell> */}
                         {row.paymentStatus === "pending" ?
