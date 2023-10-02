@@ -51,7 +51,7 @@ export default function Router() {
     }
   }
   useEffect(() => {
-    handleAuthCheck()
+    // handleAuthCheck()
   }, [])
   const routes = useRoutes([
     {
